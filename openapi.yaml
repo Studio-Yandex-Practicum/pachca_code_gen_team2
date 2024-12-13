@@ -57,6 +57,8 @@ paths:
       description: 'Информация будет добавлена позже.'
   /users:
     get:
+      tags:
+        - employees
       summary: получение актуального списка всех сотрудников компании
       description: |
         Fetch a paginated list of employees with optional filtering by query.
