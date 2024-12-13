@@ -62,6 +62,7 @@ paths:
       summary: получение актуального списка всех сотрудников компании
       description: |
         Fetch a paginated list of employees with optional filtering by query.
+      operationId: getEmployees
       parameters:
         - name: per
           in: query
