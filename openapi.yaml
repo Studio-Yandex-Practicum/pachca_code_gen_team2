@@ -1,0 +1,188 @@
+openapi: 3.0.3
+info:
+  title: PachcaAPI - OpenAPI 3.0
+  description: Документация к открытому API пачки
+  version: 3.0.3
+servers:
+  - url: https://api.pachca.com/api/shared/v1
+
+tags:
+  - name: common methods
+    description: Everything about common methods
+  - name: employees
+    description: Everything about employees
+  - name: status
+    description: Everything about
+      status
+  - name: tags
+    description: Everything about
+      tags
+  - name: chats and channels
+    description: Everything about
+      chats and channels
+  - name: talk and channel participants
+    description: Everything about
+      talk and channel participants
+  - name: comments
+    description: Everything about
+      comments
+  - name: messages
+    description: Everything about
+      messages
+  - name: reactions to messages
+    description: Everything about
+      reactions to messages
+  - name: reminders
+    description: Everything about
+      reminders
+
+paths:
+  /custom_properties:
+    get:
+      tags:
+        - common methods
+      summary: '43 / Список дополнительных полей'
+      description: 'Информация будет добавлена позже.'
+  /uploads:
+    post:
+      tags:
+        - common methods
+      summary: '44 / Получение подписи, ключа и других параметров'
+      description: 'Информация будет добавлена позже.'
+  /direct_url (полученный в ответе на запрос /uploads):
+    post:
+      tags:
+        - common methods
+      summary: '45 / Загрузка файла'
+      description: 'Информация будет добавлена позже.'
+  /users:
+    get:
+      tags:
+        - employees
+      summary: '4 / Список сотрудников'
+      description: 'Информация будет добавлена позже.'
+  /users/{id}:
+    get:
+      tags:
+        - employees
+      summary: '5 / Информация о сотруднике'
+      description: 'Информация будет добавлена позже.'
+  /profile/status:
+    get:
+      tags:
+        - status
+      summary: '8 / Текущий статус'
+      description: 'Информация будет добавлена позже.'
+    put:
+      tags:
+        - status
+      summary: '9 / Новый статус'
+      description: 'Информация будет добавлена позже.'
+    delete:
+      tags:
+        - status
+      summary: '10 / Удаление статуса'
+      description: 'Информация будет добавлена позже.'
+  /group_tags/{id}:
+    get:
+      tags:
+        - tags
+      summary: '12 / Информация о теге'
+      description: 'Информация будет добавлена позже.'
+  /group_tags:
+    get:
+      tags:
+        - tags
+      summary: '13 / Список тегов сотрудников'
+      description: 'Информация будет добавлена позже.'
+  /group_tags/{id}/users:
+    get:
+      tags:
+        - tags
+      summary: '14 / Список сотрудников тега'
+      description: 'Информация будет добавлена позже.'
+  /chats:
+    post:
+      tags:
+        - chats and channels
+      summary: '17 / Новая беседа или канал'
+      description: 'Информация будет добавлена позже.'
+    get:
+      tags:
+        - chats and channels
+      summary: '19 / Список бесед и каналов'
+      description: 'Информация будет добавлена позже.'
+  /chats/{id}:
+    get:
+      tags:
+        - chats and channels
+      summary: '18 / Информация о беседе или канале'
+      description: 'Информация будет добавлена позже.'
+  /chats/{id}/members:
+    post:
+      tags:
+        - talk and channel participants
+      summary: '23 / Добавление пользователей'
+      description: 'Информация будет добавлена позже.'
+  /chats/{id}/group_tags:
+    post:
+      tags:
+        - talk and channel participants
+      summary: '25 / Добавление тегов'
+      description: 'Информация будет добавлена позже.'
+  /chats/{id}/leave:
+    delete:
+      tags:
+        - talk and channel participants
+      summary: '27 / Выход из беседы или канала'
+      description: 'Информация будет добавлена позже.'
+  /messages/{id}/thread:
+    delete:
+      tags:
+        - comments
+      summary: '28 / Новый тред'
+      description: 'Информация будет добавлена позже.'
+  /messages:
+    post:
+      tags:
+        - messages
+      summary: '30 / Новое сообщение'
+      description: 'Информация будет добавлена позже.'
+    get:
+      tags:
+        - messages
+      summary: '32 / Список сообщений чата'
+      description: 'Информация будет добавлена позже.'
+  /messages/{id}:
+    get:
+      tags:
+        - messages
+      summary: '31 / Информация о сообщении'
+      description: 'Информация будет добавлена позже.'
+    put:
+      tags:
+        - messages
+      summary: '33 / Редактирование сообщения'
+      description: 'Информация будет добавлена позже.'
+  /messages/{id}/reactions:
+    post:
+      tags:
+        - reactions to messages
+      summary: '38 / Добавление реакции'
+      description: 'Информация будет добавлена позже.'
+    delete:
+      tags:
+        - reactions to messages
+      summary: '39 / Удаление реакции'
+      description: 'Информация будет добавлена позже.'
+    get:
+      tags:
+        - reactions to messages
+      summary: '40 / Список реакций'
+      description: 'Информация будет добавлена позже.'
+  /tasks:
+    post:
+      tags:
+        - reminders
+      summary: '42 / Новое напоминание'
+      description: 'Информация будет добавлена позже.'
