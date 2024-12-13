@@ -226,11 +226,12 @@ paths:
 
 components:
   schemas:
-    Employee:
+    BaseEmployee:
       type: object
       properties:
         id:
           type: integer
+          example: 1
           description: Идентификатор пользователя
         first_name:
           type: string
@@ -307,16 +308,24 @@ components:
                 Срок жизни статуса (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ. Возвращается как null, если срок не установлен.
         bot:
           type: boolean
-          description: 	Тип: пользователь (false) или бот (true)
-        created_at:
-          type: string
-          format: date-time
           description: |
-            Дата создания (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ
-        time_zone:
-          type: string
-          description: Часовой пояс пользователя
-        image_url:
-          type: string
-          nullable: true
-          description: Ссылка на скачивание аватарки
+            Тип: пользователь (false) или бот (true)
+      description: Базовый класс сотрудника.
+    Employee:
+      allOf:
+        - $ref: '#/components/schemas/BaseEmployee'
+        - type: object
+          properties:
+            created_at:
+              type: string
+              format: date-time
+              description: |
+                Дата создания (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ
+            time_zone:
+              type: string
+              description: Часовой пояс пользователя
+            image_url:
+              type: string
+              nullable: true
+              description: Ссылка на скачивание аватарки
+          description: Расширенный класс сотрудника.
