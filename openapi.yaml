@@ -222,8 +222,20 @@ paths:
     delete:
       tags:
         - status
-      summary: '10 / Удаление статуса'
-      description: 'Информация будет добавлена позже.'
+      summary: удаление своего статуса
+      description: |
+        Параметры запроса отсутствуют
+      operationId: delStatus
+      responses:
+        '204':
+          description: Объект успешно удален
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/NoContent'
   /group_tags/{id}:
     get:
       tags:
@@ -481,4 +493,12 @@ components:
         detail:
           description: 'Описание ошибки'
           example: "Поле не соответствует правилам (пояснения вы получите в поле message)"
+          type: string
+    NoContent:
+      description: Успешное удаление объекта
+      type: object
+      properties:
+        detail:
+          description: 'Объект удален'
+          example: "Объект удален"
           type: string
