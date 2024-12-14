@@ -139,9 +139,44 @@ paths:
     put:
       tags:
         - status
-      summary: '9 / Новый статус'
-      description: 'Информация будет добавлена позже.'
-    delete:
+      summary: новый статус
+      description: |
+        Создание нового статуса.
+      operationId: putStatus
+      parameters:
+        status:
+          - name: emoji
+            in: status
+            description: Emoji символ статуса
+            schema:
+              type: string
+              required: true
+          - name: title
+            in: status
+            description: Текст статуса
+            schema:
+              type: string
+              required: true
+          - name: expires_at
+            in: status
+            description: |
+              Срок жизни статуса (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ
+            schema:
+              type: string
+              format: date-time
+              nullable: true
+              required: false
+      responses:
+        '201':
+          description: Объект создан
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Status'
+        delete:
       tags:
         - status
       summary: '10 / Удаление статуса'
