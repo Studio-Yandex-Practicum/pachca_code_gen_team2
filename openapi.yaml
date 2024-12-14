@@ -166,7 +166,6 @@ paths:
       summary: получение актуального списка сотрудников тега
       description: |
         Метод для получения актуального списка сотрудников тега.
-      operationId: getEmployees
       parameters:
         - name: id
           in: path
