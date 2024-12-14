@@ -190,7 +190,36 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/Status'
-        delete:
+        '400':
+          description: Обязательное поле (не может быть пустым)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '413':
+          description: Слишком длинное значение (пояснения вы получите в поле message)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentTooLarge'
+        '422':
+          description: Поле не соответствует правилам (пояснения вы получите в поле message)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnprocessableContent'
+        '400':
+          description: Status wrong Emoji
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    description: 'Описание ошибки'
+                    example: "Emoji статуса не может содержать значения отличные от Emoji символа."
+                    type: string
+    delete:
       tags:
         - status
       summary: '10 / Удаление статуса'
@@ -428,4 +457,28 @@ components:
         detail:
           description: 'Описание ошибки'
           example: "Страница не найдена."
+          type: string
+    BadRequest:
+      description: Отсутствует обязательное поле
+      type: object
+      properties:
+        detail:
+          description: 'Описание ошибки'
+          example: "Обязательное поле (не может быть пустым)."
+          type: string
+    ContentTooLarge:
+      description: Слишком длинное значение
+      type: object
+      properties:
+        detail:
+          description: 'Описание ошибки'
+          example: "Слишком длинное значение (пояснения вы получите в поле message)"
+          type: string
+    UnprocessableContent:
+      description: Поле не соответствует правилам
+      type: object
+      properties:
+        detail:
+          description: 'Описание ошибки'
+          example: "Поле не соответствует правилам (пояснения вы получите в поле message)"
           type: string
