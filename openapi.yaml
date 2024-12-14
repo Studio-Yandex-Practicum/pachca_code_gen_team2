@@ -147,9 +147,7 @@ paths:
                 type: object
                 properties:
                   data:
-                    type: object
-                    items:
-                      $ref: '#/components/schemas/Status'
+                    $ref: '#/components/schemas/Status'
     put:
       tags:
         - status
