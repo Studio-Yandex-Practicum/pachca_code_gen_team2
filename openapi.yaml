@@ -134,8 +134,20 @@ paths:
     get:
       tags:
         - status
-      summary: '8 / Текущий статус'
-      description: 'Информация будет добавлена позже.'
+      summary: получение информации о своем статусе
+      description: |
+        Параметры запроса отсутствуют
+      operationId: getStatus
+      responses:
+        '200':
+          description: Успешный запрос
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Status'
     put:
       tags:
         - status
@@ -397,6 +409,23 @@ components:
               nullable: true
               description: Ссылка на скачивание аватарки
           description: Расширенный класс сотрудника.
+    Status:
+      type: object
+      nullable: true
+      description: 	Статус. Возвращается как null, если статус не установлен.
+      properties:
+        emoji:
+          type: string
+          description: 	Emoji символ статуса
+        title:
+          type: string
+          description: Текст статуса
+        expires_at:
+            type: string
+            format: date-time
+            nullable: true
+            description: |
+              Срок жизни статуса (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ. Возвращается как null, если срок не установлен.
     NotFound:
       description: Объект не найден
       type: object
