@@ -162,8 +162,51 @@ paths:
     get:
       tags:
         - tags
-      summary: '14 / Список сотрудников тега'
-      description: 'Информация будет добавлена позже.'
+      operationId: getTagsEmployees
+      summary: получение актуального списка сотрудников тега
+      description: |
+        Метод для получения актуального списка сотрудников тега.
+      operationId: getEmployees
+      parameters:
+        - name: id
+          in: path
+          description: Уникальный идентификатор сотрудкика
+          required: true
+          schema:
+            type: integer
+        - name: per
+          in: query
+          description: Количество возвращаемых сущностей за один запрос (по умолчанию 50, максимум
+          required: false
+          schema:
+            type: integer
+            default: 25
+            maximum: 50
+        - name: page
+          in: query
+          description: 	Страница выборки (по умолчанию 1)
+          required: false
+          schema:
+            type: integer
+            default: 1
+      responses:
+        '200':
+          description: Успешный запрос
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/BaseEmployee'
+        '422':
+          description: 	Поле имеет недопустимое значение
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Exclusion'
   /chats:
     post:
       tags:
@@ -362,4 +405,12 @@ components:
         detail:
           description: 'Описание ошибки'
           example: "Страница не найдена."
+          type: string
+    Exclusion:
+      description: 	Поле имеет недопустимое значение
+      type: object
+      properties:
+        detail:
+          description: 'Описание ошибки'
+          example: "Поле имеет недопустимое значение."
           type: string
