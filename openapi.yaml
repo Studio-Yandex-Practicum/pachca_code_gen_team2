@@ -102,8 +102,34 @@ paths:
     get:
       tags:
         - employees
-      summary: '5 / Информация о сотруднике'
-      description: 'Информация будет добавлена позже.'
+      summary: получение информации о сотруднике
+      description: |
+        Метод для получения информации о сотруднике.
+        Для получения сотрудника вам необходимо знать его id и указать его в URL запроса.
+      operationId: getEmployee
+      parameters:
+        - name: id
+          in: path
+          description: Уникальный идентификатор сотрудкика
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Успешный запрос
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Employee'
+        '404':
+          description: Сотрудник не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
   /profile/status:
     get:
       tags:
@@ -329,3 +355,11 @@ components:
               nullable: true
               description: Ссылка на скачивание аватарки
           description: Расширенный класс сотрудника.
+    NotFound:
+      description: Объект не найден
+      type: object
+      properties:
+        detail:
+          description: 'Описание ошибки'
+          example: "Страница не найдена."
+          type: string
