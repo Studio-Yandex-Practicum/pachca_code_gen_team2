@@ -346,8 +346,57 @@ paths:
     get:
       tags:
         - reactions to messages
-      summary: '40 / Список реакций'
-      description: 'Информация будет добавлена позже.'
+      summary: 'Получение актуального списка реакций.'
+      description: |
+        Этот метод позволяет получить список всех реакций, оставленных пользователями на указанное сообщение.
+      operationId: getMessageReactions
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Уникальный идентификатор сообщения, список реакций на которое нужно получить.
+          schema:
+            type: integer
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                per:
+                  type: integer
+                  description: Количество возвращаемых сущностей за один запрос (по умолчанию 50, максимум 50).
+                  default: 50
+                  maximum: 50
+                page:
+                  type: integer
+                  description: Номер страницы выборки (по умолчанию 1).
+                  default: 1
+      responses:
+        '200':
+          description: Список реакций успешно получен.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Reaction'
+        '404':
+          description: Сообщение не найдено.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+        '400':
+          description: Неверный запрос.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
   /tasks:
     post:
       tags:
@@ -491,6 +540,22 @@ components:
           description: 'Описание ошибки'
           example: "Страница не найдена."
           type: string
+    Reaction:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          description: |
+            Идентификатор пользователя, оставившего реакцию.
+        created_at:
+          type: string
+          format: date-time
+          description: |
+            Дата и время добавления реакции (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ.
+        code:
+          type: string
+          description: |
+            Emoji символ реакции.
     BadRequest:
       type: object
       properties:
