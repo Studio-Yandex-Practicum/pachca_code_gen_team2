@@ -407,3 +407,19 @@ components:
           description: 'Описание ошибки'
           example: "Страница не найдена."
           type: string
+    Reaction:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          description: |
+            Идентификатор пользователя, оставившего реакцию.
+        created_at:
+          type: string
+          format: date-time
+          description: |
+            Дата и время добавления реакции (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ.
+        code:
+          type: string
+          description: |
+            Emoji символ реакции.
