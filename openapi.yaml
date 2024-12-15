@@ -481,7 +481,7 @@ components:
             expires_at:
               type: string
               format: date-time
-              description: Срок жизни статуса (ISO-8601, UTC+0)
+              description: Срок действия статуса (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ
               nullable: true
     NotFound:
       description: Объект не найден
