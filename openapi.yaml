@@ -155,8 +155,12 @@ paths:
       description: |
         Создание нового статуса.
       operationId: putStatus
-      parameters:
-        $ref: '#/components/schemas/QueryStatus'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QueryStatus'
       responses:
         '201':
           description: Объект создан
@@ -459,28 +463,26 @@ components:
             description: |
               Срок жизни статуса (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ. Возвращается как null, если срок не установлен.
     QueryStatus:
+      type: object
+      properties:
         status:
-          - name: emoji
-            in: status
-            description: Emoji символ статуса
-            schema:
+          type: object
+          description: Собранный объект параметров нового статуса
+          required:
+            - emoji
+            - title
+          properties:
+            emoji:
               type: string
-              required: true
-          - name: title
-            in: status
-            description: Текст статуса
-            schema:
+              description: Emoji символ статуса
+            title:
               type: string
-              required: true
-          - name: expires_at
-            in: status
-            description: |
-              Срок жизни статуса (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ
-            schema:
+              description: Текст статуса
+            expires_at:
               type: string
               format: date-time
+              description: Срок действия статуса (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ
               nullable: true
-              required: false
     NotFound:
       description: Объект не найден
       type: object
@@ -490,7 +492,9 @@ components:
           example: "Страница не найдена."
           type: string
     BadRequest:
-      summary: BadRequest
-      description: Bad Request
-      value:
-        detail: BadRequest
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
