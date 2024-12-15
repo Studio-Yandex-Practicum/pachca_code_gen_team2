@@ -309,19 +309,16 @@ components:
           description: Фамилия
         nickname:
           type: string
-          description: 	Имя пользователя
+          description: Имя пользователя
         email:
           type: string
-          description: 	Электронная почта
+          description: Электронная почта
         phone_number:
           type: string
           description: Телефон
         department:
           type: string
-          description: 	Департамент
-        title:
-          type: string
-          description: Должность
+          description: Департамент
         role:
           type: string
           description: |
@@ -341,7 +338,7 @@ components:
           description: Массив тегов, привязанных к сотруднику
         custom_properties:
           type: array
-          description: 	Дополнительные поля сотрудника
+          description: Дополнительные поля сотрудника
           items:
             type: object
             properties:
@@ -357,23 +354,6 @@ components:
               value:
                 type: string
                 description: Значение
-        user_status:
-          type: object
-          nullable: true
-          description: 	Статус. Возвращается как null, если статус не установлен.
-          properties:
-            emoji:
-              type: string
-              description: 	Emoji символ статуса
-            title:
-              type: string
-              description: 	Текст статуса
-            expires_at:
-              type: string
-              format: date-time
-              nullable: true
-              description: |
-                Срок жизни статуса (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ. Возвращается как null, если срок не установлен.
         bot:
           type: boolean
           description: |
@@ -384,6 +364,26 @@ components:
         - $ref: '#/components/schemas/BaseEmployee'
         - type: object
           properties:
+            user_status:
+              type: object
+              nullable: true
+              description: Статус. Возвращается как null, если статус не установлен.
+              properties:
+                emoji:
+                  type: string
+                  description: Emoji символ статуса
+                title:
+                  type: string
+                  description: Текст статуса
+                expires_at:
+                  type: string
+                  format: date-time
+                  nullable: true
+                  description: |
+                    Срок жизни статуса (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ. Возвращается как null, если срок не установлен.
+            title:
+              type: string
+              description: Должность
             created_at:
               type: string
               format: date-time
@@ -396,7 +396,7 @@ components:
               type: string
               nullable: true
               description: Ссылка на скачивание аватарки
-          description: Расширенный класс сотрудника.
+      description: Расширенный класс сотрудника.
     NotFound:
       description: Объект не найден
       type: object
@@ -406,10 +406,10 @@ components:
           example: "Страница не найдена."
           type: string
     Exclusion:
-      description: 	Поле имеет недопустимое значение
+      description: Поле имеет недопустимое значение
       type: object
       properties:
         detail:
           description: 'Описание ошибки'
-          example: "Поле имеет недопустимое значение."
+          example: 'Поле имеет недопустимое значение.'
           type: string
