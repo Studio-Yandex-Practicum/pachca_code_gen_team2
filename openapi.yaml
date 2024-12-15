@@ -41,8 +41,46 @@ paths:
     get:
       tags:
         - common methods
-      summary: '43 / Список дополнительных полей'
-      description: 'Информация будет добавлена позже.'
+      summary: Список дополнительных полей
+      description: |
+        Метод для получения актуального списка дополнительных полей участников и напоминаний в вашей компании.
+      operationId: getCommonMethods
+      parameters:
+        - name: entity_type
+          in: query
+          description: Тип сущности - участник (User) или напоминание (Task).
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Успешный запрос
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/QueryCommonMethods'
+        '400':
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+              examples:
+                BLANK:
+                  summary: blank
+                  description: Поле не может быть пустым
+                  value:
+                    detail: BLANK
+                INCLUSION:
+                  summary: inclusion
+                  description: Поле имеет непредусмотренное значение
+                  value:
+                    detail: INCLUSION
   /uploads:
     post:
       tags:
@@ -155,8 +193,12 @@ paths:
       description: |
         Создание нового статуса.
       operationId: putStatus
-      parameters:
-        $ref: '#/components/schemas/QueryStatus'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QueryStatus'
       responses:
         '201':
           description: Объект создан
@@ -459,28 +501,42 @@ components:
             description: |
               Срок жизни статуса (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ. Возвращается как null, если срок не установлен.
     QueryStatus:
+      type: object
+      properties:
         status:
-          - name: emoji
-            in: status
-            description: Emoji символ статуса
-            schema:
+          type: object
+          description: Собранный объект параметров нового статуса
+          required:
+            - emoji
+            - title
+          properties:
+            emoji:
               type: string
-              required: true
-          - name: title
-            in: status
-            description: Текст статуса
-            schema:
+              description: Emoji символ статуса
+            title:
               type: string
-              required: true
-          - name: expires_at
-            in: status
-            description: |
-              Срок жизни статуса (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ
-            schema:
+              description: Текст статуса
+            expires_at:
               type: string
               format: date-time
+              description: Срок действия статуса (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ
               nullable: true
-              required: false
+    QueryCommonMethods:
+      type: object
+      description: 	получение списка актульных полей сущности.
+      properties:
+        id:
+          type: integer
+          example: 1
+          description: Название поля
+        name:
+          type: string
+          example: Дата рождения
+          description: Идентификатор поля
+        data_type:
+          type: string
+          example: number
+          description: тип поля (string, number, date или link)
     NotFound:
       description: Объект не найден
       type: object
@@ -490,7 +546,9 @@ components:
           example: "Страница не найдена."
           type: string
     BadRequest:
-      summary: BadRequest
-      description: Bad Request
-      value:
-        detail: BadRequest
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
