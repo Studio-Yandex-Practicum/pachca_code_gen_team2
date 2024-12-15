@@ -147,9 +147,7 @@ paths:
                 type: object
                 properties:
                   data:
-                    type: object
-                    items:
-                      $ref: '#/components/schemas/Status'
+                    $ref: '#/components/schemas/Status'
     put:
       tags:
         - status
@@ -158,28 +156,7 @@ paths:
         Создание нового статуса.
       operationId: putStatus
       parameters:
-        status:
-          - name: emoji
-            in: status
-            description: Emoji символ статуса
-            schema:
-              type: string
-              required: true
-          - name: title
-            in: status
-            description: Текст статуса
-            schema:
-              type: string
-              required: true
-          - name: expires_at
-            in: status
-            description: |
-              Срок жизни статуса (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ
-            schema:
-              type: string
-              format: date-time
-              nullable: true
-              required: false
+        $ref: '#/components/schemas/QueryStatus'
       responses:
         '201':
           description: Объект создан
@@ -191,34 +168,32 @@ paths:
                   data:
                     $ref: '#/components/schemas/Status'
         '400':
-          description: Обязательное поле (не может быть пустым)
+          description: BadRequest
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/BadRequest'
-        '413':
-          description: Слишком длинное значение (пояснения вы получите в поле message)
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ContentTooLarge'
-        '422':
-          description: Поле не соответствует правилам (пояснения вы получите в поле message)
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UnprocessableContent'
-        '400':
-          description: Status wrong Emoji
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  detail:
-                    description: 'Описание ошибки'
-                    example: "Emoji статуса не может содержать значения отличные от Emoji символа."
-                    type: string
+              examples:
+                BLANK:
+                  summary: blank
+                  description: Обязательное поле (не может быть пустым)
+                  value:
+                    detail: BLANK
+                TOO_LONG:
+                  summary: too_long
+                  description: Слишком длинное значение (пояснения вы получите в поле message)
+                  value:
+                    detail: TOO_LONG
+                INVALID:
+                  summary: invalid
+                  description: Поле не соответствует правилам (пояснения вы получите в поле message)
+                  value:
+                    detail: INVALID
+                WRONG_EMOJI:
+                  summary: wrong_emoji
+                  description: Emoji статуса не может содержать значения отличные от Emoji символа
+                  value:
+                    detail: WRONG_EMOJI
     delete:
       tags:
         - status
