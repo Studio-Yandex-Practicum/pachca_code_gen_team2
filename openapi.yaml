@@ -151,8 +151,49 @@ paths:
     put:
       tags:
         - status
-      summary: '9 / Новый статус'
-      description: 'Информация будет добавлена позже.'
+      summary: новый статус
+      description: |
+        Создание нового статуса.
+      operationId: putStatus
+      parameters:
+        $ref: '#/components/schemas/QueryStatus'
+      responses:
+        '201':
+          description: Объект создан
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Status'
+        '400':
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+              examples:
+                BLANK:
+                  summary: blank
+                  description: Обязательное поле (не может быть пустым)
+                  value:
+                    detail: BLANK
+                TOO_LONG:
+                  summary: too_long
+                  description: Слишком длинное значение (пояснения вы получите в поле message)
+                  value:
+                    detail: TOO_LONG
+                INVALID:
+                  summary: invalid
+                  description: Поле не соответствует правилам (пояснения вы получите в поле message)
+                  value:
+                    detail: INVALID
+                WRONG_EMOJI:
+                  summary: wrong_emoji
+                  description: Emoji статуса не может содержать значения отличные от Emoji символа
+                  value:
+                    detail: WRONG_EMOJI
     delete:
       tags:
         - status
@@ -411,6 +452,29 @@ components:
             nullable: true
             description: |
               Срок жизни статуса (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ. Возвращается как null, если срок не установлен.
+    QueryStatus:
+        status:
+          - name: emoji
+            in: status
+            description: Emoji символ статуса
+            schema:
+              type: string
+              required: true
+          - name: title
+            in: status
+            description: Текст статуса
+            schema:
+              type: string
+              required: true
+          - name: expires_at
+            in: status
+            description: |
+              Срок жизни статуса (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ
+            schema:
+              type: string
+              format: date-time
+              nullable: true
+              required: false
     NotFound:
       description: Объект не найден
       type: object
@@ -419,11 +483,8 @@ components:
           description: 'Описание ошибки'
           example: "Страница не найдена."
           type: string
-    Exclusion:
-      description: Поле имеет недопустимое значение
-      type: object
-      properties:
-        detail:
-          description: 'Описание ошибки'
-          example: 'Поле имеет недопустимое значение.'
-          type: string
+    BadRequest:
+      summary: BadRequest
+      description: Bad Request
+      value:
+        detail: BadRequest
