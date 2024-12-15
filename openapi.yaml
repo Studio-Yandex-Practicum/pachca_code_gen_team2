@@ -393,6 +393,10 @@ paths:
                 $ref: '#/components/schemas/NotFound'
         '400':
           description: Неверный запрос.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
   /tasks:
     post:
       tags:
