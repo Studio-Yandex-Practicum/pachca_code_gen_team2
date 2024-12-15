@@ -197,8 +197,14 @@ paths:
     delete:
       tags:
         - status
-      summary: '10 / Удаление статуса'
-      description: 'Информация будет добавлена позже.'
+      summary: удаление своего статуса
+      description: |
+        Параметры запроса отсутствуют
+      operationId: delStatus
+      responses:
+        '204':
+          description: Объект успешно удален, тело ответа отсутствует
+          content: {}
   /group_tags/{id}:
     get:
       tags:
