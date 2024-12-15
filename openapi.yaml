@@ -241,8 +241,52 @@ paths:
     get:
       tags:
         - reactions to messages
-      summary: '40 / Список реакций'
-      description: 'Информация будет добавлена позже.'
+      summary: 'Получение актуального списка реакций.'
+      description: |
+        Этот метод позволяет получить список всех реакций, оставленных пользователями на указанное сообщение.
+      operationId: getMessageReactions
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Уникальный идентификатор сообщения, список реакций на которое нужно получить.
+          schema:
+            type: integer
+        - name: per
+          in: query
+          required: false
+          description: Количество возвращаемых сущностей за запрос (по умолчанию 50, максимум 50).
+          schema:
+            type: integer
+            default: 50
+            maximum: 50
+        - name: page
+          in: query
+          required: false
+          description: Номер страницы результатов (по умолчанию 1).
+          schema:
+            type: integer
+            default: 1
+      responses:
+        '200':
+          description: Список реакций успешно получен.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Reaction'
+        '404':
+          description: Сообщение не найдено.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+        '400':
+          description: Неверный запрос.
   /tasks:
     post:
       tags:
