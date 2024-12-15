@@ -203,14 +203,8 @@ paths:
       operationId: delStatus
       responses:
         '204':
-          description: Объект успешно удален
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    $ref: '#/components/schemas/NoContent'
+          description: Объект успешно удален, тело ответа отсутствует
+          content: {}
   /group_tags/{id}:
     get:
       tags:
@@ -437,6 +431,29 @@ components:
             nullable: true
             description: |
               Срок жизни статуса (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ. Возвращается как null, если срок не установлен.
+    QueryStatus:
+        status:
+          - name: emoji
+            in: status
+            description: Emoji символ статуса
+            schema:
+              type: string
+              required: true
+          - name: title
+            in: status
+            description: Текст статуса
+            schema:
+              type: string
+              required: true
+          - name: expires_at
+            in: status
+            description: |
+              Срок жизни статуса (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ
+            schema:
+              type: string
+              format: date-time
+              nullable: true
+              required: false
     NotFound:
       description: Объект не найден
       type: object
@@ -446,34 +463,7 @@ components:
           example: "Страница не найдена."
           type: string
     BadRequest:
-      description: Отсутствует обязательное поле
-      type: object
-      properties:
-        detail:
-          description: 'Описание ошибки'
-          example: "Обязательное поле (не может быть пустым)."
-          type: string
-    ContentTooLarge:
-      description: Слишком длинное значение
-      type: object
-      properties:
-        detail:
-          description: 'Описание ошибки'
-          example: "Слишком длинное значение (пояснения вы получите в поле message)"
-          type: string
-    UnprocessableContent:
-      description: Поле не соответствует правилам
-      type: object
-      properties:
-        detail:
-          description: 'Описание ошибки'
-          example: "Поле не соответствует правилам (пояснения вы получите в поле message)"
-          type: string
-    NoContent:
-      description: Успешное удаление объекта
-      type: object
-      properties:
-        detail:
-          description: 'Объект удален'
-          example: "Объект удален"
-          type: string
+      summary: BadRequest
+      description: Bad Request
+      value:
+        detail: BadRequest
