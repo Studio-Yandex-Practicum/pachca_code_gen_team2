@@ -255,6 +255,13 @@ paths:
       description: |
         Параметры запроса отсутствуют
       operationId: getTag
+      parameters:
+          - name: id
+            in: path
+            description: Уникальный идентификатор тега
+            required: true
+            schema:
+              type: integer
       responses:
         '200':
           description: Успешный запрос
