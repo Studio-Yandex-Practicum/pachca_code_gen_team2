@@ -336,8 +336,99 @@ paths:
     post:
       tags:
         - reactions to messages
-      summary: '38 / Добавление реакции'
-      description: 'Информация будет добавлена позже.'
+      operationId: postMessageReactions
+      summary: Добавление реакции
+      description: >
+        Метод для добавления реакции на сообщение.
+        **Лимиты реакций:**
+        - Каждый пользователь может установить не более 20 уникальных реакций на сообщение.
+        - Сообщение может иметь не более 30 уникальных реакций.
+        - Сообщение может иметь не более 1000 реакций.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Уникальный идентификатор сообщения.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: string
+                  description: Emoji в строковом формате для добавления реакции.
+              required:
+                - code
+      responses:
+        "204":
+          description: Успешное выполнение запроса, тело ответа отсутствует.
+
+        "400":
+          description: Ошибка валидации запроса.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Описание ошибки.
+              examples:
+                blank_field:
+                  summary: Поле code пустое
+                  value:
+                    error: blank
+                exclusion:
+                  summary: Недопустимое значение эмодзи
+                  value:
+                    error: exclusion
+
+        "403":
+          description: Превышение лимитов по реакциям.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Описание ошибки.
+              examples:
+                user_limit:
+                  summary: Превышен лимит уникальных реакций пользователя
+                  value:
+                    error: user_limit
+                    message: "Вы можете добавить не более 20 уникальных реакций."
+                unique_limit:
+                  summary: Превышен лимит уникальных реакций на сообщение
+                  value:
+                    error: unique_limit
+                    message: "Сообщение может содержать не более 30 уникальных реакций."
+                general_limit:
+                  summary: Превышен общий лимит реакций на сообщение
+                  value:
+                    error: general_limit
+                    message: "Сообщение может содержать не более 1000 реакций."
+
+        "404":
+          description: Сообщение не найдено.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Сообщение не найдено.
+              examples:
+                not_found:
+                  summary: Сообщение не существует
+                  value:
+                    error: not_found
     delete:
       tags:
         - reactions to messages
