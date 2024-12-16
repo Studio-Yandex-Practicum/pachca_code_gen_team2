@@ -341,7 +341,42 @@ paths:
       tags:
         - talk and channel participants
       summary: '27 / Выход из беседы или канала'
-      description: 'Информация будет добавлена позже.'
+      description: |-
+        Удаляет себя из беседы или канала. Доступно только авторизованным.
+      security:
+        - Token: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: 'Уникальный идентификатор беседы или канала.'
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Успешно отписан'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseEmployee'
+        '400':
+          description: 'Ошибка удаления из беседы или канала (Например, не подписан на данную беседу или канал)'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Пользователь не авторизован'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationError'
+        '404':
+          description: 'Беседа или канал не существует'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
   /messages/{id}/thread:
     delete:
       tags:
@@ -617,3 +652,16 @@ components:
           type: string
         message:
           type: string
+    AuthenticationError:
+      type: object
+      properties:
+        detail:
+          description: 'Описание ошибки'
+          example: "Учетные данные не были предоставлены."
+          type: string
+  securitySchemes:
+    Token:
+      description: 'Авторизация по токену. <br>
+      Все запросы от имени пользователя должны выполняться с заголовком "Authorization: Token TOKENVALUE"'
+      type: http
+      scheme: token
