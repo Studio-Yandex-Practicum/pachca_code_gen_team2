@@ -251,8 +251,26 @@ paths:
     get:
       tags:
         - tags
-      summary: '12 / Информация о теге'
-      description: 'Информация будет добавлена позже.'
+      summary: Информация о теге
+      description: |
+        Параметры запроса отсутствуют
+      operationId: getTag
+      responses:
+        '200':
+          description: Успешный запрос
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Tag'
+        '404':
+          description: Тег не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
   /group_tags:
     get:
       tags:
@@ -617,3 +635,16 @@ components:
           type: string
         message:
           type: string
+    Tag:
+      type: object
+      description: Для получения тега вам необходимо знать его id и указать его в URL запроса.
+      properties:
+        id:
+          type: integer
+          description: Идентификатор тега
+        name:
+          type: string
+          description:   Название тега
+        users_count:
+          description: Количество сотрудников, которые имеют этот тег
+          type: integer
