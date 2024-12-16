@@ -134,18 +134,81 @@ paths:
     get:
       tags:
         - status
-      summary: '8 / Текущий статус'
-      description: 'Информация будет добавлена позже.'
+      summary: получение информации о своем статусе
+      description: |
+        Параметры запроса отсутствуют
+      operationId: getStatus
+      responses:
+        '200':
+          description: Успешный запрос
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Status'
     put:
       tags:
         - status
-      summary: '9 / Новый статус'
-      description: 'Информация будет добавлена позже.'
+      summary: новый статус
+      description: |
+        Создание нового статуса.
+      operationId: putStatus
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QueryStatus'
+      responses:
+        '201':
+          description: Объект создан
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Status'
+        '400':
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+              examples:
+                BLANK:
+                  summary: blank
+                  description: Обязательное поле (не может быть пустым)
+                  value:
+                    detail: BLANK
+                TOO_LONG:
+                  summary: too_long
+                  description: Слишком длинное значение (пояснения вы получите в поле message)
+                  value:
+                    detail: TOO_LONG
+                INVALID:
+                  summary: invalid
+                  description: Поле не соответствует правилам (пояснения вы получите в поле message)
+                  value:
+                    detail: INVALID
+                WRONG_EMOJI:
+                  summary: wrong_emoji
+                  description: Emoji статуса не может содержать значения отличные от Emoji символа
+                  value:
+                    detail: WRONG_EMOJI
     delete:
       tags:
         - status
-      summary: '10 / Удаление статуса'
-      description: 'Информация будет добавлена позже.'
+      summary: удаление своего статуса
+      description: |
+        Параметры запроса отсутствуют
+      operationId: delStatus
+      responses:
+        '204':
+          description: Объект успешно удален, тело ответа отсутствует
+          content: {}
   /group_tags/{id}:
     get:
       tags:
@@ -162,8 +225,50 @@ paths:
     get:
       tags:
         - tags
-      summary: '14 / Список сотрудников тега'
-      description: 'Информация будет добавлена позже.'
+      operationId: getTagsEmployees
+      summary: получение актуального списка сотрудников тега
+      description: |
+        Метод для получения актуального списка сотрудников тега.
+      parameters:
+        - name: id
+          in: path
+          description: Уникальный идентификатор сотрудкика
+          required: true
+          schema:
+            type: integer
+        - name: per
+          in: query
+          description: Количество возвращаемых сущностей за один запрос (по умолчанию 50, максимум
+          required: false
+          schema:
+            type: integer
+            default: 25
+            maximum: 50
+        - name: page
+          in: query
+          description: 	Страница выборки (по умолчанию 1)
+          required: false
+          schema:
+            type: integer
+            default: 1
+      responses:
+        '200':
+          description: Успешный запрос
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/BaseEmployee'
+        '422':
+          description: 	Поле имеет недопустимое значение
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Exclusion'
   /chats:
     post:
       tags:
@@ -277,8 +382,57 @@ paths:
     get:
       tags:
         - reactions to messages
-      summary: '40 / Список реакций'
-      description: 'Информация будет добавлена позже.'
+      summary: 'Получение актуального списка реакций.'
+      description: |
+        Этот метод позволяет получить список всех реакций, оставленных пользователями на указанное сообщение.
+      operationId: getMessageReactions
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Уникальный идентификатор сообщения, список реакций на которое нужно получить.
+          schema:
+            type: integer
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                per:
+                  type: integer
+                  description: Количество возвращаемых сущностей за один запрос (по умолчанию 50, максимум 50).
+                  default: 50
+                  maximum: 50
+                page:
+                  type: integer
+                  description: Номер страницы выборки (по умолчанию 1).
+                  default: 1
+      responses:
+        '200':
+          description: Список реакций успешно получен.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Reaction'
+        '404':
+          description: Сообщение не найдено.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+        '400':
+          description: Неверный запрос.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
   /tasks:
     post:
       tags:
@@ -303,19 +457,16 @@ components:
           description: Фамилия
         nickname:
           type: string
-          description: 	Имя пользователя
+          description: Имя пользователя
         email:
           type: string
-          description: 	Электронная почта
+          description: Электронная почта
         phone_number:
           type: string
           description: Телефон
         department:
           type: string
-          description: 	Департамент
-        title:
-          type: string
-          description: Должность
+          description: Департамент
         role:
           type: string
           description: |
@@ -335,7 +486,7 @@ components:
           description: Массив тегов, привязанных к сотруднику
         custom_properties:
           type: array
-          description: 	Дополнительные поля сотрудника
+          description: Дополнительные поля сотрудника
           items:
             type: object
             properties:
@@ -351,23 +502,6 @@ components:
               value:
                 type: string
                 description: Значение
-        user_status:
-          type: object
-          nullable: true
-          description: 	Статус. Возвращается как null, если статус не установлен.
-          properties:
-            emoji:
-              type: string
-              description: 	Emoji символ статуса
-            title:
-              type: string
-              description: 	Текст статуса
-            expires_at:
-              type: string
-              format: date-time
-              nullable: true
-              description: |
-                Срок жизни статуса (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ. Возвращается как null, если срок не установлен.
         bot:
           type: boolean
           description: |
@@ -378,6 +512,11 @@ components:
         - $ref: '#/components/schemas/BaseEmployee'
         - type: object
           properties:
+            user_status:
+              $ref: '#/components/schemas/Status'
+            title:
+              type: string
+              description: Должность
             created_at:
               type: string
               format: date-time
@@ -391,6 +530,44 @@ components:
               nullable: true
               description: Ссылка на скачивание аватарки
           description: Расширенный класс сотрудника.
+    Status:
+      type: object
+      nullable: true
+      description: 	Статус. Возвращается как null, если статус не установлен.
+      properties:
+        emoji:
+          type: string
+          description: 	Emoji символ статуса
+        title:
+          type: string
+          description: Текст статуса
+        expires_at:
+            type: string
+            format: date-time
+            nullable: true
+            description: |
+              Срок жизни статуса (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ. Возвращается как null, если срок не установлен.
+    QueryStatus:
+      type: object
+      properties:
+        status:
+          type: object
+          description: Собранный объект параметров нового статуса
+          required:
+            - emoji
+            - title
+          properties:
+            emoji:
+              type: string
+              description: Emoji символ статуса
+            title:
+              type: string
+              description: Текст статуса
+            expires_at:
+              type: string
+              format: date-time
+              description: Срок действия статуса (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ
+              nullable: true
     NotFound:
       description: Объект не найден
       type: object
@@ -597,3 +774,26 @@ components:
               title: Original Thread Parent Chat Id
               type: integer
               nullable: true
+    Reaction:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          description: |
+            Идентификатор пользователя, оставившего реакцию.
+        created_at:
+          type: string
+          format: date-time
+          description: |
+            Дата и время добавления реакции (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ.
+        code:
+          type: string
+          description: |
+            Emoji символ реакции.
+    BadRequest:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
