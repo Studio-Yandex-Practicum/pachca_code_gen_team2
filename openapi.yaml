@@ -41,8 +41,46 @@ paths:
     get:
       tags:
         - common methods
-      summary: '43 / Список дополнительных полей'
-      description: 'Информация будет добавлена позже.'
+      summary: Список дополнительных полей
+      description: |
+        Метод для получения актуального списка дополнительных полей участников и напоминаний в вашей компании.
+      operationId: getCommonMethods
+      parameters:
+        - name: entity_type
+          in: query
+          description: Тип сущности - участник (User) или напоминание (Task).
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Успешный запрос
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/QueryCommonMethods'
+        '400':
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+              examples:
+                BLANK:
+                  summary: blank
+                  description: Поле не может быть пустым
+                  value:
+                    detail: BLANK
+                INCLUSION:
+                  summary: inclusion
+                  description: Поле имеет непредусмотренное значение
+                  value:
+                    detail: INCLUSION
   /uploads:
     post:
       tags:
@@ -532,6 +570,22 @@ components:
               format: date-time
               description: Срок действия статуса (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ
               nullable: true
+    QueryCommonMethods:
+      type: object
+      description: 	получение списка актульных полей сущности.
+      properties:
+        id:
+          type: integer
+          example: 1
+          description: Название поля
+        name:
+          type: string
+          example: Дата рождения
+          description: Идентификатор поля
+        data_type:
+          type: string
+          example: number
+          description: тип поля (string, number, date или link)
     NotFound:
       description: Объект не найден
       type: object
