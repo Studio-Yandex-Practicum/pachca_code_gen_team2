@@ -305,11 +305,60 @@ paths:
       summary: '27 / Выход из беседы или канала'
       description: 'Информация будет добавлена позже.'
   /messages/{id}/thread:
-    delete:
+    post:
       tags:
         - comments
-      summary: '28 / Новый тред'
-      description: 'Информация будет добавлена позже.'
+      summary: Создание нового треда
+      description: |
+        Этот метод позволяет создать новый тред к сообщению. Если у сообщения уже был создан тред, то в ответе вернётся информация об уже созданном ранее треде.
+      operationId: createThread
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Уникальный идентификатор сообщения, к которому создается тред.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Тред успешно создан или возвращены данные существующего треда.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        description: Идентификатор созданного треда.
+                      chat_id:
+                        type: integer
+                        description: Идентификатор чата треда.
+                      message_id:
+                        type: integer
+                        description: Идентификатор сообщения, к которому был создан тред.
+                      message_chat_id:
+                        type: integer
+                        description: Идентификатор чата сообщения.
+                      updated_at:
+                        type: string
+                        format: date-time
+                        description: |
+                          Дата и время обновления треда (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ.
+        '404':
+          description: Сообщение не найдено.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+        '400':
+          description: Неверный запрос.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
   /messages:
     post:
       tags:
