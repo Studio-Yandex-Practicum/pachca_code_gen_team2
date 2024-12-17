@@ -656,7 +656,7 @@ paths:
     get:
       tags:
         - chats and channels
-      operationId: getChatInfo
+      operationId: getChat
       summary: Информация о беседе или канале
       description: |
         Получения информации о беседе или канале.
@@ -679,11 +679,14 @@ paths:
                   data:
                     $ref: '#/components/schemas/Chat'
         '404':
-          description: Не удалось найти
+          description: Запрашиваемый ресурс не существует
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NotFound'
+                $ref: '#/components/schemas/ErrorsCode'
+              examples:
+                not_found:
+                  description: Не удалось найти
   /chats/{id}/members:
     post:
       tags:
