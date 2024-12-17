@@ -209,8 +209,22 @@ paths:
     post:
       tags:
         - messages
-      summary: '30 / Новое сообщение'
-      description: 'Информация будет добавлена позже.'
+      summary: создание нового сообщения
+      description: |
+        Метод для отправки сообщения в беседу или канал,
+        личного сообщения пользователю или комментария в тред.
+
+        При использовании entity_type: "discussion" (или просто без указания entity_type)
+        допускается отправка любого chat_id в поле entity_id.
+        То есть, сообщение можно отправить зная только идентификатор чата.
+        При этом, вы имеете возможность отправить сообщение в тред по его идентификатору
+        или личное сообщение по идентификатору пользователя.
+
+        Для отправки личного сообщения пользователю создавать чат не требуется. 
+        Достаточно указать entity_type: "user" и идентификатор пользователя. 
+        Чат будет создан автоматически, если между вами ещё не было переписки.
+        Между двумя пользователями может быть только один личный чат.
+      operationId: createMessage
       requestBody:
         required: true
         content:
@@ -218,8 +232,7 @@ paths:
             schema:
               $ref: '#/components/schemas/CreateMessage'
       responses:
-        '200':
-          description: 'Сообщение отправлено'
+        '201':
           content:
             application/json:
               schema:
@@ -231,7 +244,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/NotFound'
               example:
-                detail: "Беседа с таким id не найдена"
+                detail: "Не удалось найти"
         '400':
           description: Bad Request
           content:
@@ -412,8 +425,11 @@ components:
             - type: object
               additionalProperties:
                 type: string
-    BaseMessage:
+    CreateMessage:
       type: object
+      required:
+        - entity_id
+        - content
       properties:
         entity_type:
           title: Entity Type
@@ -429,17 +445,6 @@ components:
         content:
           title: Content
           type: string
-        parent_massage_id:
-          title: Parent Massage Id
-          type: integer   
-    CreateMessage:
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/BaseMessage'
-      required:
-        - entity_id
-        - content
-      properties:
         files:
           title: Files
           type: array
@@ -466,43 +471,41 @@ components:
               size:
                 title: Size
                 type: integer
-        buttons:
-          title: Buttons
-          type: array
-          maxItems: 100
-          items:
-            title: Button
-            type: array
-            maxItems: 8
-            items:
-              type: object
-              required:
-                - text
-              minProperties: 2
-              properties:
-                text:
-                  title: Text
-                  type: string
-                  maxLength: 255
-                url:
-                  title: Url
-                  type: string
-                data:
-                  title: Data
-                  type: string
-                  maxLength: 255
+        parent_message_id:
+          title: Parent Massage Id
+          type: integer
+          nullable: true
+          default: null
         skip_invite_mentions:
           title: Skip Invite Mentions
           type: boolean
+          default: false
         link_preview:
           title: Link Preview
           type: boolean
           default: false
+      example:
+        message:
+          entity_type: discussion
+          entity_id: 198
+          content: Вчера мы продали 756 футболок (что на 10% больше, чем в прошлое воскресенье)
     Message:
       type: object
-      allOf:
-        - $ref: '#/components/schemas/BaseMessage'
       properties:
+        entity_type:
+          title: Entity Type
+          type: string
+          enum:
+            - 'discussion'
+            - 'user'
+            - 'thread'
+          default: 'discussion'
+        entity_id:
+          title: Entity Id
+          type: integer
+        content:
+          title: Content
+          type: string
         id:
           title: Id
           type: integer
@@ -515,6 +518,7 @@ components:
         created_at:
           title: Created At
           type: string
+          format: date-time
         files:
           title: Files
           type: array
@@ -539,28 +543,11 @@ components:
               url:
                 title: Url
                 type: string
-        buttons:
-          title: Buttons
-          type: array
-          items:
-            title: Button
-            type: array
-            items:
-              type: object
-              properties:
-                text:
-                  title: Text
-                  type: string
-                url:
-                  title: Url
-                  type: string
-                data:
-                  title: Data
-                  type: string
         thread:
           title: Thread
           type: object
           nullable: true
+          default: null
           properties:
             id:
               title: Id
@@ -572,6 +559,7 @@ components:
           title: Forwarding
           type: object
           nullable: true
+          default: null
           properties:
             original_message_id:
               title: Origin Message Id
@@ -597,3 +585,22 @@ components:
               title: Original Thread Parent Chat Id
               type: integer
               nullable: true
+        parent_message_id:
+          title: Parent Massage Id
+          type: integer
+          nullable: true
+          default: null
+      example:
+        data:
+          id: 194275,
+          entity_type: discussion
+          entity_id: 198
+          chat_id: 198
+          content: Вчера мы продали 756 футболок (что на 10% больше, чем в прошлое воскресенье)
+          user_id: 12
+          created_at: 2020-06-08T09:32:57.000Z
+          files: []
+          buttons: []
+          thread: null
+          forwarding: null
+          parent_message_id: null
