@@ -322,8 +322,34 @@ paths:
     get:
       tags:
         - chats and channels
-      summary: '18 / Информация о беседе или канале'
-      description: 'Информация будет добавлена позже.'
+      operationId: getChatInfo
+      summary: Информация о беседе или канале
+      description: |
+        Получения информации о беседе или канале.
+        Для получения беседы или канала вам необходимо знать её id и указать его в URL запроса.
+      parameters:
+        - name: id
+          description: Идентификатор беседы или канала
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Успешный запрос
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Chat'
+        '404':
+          description: Не удалось найти
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
   /chats/{id}/members:
     post:
       tags:
@@ -617,3 +643,56 @@ components:
           type: string
         message:
           type: string
+    Chat:
+      type: object
+      description: Беседа или канал
+      properties:
+        id:
+          type: integer
+          description: Идентификатор беседы или канала
+          example: 334
+        name:
+          type: string
+          description: Название
+          example: 🤿 aqua
+        owner_id:
+          type: integer
+          description: Идентификатор пользователя, создавшего беседу или канал
+          example: 185
+        created_at:
+          type: string
+          format: date-time
+          description: Дата и время создания беседы или канала (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ
+          example: '2021-08-28T15:56:53.000Z'
+        member_ids:
+          type: array
+          description: Массив идентификаторов пользователей, участников
+          items:
+            type: integer
+          example:
+            - 185
+            - 186
+            - 187
+        group_tag_ids:
+          type: array
+          description: Массив идентификаторов тегов, участников
+          items:
+            type: integer
+          example: []
+        channel:
+          type: boolean
+          description: 'Тип: беседа (false) или канал (true)'
+          example: true
+        public:
+          type: boolean
+          description: 'Доступ: закрытый (false) или открытый (true)'
+          example: false
+        last_message_at:
+          type: string
+          format: date-time
+          description: Дата и время создания последнего сообщения в беседе/канале (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ
+          example: '2021-08-28T15:58:13.000Z'
+        meet_room_url:
+          type: string
+          description: Ссылка на Видеочат
+          example: 'https://meet.pachca.com/aqua-94bb21b5'
