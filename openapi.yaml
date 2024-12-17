@@ -604,8 +604,124 @@ paths:
     post:
       tags:
         - reminders
-      summary: '42 / Новое напоминание'
-      description: 'Информация будет добавлена позже.'
+      summary: 'Метод для создания нового напоминания.'
+      description: |
+        При создании напоминания обязательным условием является указания типа напоминания: звонок, встреча, простое напоминание, событие или письмо. 
+        При этом не требуется дополнительное описание - вы просто создадите напоминание с соответствующим текстом.
+        Если вы укажите описание напоминания - то именно оно и станет текстом напоминания.
+        У напоминания должны быть ответственные, если их не указывать - ответственным назначаетесь вы.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                task:
+                  type: object
+                  required:
+                    - kind
+                    - content
+                    - due_at
+                  properties:
+                    kind:
+                      type: string
+                      description: Тип напоминания (call, meeting, reminder, event, email)
+                    content:
+                      type: string
+                      description: Описание напоминания
+                    due_at:
+                      type: string
+                      format: date-time
+                      description: Срок выполнения напоминания (ISO-8601)
+                    priority:
+                      type: integer
+                      description: Приоритет (1 - по умолчанию, 2 - важно, 3 - очень важно)
+                    performer_ids:
+                      type: array
+                      items:
+                        type: integer
+                      description: Массив идентификаторов пользователей
+                    custom_properties:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            description: Идентификатор поля
+                          value:
+                            type: string
+                            description: Значение поля
+      responses:
+        '201':
+          description: Напоминание успешно создано
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        description: Идентификатор созданного напоминания
+                      kind:
+                        type: string
+                        description: Тип
+                      content:
+                        type: string
+                        description: Описание
+                      due_at:
+                        type: string
+                        format: date-time
+                        description: Срок выполнения (ISO-8601)
+                      priority:
+                        type: integer
+                        description: Приоритет
+                      user_id:
+                        type: integer
+                        description: Идентификатор пользователя-создателя
+                      status:
+                        type: string
+                        description: Статус напоминания
+                      created_at:
+                        type: string
+                        format: date-time
+                        description: Дата и время создания
+                      performer_ids:
+                        type: array
+                        items:
+                          type: integer
+                      custom_properties:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              description: Идентификатор поля
+                            name:
+                              type: string
+                              description: Название поля
+                            data_type:
+                              type: string
+                              description: Тип поля (string, number, date или link)
+                            value:
+                              type: string
+                              description: Значение
+
+        '400':
+          description: Ошибка запроса
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Описание ошибки
 
 components:
   schemas:
