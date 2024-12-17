@@ -471,9 +471,49 @@ paths:
   /chats/{id}/members:
     post:
       tags:
-        - talk and channel participants
-      summary: '23 / Добавление пользователей'
-      description: 'Информация будет добавлена позже.'
+         - talk and channel participants
+      summary: добавление пользователей в состав участников
+      description: |
+        Метод для добавления пользователей в состав участников беседы или канала.
+      operationId: postMembersToChats
+      parameters:
+        - name: id
+          in: path
+          description: Идентификатор беседы/канала
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 533
+      requestBody:
+        description: Массив идентификаторов пользователей, которые станут участниками
+        content:
+          application/json:
+            schema:
+              required:
+                - member_ids
+              type: object
+              properties:
+                member_ids:
+                  type: array
+                  minItems: 1
+                  items:
+                    type: integer
+                    format: int64
+                  example: [186, 187]
+                silent:
+                  type: boolean
+      responses:
+        '201':
+          description: Пользователи добавлены
+        '400':
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ErrorsCode'
   /chats/{id}/group_tags:
     post:
       tags:
