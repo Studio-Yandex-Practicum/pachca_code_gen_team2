@@ -1072,8 +1072,8 @@ components:
           description: Количество сотрудников, которые имеют этот тег
           type: integer
   securitySchemes:
-    Token:
-      description: 'Авторизация по токену. <br>
-      Все запросы от имени пользователя должны выполняться с заголовком "Authorization: Token TOKENVALUE"'
+    bearerAuth:
       type: http
-      scheme: token
+      scheme: bearer
+security:
+  - bearerAuth: []
