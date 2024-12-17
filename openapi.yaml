@@ -336,8 +336,58 @@ paths:
     post:
       tags:
         - chats and channels
-      summary: '17 / Новая беседа или канал'
-      description: 'Информация будет добавлена позже.'
+      operationId: createChat
+      summary: Новая беседа или канал
+      description: |
+        Метод для создания новой беседы или нового канала.
+        При создании беседы или канала вы автоматически становитесь участником.\
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QueryChat'
+      responses:
+        '201':
+          description: Запрос отработал успешно, сущность создана
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Chat'
+        '400':
+          description: Неприемлемый запрос (часто из-за отсутствия обязательного параметра)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorsCode'
+              examples:
+                blank:
+                  description: Обязательное поле (не может быть пустым)
+                too_long:
+                  description: Слишком длинное значение (пояснения вы получите в поле message)
+                invalid:
+                  description: Поле не соответствует правилам (пояснения вы получите в поле message)
+        '404':
+          description: Запрашиваемый ресурс не существует
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorsCode'
+              examples:
+                not_found:
+                  description: Не удалось найти
+        '422':
+          description: С запросом все хорошо, но правила сервиса не позволяют его обработать (например, при попытке создания контакта с уже существующим номером телефона в базе)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorsCode'
+              examples:
+                invalid:
+                  description: Поле имеет неверный формат (идентификатор поля вы получите в поле payload)
     get:
       tags:
         - chats and channels
@@ -1029,6 +1079,32 @@ components:
           type: string
           description: Ссылка на Видеочат
           example: 'https://meet.pachca.com/aqua-94bb21b5'
+    QueryChat:
+      type: object
+      description: Собранный объект параметров создаваемой беседы или канала
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: Название
+          example: 🤿 aqua
+        member_ids:
+          type: array
+          description: Массив идентификаторов пользователей, которые станут участниками
+          items:
+            type: integer
+          example:
+            - 186
+            - 187
+        channel:
+          type: boolean
+          description: 'Тип: беседа (по умолчанию, false) или канал (true)'
+          example: true
+        public:
+          type: boolean
+          description: 'Доступ: закрытый (по умолчанию, false) или открытый (true)'
+          example: false
     Tag:
       type: object
       description: Для получения тега вам необходимо знать его id и указать его в URL запроса.
