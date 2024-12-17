@@ -272,12 +272,38 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/Tag'
-        '404':
-          description: Тег не найден
+        "404":
+          description: Тег не найден.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NotFound'
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    description: Список ошибок.
+                    items:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                        value:
+                          type: string
+                        message:
+                          type: string
+                        code:
+                          type: string
+                        payload:
+                          type: object
+              examples:
+                not_found:
+                  summary: Тег не найден.
+                  value:
+                    errors:
+                      - key: "id"
+                        value: "100500"
+                        message: "Не удалось найти тег"
+                        code: "not_found"
   /group_tags:
     get:
       tags:
@@ -314,12 +340,43 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Tag'
-        '422':
-          description: Поле имеет недопустимое значение
+        "400":
+          description: Ошибка валидации запроса.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Exclusion'
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    description: Список ошибок в запросе.
+                    items:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                          description: Ключ параметра, в котором произошла ошибка.
+                        value:
+                          type: string
+                          description: Значение ключа, вызвавшее ошибку.
+                        message:
+                          type: string
+                          description: Текстовое описание ошибки.
+                        code:
+                          type: string
+                          description: Внутренний код ошибки.
+                        payload:
+                          type: object
+                          description: Дополнительная информация об ошибке.
+              examples:
+                exclusion:
+                  summary: Недопустимое значение количество возвращаемых сущностей за один запрос 
+                  value:
+                    errors:
+                      - key: "per"
+                        value: "51"
+                        message: "Поле имеет недопустимое значение"
+                        code: "exclusion"
   /group_tags/{id}/users:
     get:
       tags:
