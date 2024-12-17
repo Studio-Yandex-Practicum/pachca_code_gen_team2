@@ -251,8 +251,33 @@ paths:
     get:
       tags:
         - tags
-      summary: '12 / Информация о теге'
-      description: 'Информация будет добавлена позже.'
+      summary: Информация о теге
+      description: |
+        Параметры запроса отсутствуют
+      operationId: getTag
+      parameters:
+          - name: id
+            in: path
+            description: Уникальный идентификатор тега
+            required: true
+            schema:
+              type: integer
+      responses:
+        '200':
+          description: Успешный запрос
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Tag'
+        '404':
+          description: Тег не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
   /group_tags:
     get:
       tags:
@@ -381,11 +406,60 @@ paths:
       summary: '27 / Выход из беседы или канала'
       description: 'Информация будет добавлена позже.'
   /messages/{id}/thread:
-    delete:
+    post:
       tags:
         - comments
-      summary: '28 / Новый тред'
-      description: 'Информация будет добавлена позже.'
+      summary: Создание нового треда
+      description: |
+        Этот метод позволяет создать новый тред к сообщению. Если у сообщения уже был создан тред, то в ответе вернётся информация об уже созданном ранее треде.
+      operationId: createThread
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Уникальный идентификатор сообщения, к которому создается тред.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Тред успешно создан или возвращены данные существующего треда.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        description: Идентификатор созданного треда.
+                      chat_id:
+                        type: integer
+                        description: Идентификатор чата треда.
+                      message_id:
+                        type: integer
+                        description: Идентификатор сообщения, к которому был создан тред.
+                      message_chat_id:
+                        type: integer
+                        description: Идентификатор чата сообщения.
+                      updated_at:
+                        type: string
+                        format: date-time
+                        description: |
+                          Дата и время обновления треда (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ.
+        '404':
+          description: Сообщение не найдено.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+        '400':
+          description: Неверный запрос.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
   /messages:
     post:
       tags:
@@ -412,8 +486,99 @@ paths:
     post:
       tags:
         - reactions to messages
-      summary: '38 / Добавление реакции'
-      description: 'Информация будет добавлена позже.'
+      operationId: postMessageReactions
+      summary: Добавление реакции
+      description: >
+        Метод для добавления реакции на сообщение.
+        **Лимиты реакций:**
+        - Каждый пользователь может установить не более 20 уникальных реакций на сообщение.
+        - Сообщение может иметь не более 30 уникальных реакций.
+        - Сообщение может иметь не более 1000 реакций.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Уникальный идентификатор сообщения.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: string
+                  description: Emoji в строковом формате для добавления реакции.
+              required:
+                - code
+      responses:
+        "204":
+          description: Успешное выполнение запроса, тело ответа отсутствует.
+
+        "400":
+          description: Ошибка валидации запроса.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Описание ошибки.
+              examples:
+                blank_field:
+                  summary: Поле code пустое
+                  value:
+                    error: blank
+                exclusion:
+                  summary: Недопустимое значение эмодзи
+                  value:
+                    error: exclusion
+
+        "403":
+          description: Превышение лимитов по реакциям.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Описание ошибки.
+              examples:
+                user_limit:
+                  summary: Превышен лимит уникальных реакций пользователя
+                  value:
+                    error: user_limit
+                    message: "Вы можете добавить не более 20 уникальных реакций."
+                unique_limit:
+                  summary: Превышен лимит уникальных реакций на сообщение
+                  value:
+                    error: unique_limit
+                    message: "Сообщение может содержать не более 30 уникальных реакций."
+                general_limit:
+                  summary: Превышен общий лимит реакций на сообщение
+                  value:
+                    error: general_limit
+                    message: "Сообщение может содержать не более 1000 реакций."
+
+        "404":
+          description: Сообщение не найдено.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Сообщение не найдено.
+              examples:
+                not_found:
+                  summary: Сообщение не существует
+                  value:
+                    error: not_found
     delete:
       tags:
         - reactions to messages
@@ -477,8 +642,124 @@ paths:
     post:
       tags:
         - reminders
-      summary: '42 / Новое напоминание'
-      description: 'Информация будет добавлена позже.'
+      summary: 'Метод для создания нового напоминания.'
+      description: |
+        При создании напоминания обязательным условием является указания типа напоминания: звонок, встреча, простое напоминание, событие или письмо. 
+        При этом не требуется дополнительное описание - вы просто создадите напоминание с соответствующим текстом.
+        Если вы укажите описание напоминания - то именно оно и станет текстом напоминания.
+        У напоминания должны быть ответственные, если их не указывать - ответственным назначаетесь вы.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                task:
+                  type: object
+                  required:
+                    - kind
+                    - content
+                    - due_at
+                  properties:
+                    kind:
+                      type: string
+                      description: Тип напоминания (call, meeting, reminder, event, email)
+                    content:
+                      type: string
+                      description: Описание напоминания
+                    due_at:
+                      type: string
+                      format: date-time
+                      description: Срок выполнения напоминания (ISO-8601)
+                    priority:
+                      type: integer
+                      description: Приоритет (1 - по умолчанию, 2 - важно, 3 - очень важно)
+                    performer_ids:
+                      type: array
+                      items:
+                        type: integer
+                      description: Массив идентификаторов пользователей
+                    custom_properties:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            description: Идентификатор поля
+                          value:
+                            type: string
+                            description: Значение поля
+      responses:
+        '201':
+          description: Напоминание успешно создано
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        description: Идентификатор созданного напоминания
+                      kind:
+                        type: string
+                        description: Тип
+                      content:
+                        type: string
+                        description: Описание
+                      due_at:
+                        type: string
+                        format: date-time
+                        description: Срок выполнения (ISO-8601)
+                      priority:
+                        type: integer
+                        description: Приоритет
+                      user_id:
+                        type: integer
+                        description: Идентификатор пользователя-создателя
+                      status:
+                        type: string
+                        description: Статус напоминания
+                      created_at:
+                        type: string
+                        format: date-time
+                        description: Дата и время создания
+                      performer_ids:
+                        type: array
+                        items:
+                          type: integer
+                      custom_properties:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              description: Идентификатор поля
+                            name:
+                              type: string
+                              description: Название поля
+                            data_type:
+                              type: string
+                              description: Тип поля (string, number, date или link)
+                            value:
+                              type: string
+                              description: Значение
+
+        '400':
+          description: Ошибка запроса
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Описание ошибки
 
 components:
   schemas:
@@ -669,3 +950,16 @@ components:
           type: string
         payload:
           type: object
+    Tag:
+      type: object
+      description: Для получения тега вам необходимо знать его id и указать его в URL запроса.
+      properties:
+        id:
+          type: integer
+          description: Идентификатор тега
+        name:
+          type: string
+          description:   Название тега
+        users_count:
+          description: Количество сотрудников, которые имеют этот тег
+          type: integer
