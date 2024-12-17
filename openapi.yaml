@@ -608,8 +608,63 @@ paths:
     delete:
       tags:
         - reactions to messages
-      summary: '39 / Удаление реакции'
-      description: 'Информация будет добавлена позже.'
+      operationId: deleteMessageReactions
+      summary: Удаление реакции
+      description: >
+        Метод для удаления реакции на сообщение. 
+        Удалить можно только те реакции, которые были поставлены авторизованным пользователем.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Уникальный идентификатор сообщения.
+          schema:
+            type: string
+        - name: code
+          in: query
+          required: true
+          description: Emoji, который нужно удалить.
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Успешное выполнение запроса, тело ответа отсутствует.
+
+        "400":
+          description: Ошибка валидации запроса.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Описание ошибки.
+              examples:
+                blank_field:
+                  summary: Поле code пустое
+                  value:
+                    error: blank
+                exclusion:
+                  summary: Недопустимое значение эмодзи
+                  value:
+                    error: exclusion
+
+        "404":
+          description: Сообщение или реакция не найдены.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Описание ошибки.
+              examples:
+                not_found:
+                  summary: Сообщение или реакция не найдены
+                  value:
+                    error: not_found
     get:
       tags:
         - reactions to messages
