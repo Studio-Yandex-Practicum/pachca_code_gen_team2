@@ -384,9 +384,47 @@ paths:
   /chats/{id}/group_tags:
     post:
       tags:
-        - talk and channel participants
-      summary: '25 / Добавление тегов'
-      description: 'Информация будет добавлена позже.'
+         - talk and channel participants
+      summary: добавление тегов в состав участников беседы или канала
+      description: |
+        Метод для добавления тегов в состав участников беседы или канала.
+      operationId: postTagsToChats
+      parameters:
+        - name: id
+          in: path
+          description: Идентификатор беседы/канала
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 533
+      requestBody:
+        description: Массив идентификаторов тегов, которые станут участниками
+        content:
+          application/json:
+            schema:
+              required:
+                - group_tag_ids
+              type: object
+              properties:
+                group_tag_ids:
+                  type: array
+                  minItems: 1
+                  items:
+                    type: integer
+                    format: int64
+                  example: [86, 18]
+      responses:
+        '201':
+          description: Тег(и) добавлен(ы)
+        '400':
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ErrorsCode'
   /chats/{id}/leave:
     delete:
       tags:
@@ -924,6 +962,20 @@ components:
           type: string
         message:
           type: string
+    ErrorsCode:
+      description: Bad Request
+      type: object
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+        message:
+          type: string
+        code:
+          type: string
+        payload:
+          type: object
     Chat:
       type: object
       description: Беседа или канал
