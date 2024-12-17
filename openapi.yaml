@@ -762,6 +762,11 @@ components:
               title: Original Thread Parent Chat Id
               type: integer
               nullable: true
+        parent_message_id:
+          title: Parent Massage Id
+          type: integer
+          nullable: true
+          default: null
       example:
         data:
           id: 194275,
@@ -799,8 +804,3 @@ components:
           type: string
         message:
           type: string
-        parent_message_id:
-          title: Parent Massage Id
-          type: integer
-          nullable: true
-          default: null
