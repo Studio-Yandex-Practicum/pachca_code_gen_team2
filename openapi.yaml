@@ -549,8 +549,109 @@ paths:
     get:
       tags:
         - chats and channels
-      summary: '19 / Список бесед и каналов'
-      description: 'Информация будет добавлена позже.'
+      operationId: getChats
+      summary: Список бесед и каналов
+      description: Получения списка бесед и каналов по заданным параметрам.
+      parameters:
+        - name: 'sort[{field}]'
+          in: query
+          required: false
+          description: |
+            Составной параметр сортировки сущностей выборки.
+            Варианты значений: по умолчанию desc (по убыванию) или asc (по возрастанию).
+            На данный момент сортировка доступна только по полю ({field}) id (идентификатор бесед и каналов).
+          schema:
+            type: string
+            enum:
+              - desc
+              - asc
+        - name: per
+          in: query
+          required: false
+          description: Количество возвращаемых сущностей за один запрос (по умолчанию 25, максимум 50)
+          schema:
+            type: integer
+            default: 25
+            maximum: 50
+        - name: page
+          in: query
+          required: false
+          description: Страница выборки (по умолчанию 1)
+          schema:
+            type: integer
+            default: 1
+        - name: availability
+          in: query
+          required: false
+          description: |
+            Параметр, который отвечает за доступность и выборку бесед и каналов для пользователя.
+            Варианты значений: по умолчанию is_member (беседы и каналы, где пользователь является участником)
+            или public (все открытые беседы и каналы компании, вне зависимости от участия в них пользователя).
+          schema:
+            type: string
+            enum:
+              - is_member
+              - public
+            default: is_member
+        - name: last_message_at_after
+          in: query
+          required: false
+          description: |
+            Фильтрация по времени создания последнего сообщения.
+            Будут возвращены те беседы/каналы, время последнего созданного сообщения в которых не раньше чем указанное (в формате YYYY-MM-DDThh:mm:ss.sssZ).
+          schema:
+            type: string
+            format: date-time
+        - name: last_message_at_before
+          in: query
+          required: false
+          description: |
+            Фильтрация по времени создания последнего сообщения.
+            Будут возвращены те беседы/каналы, время последнего созданного сообщения в которых не позже чем указанное (в формате YYYY-MM-DDThh:mm:ss.sssZ).
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: Запрос отработал как положено, без ошибок
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Chat'
+        '400':
+          description: Неприемлемый запрос (часто из-за отсутствия обязательного параметра)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorsCode'
+              examples:
+                too_long:
+                  description: Слишком длинное значение (пояснения вы получите в поле message)
+                invalid:
+                  description: Поле не соответствует правилам (пояснения вы получите в поле message)
+        '404':
+          description: Запрашиваемый ресурс не существует
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorsCode'
+              examples:
+                not_found:
+                  description: Не удалось найти
+        '422':
+          description: С запросом все хорошо, но правила сервиса не позволяют его обработать (например, при попытке создания контакта с уже существующим номером телефона в базе)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorsCode'
+              examples:
+                invalid:
+                  description: Поле имеет неверный формат (идентификатор поля вы получите в поле payload)
   /chats/{id}:
     get:
       tags:
