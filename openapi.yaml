@@ -85,14 +85,16 @@ paths:
     post:
       tags:
         - common methods
-      summary: '44 / Получение подписи, ключа и других параметров'
-      description: 'Информация будет добавлена позже.'
-  /direct_url (полученный в ответе на запрос /uploads):
-    post:
-      tags:
-        - common methods
-      summary: '45 / Загрузка файла'
-      description: 'Информация будет добавлена позже.'
+      summary: Получение подписи и ключа для загрузки файла
+      description: Возвращает параметры, необходимые для безопасной загрузки файла.
+      operationId: getUploads
+      responses:
+        '200':
+          description: Успешный ответ.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileResponse'
   /users:
     get:
       tags:
@@ -1377,6 +1379,27 @@ components:
           description: |
             Тип: пользователь (false) или бот (true)
       description: Базовый класс сотрудника.
+    FileResponse:
+      type: object
+      properties:
+        Content-Disposition:
+          type: string
+        acl:
+          type: string
+        policy:
+          type: string
+        x-amz-credential:
+          type: string
+        x-amz-algorithm:
+          type: string
+        x-amz-date:
+          type: string
+        x-amz-signature:
+          type: string
+        key:
+          type: string
+        direct_url:
+          type: string
     Employee:
       allOf:
         - $ref: '#/components/schemas/BaseEmployee'
