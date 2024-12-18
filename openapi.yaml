@@ -95,6 +95,22 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/FileResponse'
+  /direct_url:
+    post:
+      tags:
+        - common methods
+      summary: Получение URL для загрузки
+      description: Отправляет запрос для получения URL для безопасной загрузки файла.
+      operationId: getDirectUrl
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+                $ref: '#/components/schemas/FileResponse'
+      responses:
+        '204':
+          description: Успешный запрос.
   /users:
     get:
       tags:
