@@ -612,19 +612,282 @@ paths:
     post:
       tags:
         - messages
-      summary: '30 / Новое сообщение'
-      description: 'Информация будет добавлена позже.'
+      summary: создание нового сообщения
+      description: |
+        Метод для отправки сообщения в беседу или канал,
+        личного сообщения пользователю или комментария в тред.
+
+        При использовании entity_type: "discussion" (или просто без указания entity_type)
+        допускается отправка любого chat_id в поле entity_id.
+        То есть, сообщение можно отправить зная только идентификатор чата.
+        При этом, вы имеете возможность отправить сообщение в тред по его идентификатору
+        или личное сообщение по идентификатору пользователя.
+
+        Для отправки личного сообщения пользователю создавать чат не требуется. 
+        Достаточно указать entity_type: "user" и идентификатор пользователя. 
+        Чат будет создан автоматически, если между вами ещё не было переписки.
+        Между двумя пользователями может быть только один личный чат.
+      operationId: createMessage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  $ref: '#/components/schemas/CreateMessage'
+            example:
+              message:
+                entity_type: discussion
+                entity_id: 198
+                content: Вчера мы продали 756 футболок (что на 10% больше, чем в прошлое воскресенье)
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Message'
+              example:
+                data:
+                  id: 194275
+                  entity_type: discussion
+                  entity_id: 198
+                  chat_id: 198
+                  content: Вчера мы продали 756 футболок (что на 10% больше, чем в прошлое воскресенье)
+                  user_id: 12
+                  created_at: 2020-06-08T09:32:57.000Z
+                  files: []
+                  buttons: []
+                  thread: null
+                  forwarding: null
+                  parent_message_id: null
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+              example:
+                errors:
+                  - key: entyti_id
+                    value: 1
+                    message: Не удалось найти
+                    code: not_found
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                REQUIRED FIELD BLANK:
+                  summary: required fields blank
+                  value:
+                    errors:
+                      - key: content
+                        value: null
+                        message: Поле не может быть пустым
+                        code: blank
+                INVALID FIELD VALUE:
+                  summary: invalid field value
+                  value:
+                    errors:
+                      - key: entity_type
+                        value: chat
+                        message: Поле имеет недопустимое значение
+                        code: exclusion
     get:
       tags:
         - messages
-      summary: '32 / Список сообщений чата'
-      description: 'Информация будет добавлена позже.'
+      summary: получение списка сообщений чата
+      description: |
+        Метод для получения списка сообщений бесед, каналов, тредов и личных сообщений.
+
+        Для получения сообщений вам необходимо знать chat_id требуемой беседы, канала,
+        треда или диалога, и указать его в URL запроса. Сообщения будут возвращены
+        в порядке убывания даты отправки (то есть, сначала будут идти последние сообщения чата).
+        Для получения более ранних сообщений чата доступны параметры per и page.
+      operationId: getListMessage
+      parameters:
+        - name: chat_id
+          in: path
+          description: Идентификатор чата (беседа, канал, диалог или чат треда)
+          required: true
+          schema:
+            title: chat_id
+            type: integer
+        - name: per
+          in: query
+          description: |
+            Количество возвращаемых сущностей за один запрос
+            (по умолчанию 25, максимум 50)
+          schema:
+            title: per
+            type: integer
+            default: 25
+            maximum: 50
+        - name: page
+          in: query
+          description: Страница выборки (по умолчанию 1)
+          schema:
+            title: page
+            type: integer
+            default: 1
+      responses:
+        '200':
+          content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Message'
+                example:
+                  data:
+                    - id: 1194277
+                      entity_type: discussion
+                      entity_id: 198
+                      chat_id: 198
+                      content: Это сообщение тоже попадёт в экспорт
+                      user_id: 12
+                      created_at: 2023-09-18T13:43:32.000Z
+                      files: []
+                      buttons: []
+                      thread:
+                        id: 2633
+                        chat_id: 44997
+                      forwarding: null
+                      parent_message_id: null
+                    - id: 1194276
+                      entity_type: discussion
+                      entity_id: 198
+                      chat_id: 198
+                      content: "**Andrew** добавил **Export bot** в беседу"
+                      user_id: 12
+                      created_at: 2023-09-18T13:43:27.000Z
+                      files: []
+                      buttons: []
+                      thread: null
+                      forwarding: null
+                      parent_message_id: null
+                    - id: 1194275
+                      entity_type: discussion
+                      entity_id: 198
+                      chat_id: 198
+                      content: "**Andrew** создал беседу"
+                      user_id: 12
+                      created_at: 2023-09-18T13:43:19.000Z
+                      files: []
+                      buttons: []
+                      thread: null
+                      forwarding: null
+                      parent_message_id: null
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                errors:
+                  - key: chat_id
+                    value: 1
+                    message: Не удалось найти
+                    code: not_found
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                REQUIRED FIELD BLANK:
+                  summary: required fields blank
+                  value:
+                    errors:
+                      - key: chat_id
+                        value: null
+                        message: Поле не может быть пустым
+                        code: blank
+                INVALID FIELD VALUE:
+                  summary: invalid field value
+                  value:
+                    errors:
+                      - key: chat_id
+                        value: chat
+                        message: Поле имеет недопустимое значение
+                        code: exclusion
   /messages/{id}:
     get:
       tags:
         - messages
-      summary: '31 / Информация о сообщении'
-      description: 'Информация будет добавлена позже.'
+      summary: получение информации о сообщении
+      description: |
+        Метод для получения информации о сообщении.
+
+        Для получения сообщения вам необходимо знать его id и указать его в URL запроса.
+      operationId: getMessage
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            title: id
+            type: integer
+      responses:
+        '200':
+          content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    data:
+                      $ref: '#/components/schemas/Message'
+                example:
+                  data:
+                    id: 194275
+                    entity_type: discussion
+                    entity_id: 198
+                    chat_id: 198
+                    content: Вчера мы продали 756 футболок (что на 10% больше, чем в прошлое воскресенье)
+                    user_id: 12
+                    created_at: 2020-06-08T09:32:57.000Z
+                    files: 
+                        - id: 3560
+                          key: attaches/files/12/21zu7934-02e1-44d9-8df2-0f970c259796/congrat.png
+                          name: congrat.png
+                          file_type: file
+                          url: |
+                            https://pachca-prod-uploads.s3.storage.selcloud.ru/attaches/files/12/21zu7934-
+                            02e1-44d9-8df2-0f970c259796/congrat.png?response-cache-control=max-
+                              age%3D3600%3B&response-content-disposition=attachment&X-Amz-Algorithm=AWS4-HMAC
+                              -SHA256&X-Amz-Credential=142155_staply%2F20231107%2Fru-1a%2Fs3%2Faws4_
+                              request&X-Amz-Date=20231107T160412Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=
+                              host&X-Amz-Signature=98765asgfadsfdsaDSd4sdfg35asdf67sadf8
+                    buttons: []
+                    thread:
+                      id: 29873
+                      chat_id: 1949863
+                    forwarding: null
+                    parent_message_id: 194274
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+              example:
+                errors:
+                  - key: id
+                    value: 0
+                    message: Не удалось найти
+                    code: not_found
     put:
       tags:
         - messages
@@ -1159,6 +1422,220 @@ components:
           description: 'Описание ошибки'
           example: "Страница не найдена."
           type: string
+    Errors:
+      title: Errors
+      type: array
+      items:
+        title: Error
+        type: object
+        properties:
+          key:
+            title: key
+            type: string
+          value:
+            title: value
+            type: string
+          message:
+            title: message
+            type: string
+          code:
+            title: code
+            type: string
+          payload:
+            title: payload
+            type: object
+    Buttons:
+      title: Message Buttons
+      type: array
+      maxItems: 100
+      items:
+        title: Row Buttons
+        type: array
+        maxItems: 8
+        items:
+          type: object
+          title: Button
+          required:
+            - text
+          minProperties: 2
+          properties:
+            text:
+              title: Text
+              type: string
+              maxLength: 255
+            url:
+              title: Url
+              type: string
+            data:
+              title: Data
+              type: string
+              maxLength: 255
+    CreateMessage:
+      type: object
+      required:
+        - entity_id
+        - content
+      properties:
+        entity_type:
+          title: Entity Type
+          type: string
+          enum:
+            - 'discussion'
+            - 'user'
+            - 'thread'
+          default: 'discussion'
+        entity_id:
+          title: Entity Id
+          type: integer
+        content:
+          title: Content
+          type: string
+        files:
+          title: Files
+          type: array
+          items:
+            type: object
+            required:
+              - key
+              - name
+              - file_type
+              - size
+            properties:
+              key:
+                title: Key
+                type: string
+              name:
+                title: Name
+                type: string
+              file_type:
+                title: File Type
+                type: string
+                enum:
+                  - 'file'
+                  - 'image'
+              size:
+                title: Size
+                type: integer
+        buttons:
+          title: buttons
+          $ref: '#/components/schemas/Buttons'
+        parent_message_id:
+          title: Parent Massage Id
+          type: integer
+          nullable: true
+          default: null
+        skip_invite_mentions:
+          title: Skip Invite Mentions
+          type: boolean
+          default: false
+        link_preview:
+          title: Link Preview
+          type: boolean
+          default: false
+    Message:
+      type: object
+      properties:
+        entity_type:
+          title: Entity Type
+          type: string
+          enum:
+            - 'discussion'
+            - 'user'
+            - 'thread'
+          default: 'discussion'
+        entity_id:
+          title: Entity Id
+          type: integer
+        content:
+          title: Content
+          type: string
+        id:
+          title: Id
+          type: integer
+        chat_id:
+          title: Chat Id
+          type: integer
+        user_id:
+          title: User Id
+          type: integer
+        created_at:
+          title: Created At
+          type: string
+          format: date-time
+        files:
+          title: Files
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                title: Id
+                type: integer
+              key:
+                title: Key
+                type: string
+              name:
+                title: Name
+                type: string
+              file_type:
+                title: File Type
+                type: string
+                enum:
+                  - 'file'
+                  - 'image'
+              url:
+                title: Url
+                type: string
+        buttons:
+          title: buttons
+          $ref: '#/components/schemas/Buttons'
+        thread:
+          title: Thread
+          type: object
+          nullable: true
+          default: null
+          properties:
+            id:
+              title: Id
+              type: integer
+            chat_id:
+              title: Chat Id
+              type: integer
+        forwarding:
+          title: Forwarding
+          type: object
+          nullable: true
+          default: null
+          properties:
+            original_message_id:
+              title: Origin Message Id
+              type: integer
+            original_chat_id:
+              title: Original Chat Id
+              type: integer
+            author_id:
+              title: Author Id
+              type: integer
+            original_created_at:
+              title: Original Created At
+              type: integer
+            original_thread_id:
+              title: Original Thread Id
+              type: integer
+              nullable: true
+            original_thread_message_id:
+              title: Original Thread Message Id
+              type: integer
+              nullable: true
+            original_thread_parent_chat_id:
+              title: Original Thread Parent Chat Id
+              type: integer
+              nullable: true
+        parent_message_id:
+          title: Parent Massage Id
+          type: integer
+          nullable: true
+          default: null
     Reaction:
       type: object
       properties:
