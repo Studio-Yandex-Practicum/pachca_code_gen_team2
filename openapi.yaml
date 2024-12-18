@@ -430,7 +430,36 @@ paths:
       tags:
         - talk and channel participants
       summary: '27 / Выход из беседы или канала'
-      description: 'Информация будет добавлена позже.'
+      description: |-
+        Параметры запроса отсутствуют.
+      security:
+        - Token: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Уникальный идентификатор беседы или канала.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Успешно отписан. Тело ответа отсутствует
+        '400':
+          description: Нельзя покинуть персональный чат
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ErrorsCode'
+        '404':
+          description: 'Не удалось найти'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ErrorsCode'
   /messages/{id}/thread:
     post:
       tags:
@@ -507,7 +536,51 @@ paths:
       tags:
         - messages
       summary: '33 / Редактирование сообщения'
-      description: 'Информация будет добавлена позже.'
+      description: Метод для редактирования сообщения или комментария.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Уникальный идентификатор беседы или канала.
+          schema:
+            type: integer
+      requestBody:
+        description: Массив идентификаторов тегов, которые станут участниками
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/EditMessages'
+      responses:
+        '200':
+          description: Успешно отредактировано
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: Созданное сообщение
+                    items:
+                      $ref: '#/components/schemas/Messages'
+        '400':
+          description: Нельзя покинуть персональный чат
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ErrorsCode'
+        '404':
+          description: 'Не удалось найти'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ErrorsCode'
   /messages/{id}/reactions:
     post:
       tags:
@@ -1042,3 +1115,113 @@ components:
         users_count:
           description: Количество сотрудников, которые имеют этот тег
           type: integer
+    Forwarding:
+      type: object
+      description: Информация о пересылаемом сообщении. Возвращается как null, если это сообщение не является пересылаемым с сохранением автора.
+      properties:
+        original_message_id:
+          type: integer
+          description: Идентификатор оригинального сообщения
+        original_chat_id:
+          type: integer
+          description: Идентификатор чата, в котором находится оригинальное сообщение
+        author_id:
+          type: integer
+          description: Идентификатор пользователя, создавшего оригинальное сообщение
+        original_created_at:
+          type: integer
+          description: Дата и время создания оригинального сообщения (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ
+        original_thread_id:
+          type: integer
+          description: Идентификатор треда, в котором находится оригинальное сообщение. Возвращается как null, если оригинальное сообщение не является комментарием в треде.
+        original_thread_message_id:
+          type: integer
+          description: Идентификатор сообщения, к которому был создан тред, в котором находится оригинальное сообщение. Возвращается как null, если оригинальное сообщение не является комментарием в треде.
+        original_thread_parent_chat_id:
+          type: integer
+          description: Идентификатор чата сообщения, к которому был создан тред, в котором находится оригинальное сообщение. Возвращается как null, если оригинальное сообщение не является комментарием в треде.
+        parent_message_id:
+          type: integer
+          description: Идентификатор сообщения, к которому написан ответ. Возвращается как null, если сообщение не является ответом.
+    EditFile:
+      type: array
+      description: Прикрепляемые файлы
+      items:
+        type: object
+        properties:
+          key:
+            type: string
+            description: Путь к файлу, полученный в результате загрузки файла (каждый файл в каждом сообщении должен иметь свой уникальный key, не допускается использование одного и того же key в разных сообщениях)
+          name:
+            type: string
+            description: Название файла, которое вы хотите отображать пользователю (рекомендуется писать вместе с расширением)
+          file_type:
+            type: string
+            description: 'Тип файла: файл (file), изображение (image)'
+          size:
+            type: integer
+            description: Размер файла в байтах, отображаемый пользователю
+    File:
+      allOf:
+        - type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                description: Идентификатор файла
+        - $ref: '#/components/schemas/EditFile'
+    EditMessages:
+      type: object
+      description: Для получения сообщения вам необходимо знать его id и указать его в URL запроса.
+      properties:
+        content:
+          type: string
+          description: Текст сообщения
+        file:
+          $ref: '#/components/schemas/EditFile'
+        buttons:
+          type: array
+          description: Массив строк, каждая из которых представлена массивом кнопок. Подробнее о том, как формировать строки кнопок и какие есть ограничения вы можете прочитать в статье. Для удаления кнопок у сообщения пришлите пустой массив.
+          items:
+            type: array
+            items:
+              type: object
+              properties:
+                text:
+                  type: string
+                  description: Текст, отображаемый на кнопке пользователю
+                url:
+                  type: string
+                  description: Ссылка, которая будет открыта по нажатию кнопки
+                data: 
+                  type: string
+                  description: Данные, которые будут отправлены в исходящем вебхуке по нажатию кнопки
+    Messages:
+      allOf:
+        - type: object
+          properties:
+            id:
+              type: integer
+              description: Идентификатор сообщения
+            file:
+              $ref: '#/components/schemas/File'
+            thread:
+              type: object
+              description: Тред сообщения. Возвращается как null, если у сообщения нет комментариев.
+              properties:
+                id:
+                  type: integer
+                  description: Идентификатор треда
+                chat_id:
+                  type: integer
+                  description: Идентификатор чата треда (используется для отправки новых комментариев в тред и получения списка комментариев)
+            forwarding:
+              $ref: '#/components/schemas/Forwarding'
+        - $ref: '#/components/schemas/EditMessages'
+  securitySchemes:
+    Token:
+      description: 'Авторизация по токену. <br>
+      Все запросы от имени пользователя должны выполняться с заголовком "Authorization: Token TOKENVALUE"'
+      type: http
+      scheme: token
