@@ -1950,32 +1950,6 @@ components:
           type: boolean
           description: 'Доступ: закрытый (по умолчанию, false) или открытый (true)'
           example: false
-    QueryChat:
-      type: object
-      description: Собранный объект параметров создаваемой беседы или канала
-      required:
-        - name
-      properties:
-        name:
-          type: string
-          description: Название
-          example: 🤿 aqua
-        member_ids:
-          type: array
-          description: Массив идентификаторов пользователей, которые станут участниками
-          items:
-            type: integer
-          example:
-            - 186
-            - 187
-        channel:
-          type: boolean
-          description: 'Тип: беседа (по умолчанию, false) или канал (true)'
-          example: true
-        public:
-          type: boolean
-          description: 'Доступ: закрытый (по умолчанию, false) или открытый (true)'
-          example: false
     Tag:
       type: object
       description: Для получения тега вам необходимо знать его id и указать его в URL запроса.
