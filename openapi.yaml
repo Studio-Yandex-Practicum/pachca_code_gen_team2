@@ -1133,7 +1133,7 @@ components:
         key:
           type: string
         file:
-          type: string
+          type: file
     Employee:
       allOf:
         - $ref: '#/components/schemas/BaseEmployee'
