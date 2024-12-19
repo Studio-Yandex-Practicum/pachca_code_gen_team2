@@ -437,12 +437,12 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/BaseEmployee'
-        '422':
+        '400':
           description: 	Поле имеет недопустимое значение
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Exclusion'
+                $ref: '#/components/schemas/BadRequest'
   /chats:
     post:
       tags:
@@ -580,11 +580,9 @@ paths:
     delete:
       tags:
         - talk and channel participants
-      summary: '27 / Выход из беседы или канала'
+      summary: 'Выход из беседы или канала'
       description: |-
-        Параметры запроса отсутствуют.
-      security:
-        - Token: [ ]
+        Метод для самостоятельного выхода из беседы или канала.
       parameters:
         - name: id
           in: path
@@ -702,6 +700,7 @@ paths:
                 content: Вчера мы продали 756 футболок (что на 10% больше, чем в прошлое воскресенье)
       responses:
         '201':
+          description: Successful
           content:
             application/json:
               schema:
@@ -740,7 +739,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: '#/components/schemas/BadRequest'
               examples:
                 REQUIRED FIELD BLANK:
                   summary: required fields blank
@@ -772,7 +771,7 @@ paths:
       operationId: getListMessage
       parameters:
         - name: chat_id
-          in: path
+          in: query
           description: Идентификатор чата (беседа, канал, диалог или чат треда)
           required: true
           schema:
@@ -797,6 +796,7 @@ paths:
             default: 1
       responses:
         '200':
+          description: Successful
           content:
               application/json:
                 schema:
@@ -851,7 +851,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: '#/components/schemas/NotFound'
               example:
                 errors:
                   - key: chat_id
@@ -863,7 +863,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: '#/components/schemas/BadRequest'
               examples:
                 REQUIRED FIELD BLANK:
                   summary: required fields blank
@@ -900,6 +900,7 @@ paths:
             type: integer
       responses:
         '200':
+          description: Successfull
           content:
               application/json:
                 schema:
@@ -1436,7 +1437,7 @@ components:
         key:
           type: string
         file:
-          type: file
+          type: string
     Employee:
       allOf:
         - $ref: '#/components/schemas/BaseEmployee'
