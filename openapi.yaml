@@ -553,7 +553,7 @@ paths:
       summary: Список бесед и каналов
       description: Получения списка бесед и каналов по заданным параметрам.
       parameters:
-        - name: 'sort[{field}]'
+        - name: 'sort[id]'
           in: query
           required: false
           description: |
@@ -565,6 +565,7 @@ paths:
             enum:
               - desc
               - asc
+            default: desc
         - name: per
           in: query
           required: false
@@ -628,30 +629,67 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorsCode'
+                type: object
+                properties:
+                  errors:
+                    $ref: '#/components/schemas/ErrorsCode'
               examples:
                 too_long:
                   description: Слишком длинное значение (пояснения вы получите в поле message)
+                  value:
+                    errors:
+                      - key: name
+                        value: long_name
+                        message: message
+                        code: too_long
+                        payload: {}
                 invalid:
                   description: Поле не соответствует правилам (пояснения вы получите в поле message)
+                  value:
+                    errors:
+                      - key: name
+                        value: 1234
+                        message: message
+                        code: invalid
+                        payload: {}
         '404':
           description: Запрашиваемый ресурс не существует
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorsCode'
+                type: object
+                properties:
+                  errors:
+                    $ref: '#/components/schemas/Errors'
               examples:
                 not_found:
                   description: Не удалось найти
+                  value:
+                    errors:
+                      - key: string
+                        value: string
+                        message: message
+                        code: not_found
+                        payload: {}
         '422':
           description: С запросом все хорошо, но правила сервиса не позволяют его обработать (например, при попытке создания контакта с уже существующим номером телефона в базе)
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorsCode'
+                type: object
+                properties:
+                  errors:
+                    $ref: '#/components/schemas/Errors'
               examples:
                 invalid:
                   description: Поле имеет неверный формат (идентификатор поля вы получите в поле payload)
+                  value:
+                    errors:
+                      - key: name
+                        value: name
+                        message: message
+                        code: invalid
+                        payload: {}
   /chats/{id}:
     get:
       tags:
@@ -683,10 +721,20 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorsCode'
+                type: object
+                properties:
+                  errors:
+                    $ref: '#/components/schemas/Errors'
               examples:
                 not_found:
                   description: Не удалось найти
+                  value:
+                    errors:
+                      - key: string
+                        value: string
+                        message: message
+                        code: not_found
+                        payload: {}
   /chats/{id}/members:
     post:
       tags:
