@@ -85,14 +85,32 @@ paths:
     post:
       tags:
         - common methods
-      summary: '44 / Получение подписи, ключа и других параметров'
-      description: 'Информация будет добавлена позже.'
-  /direct_url (полученный в ответе на запрос /uploads):
+      summary: Получение подписи и ключа для загрузки файла
+      description: Возвращает параметры, необходимые для безопасной загрузки файла.
+      operationId: getUploads
+      responses:
+        '200':
+          description: Успешный ответ.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileResponse'
+  /direct_url:
     post:
       tags:
         - common methods
-      summary: '45 / Загрузка файла'
-      description: 'Информация будет добавлена позже.'
+      summary: Получение URL для загрузки
+      description: Отправляет запрос для получения URL для безопасной загрузки файла.
+      operationId: getDirectUrl
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+                $ref: '#/components/schemas/DirectResponse'
+      responses:
+        '204':
+          description: Успешный запрос.
   /users:
     get:
       tags:
@@ -272,18 +290,111 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/Tag'
-        '404':
-          description: Тег не найден
+        "404":
+          description: Тег не найден.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NotFound'
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    description: Список ошибок.
+                    items:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                        value:
+                          type: string
+                        message:
+                          type: string
+                        code:
+                          type: string
+                        payload:
+                          type: object
+              examples:
+                not_found:
+                  summary: Тег не найден.
+                  value:
+                    errors:
+                      - key: "id"
+                        value: "100500"
+                        message: "Не удалось найти тег"
+                        code: "not_found"
   /group_tags:
     get:
       tags:
         - tags
-      summary: '13 / Список тегов сотрудников'
-      description: 'Информация будет добавлена позже.'
+      summary: Список тегов сотрудников
+      description: |
+        Метод для получения актуального списка тегов сотрудников.
+      operationId: getTags
+      parameters:
+        - name: per
+          in: query
+          description: Количество возвращаемых сущностей за один запрос (по умолчанию 50, максимум 50)
+          required: false
+          schema:
+            type: integer
+            default: 50
+            maximum: 50
+        - name: page
+          in: query
+          description:   Страница выборки (по умолчанию 1)
+          required: false
+          schema:
+            type: integer
+            default: 1
+      responses:
+        '200':
+          description: Успешный запрос
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Tag'
+        "400":
+          description: Ошибка валидации запроса.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    description: Список ошибок в запросе.
+                    items:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                          description: Ключ параметра, в котором произошла ошибка.
+                        value:
+                          type: string
+                          description: Значение ключа, вызвавшее ошибку.
+                        message:
+                          type: string
+                          description: Текстовое описание ошибки.
+                        code:
+                          type: string
+                          description: Внутренний код ошибки.
+                        payload:
+                          type: object
+                          description: Дополнительная информация об ошибке.
+              examples:
+                exclusion:
+                  summary: Недопустимое значение количество возвращаемых сущностей за один запрос 
+                  value:
+                    errors:
+                      - key: "per"
+                        value: "51"
+                        message: "Поле имеет недопустимое значение"
+                        code: "exclusion"
   /group_tags/{id}/users:
     get:
       tags:
@@ -326,12 +437,12 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/BaseEmployee'
-        '422':
+        '400':
           description: 	Поле имеет недопустимое значение
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Exclusion'
+                $ref: '#/components/schemas/BadRequest'
   /chats:
     post:
       tags:
@@ -378,9 +489,49 @@ paths:
   /chats/{id}/members:
     post:
       tags:
-        - talk and channel participants
-      summary: '23 / Добавление пользователей'
-      description: 'Информация будет добавлена позже.'
+         - talk and channel participants
+      summary: добавление пользователей в состав участников
+      description: |
+        Метод для добавления пользователей в состав участников беседы или канала.
+      operationId: postMembersToChats
+      parameters:
+        - name: id
+          in: path
+          description: Идентификатор беседы/канала
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 533
+      requestBody:
+        description: Массив идентификаторов пользователей, которые станут участниками
+        content:
+          application/json:
+            schema:
+              required:
+                - member_ids
+              type: object
+              properties:
+                member_ids:
+                  type: array
+                  minItems: 1
+                  items:
+                    type: integer
+                    format: int64
+                  example: [186, 187]
+                silent:
+                  type: boolean
+      responses:
+        '201':
+          description: Пользователи добавлены
+        '400':
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ErrorsCode'
   /chats/{id}/group_tags:
     post:
       tags:
@@ -429,23 +580,21 @@ paths:
     delete:
       tags:
         - talk and channel participants
-      summary: '27 / Выход из беседы или канала'
+      summary: 'Выход из беседы или канала'
       description: |-
-        Параметры запроса отсутствуют.
-      security:
-        - Token: [ ]
+        Метод для самостоятельного выхода из беседы или канала.
       parameters:
         - name: id
           in: path
           required: true
-          description: Уникальный идентификатор беседы или канала.
+          description: 'Уникальный идентификатор беседы или канала.'
           schema:
             type: integer
       responses:
         '200':
-          description: Успешно отписан. Тело ответа отсутствует
+          description: 'Успешно отписан. Тело ответа отсутствует'
         '400':
-          description: Нельзя покинуть персональный чат
+          description: 'Нельзя покинуть персональный чат'
           content:
             application/json:
               schema:
@@ -519,19 +668,285 @@ paths:
     post:
       tags:
         - messages
-      summary: '30 / Новое сообщение'
-      description: 'Информация будет добавлена позже.'
+      summary: создание нового сообщения
+      description: |
+        Метод для отправки сообщения в беседу или канал,
+        личного сообщения пользователю или комментария в тред.
+
+        При использовании entity_type: "discussion" (или просто без указания entity_type)
+        допускается отправка любого chat_id в поле entity_id.
+        То есть, сообщение можно отправить зная только идентификатор чата.
+        При этом, вы имеете возможность отправить сообщение в тред по его идентификатору
+        или личное сообщение по идентификатору пользователя.
+
+        Для отправки личного сообщения пользователю создавать чат не требуется. 
+        Достаточно указать entity_type: "user" и идентификатор пользователя. 
+        Чат будет создан автоматически, если между вами ещё не было переписки.
+        Между двумя пользователями может быть только один личный чат.
+      operationId: createMessage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  $ref: '#/components/schemas/CreateMessage'
+            example:
+              message:
+                entity_type: discussion
+                entity_id: 198
+                content: Вчера мы продали 756 футболок (что на 10% больше, чем в прошлое воскресенье)
+      responses:
+        '201':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Message'
+              example:
+                data:
+                  id: 194275
+                  entity_type: discussion
+                  entity_id: 198
+                  chat_id: 198
+                  content: Вчера мы продали 756 футболок (что на 10% больше, чем в прошлое воскресенье)
+                  user_id: 12
+                  created_at: 2020-06-08T09:32:57.000Z
+                  files: []
+                  buttons: []
+                  thread: null
+                  forwarding: null
+                  parent_message_id: null
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+              example:
+                errors:
+                  - key: entyti_id
+                    value: 1
+                    message: Не удалось найти
+                    code: not_found
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+              examples:
+                REQUIRED FIELD BLANK:
+                  summary: required fields blank
+                  value:
+                    errors:
+                      - key: content
+                        value: null
+                        message: Поле не может быть пустым
+                        code: blank
+                INVALID FIELD VALUE:
+                  summary: invalid field value
+                  value:
+                    errors:
+                      - key: entity_type
+                        value: chat
+                        message: Поле имеет недопустимое значение
+                        code: exclusion
     get:
       tags:
         - messages
-      summary: '32 / Список сообщений чата'
-      description: 'Информация будет добавлена позже.'
+      summary: получение списка сообщений чата
+      description: |
+        Метод для получения списка сообщений бесед, каналов, тредов и личных сообщений.
+
+        Для получения сообщений вам необходимо знать chat_id требуемой беседы, канала,
+        треда или диалога, и указать его в URL запроса. Сообщения будут возвращены
+        в порядке убывания даты отправки (то есть, сначала будут идти последние сообщения чата).
+        Для получения более ранних сообщений чата доступны параметры per и page.
+      operationId: getListMessage
+      parameters:
+        - name: chat_id
+          in: query
+          description: Идентификатор чата (беседа, канал, диалог или чат треда)
+          required: true
+          schema:
+            title: chat_id
+            type: integer
+        - name: per
+          in: query
+          description: |
+            Количество возвращаемых сущностей за один запрос
+            (по умолчанию 25, максимум 50)
+          schema:
+            title: per
+            type: integer
+            default: 25
+            maximum: 50
+        - name: page
+          in: query
+          description: Страница выборки (по умолчанию 1)
+          schema:
+            title: page
+            type: integer
+            default: 1
+      responses:
+        '200':
+          description: Successful
+          content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Message'
+                example:
+                  data:
+                    - id: 1194277
+                      entity_type: discussion
+                      entity_id: 198
+                      chat_id: 198
+                      content: Это сообщение тоже попадёт в экспорт
+                      user_id: 12
+                      created_at: 2023-09-18T13:43:32.000Z
+                      files: []
+                      buttons: []
+                      thread:
+                        id: 2633
+                        chat_id: 44997
+                      forwarding: null
+                      parent_message_id: null
+                    - id: 1194276
+                      entity_type: discussion
+                      entity_id: 198
+                      chat_id: 198
+                      content: "**Andrew** добавил **Export bot** в беседу"
+                      user_id: 12
+                      created_at: 2023-09-18T13:43:27.000Z
+                      files: []
+                      buttons: []
+                      thread: null
+                      forwarding: null
+                      parent_message_id: null
+                    - id: 1194275
+                      entity_type: discussion
+                      entity_id: 198
+                      chat_id: 198
+                      content: "**Andrew** создал беседу"
+                      user_id: 12
+                      created_at: 2023-09-18T13:43:19.000Z
+                      files: []
+                      buttons: []
+                      thread: null
+                      forwarding: null
+                      parent_message_id: null
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+              example:
+                errors:
+                  - key: chat_id
+                    value: 1
+                    message: Не удалось найти
+                    code: not_found
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+              examples:
+                REQUIRED FIELD BLANK:
+                  summary: required fields blank
+                  value:
+                    errors:
+                      - key: chat_id
+                        value: null
+                        message: Поле не может быть пустым
+                        code: blank
+                INVALID FIELD VALUE:
+                  summary: invalid field value
+                  value:
+                    errors:
+                      - key: chat_id
+                        value: chat
+                        message: Поле имеет недопустимое значение
+                        code: exclusion
   /messages/{id}:
     get:
       tags:
         - messages
-      summary: '31 / Информация о сообщении'
-      description: 'Информация будет добавлена позже.'
+      summary: получение информации о сообщении
+      description: |
+        Метод для получения информации о сообщении.
+
+        Для получения сообщения вам необходимо знать его id и указать его в URL запроса.
+      operationId: getMessage
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            title: id
+            type: integer
+      responses:
+        '200':
+          description: Successfull
+          content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    data:
+                      $ref: '#/components/schemas/Message'
+                example:
+                  data:
+                    id: 194275
+                    entity_type: discussion
+                    entity_id: 198
+                    chat_id: 198
+                    content: Вчера мы продали 756 футболок (что на 10% больше, чем в прошлое воскресенье)
+                    user_id: 12
+                    created_at: 2020-06-08T09:32:57.000Z
+                    files: 
+                        - id: 3560
+                          key: attaches/files/12/21zu7934-02e1-44d9-8df2-0f970c259796/congrat.png
+                          name: congrat.png
+                          file_type: file
+                          url: |
+                            https://pachca-prod-uploads.s3.storage.selcloud.ru/attaches/files/12/21zu7934-
+                            02e1-44d9-8df2-0f970c259796/congrat.png?response-cache-control=max-
+                              age%3D3600%3B&response-content-disposition=attachment&X-Amz-Algorithm=AWS4-HMAC
+                              -SHA256&X-Amz-Credential=142155_staply%2F20231107%2Fru-1a%2Fs3%2Faws4_
+                              request&X-Amz-Date=20231107T160412Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=
+                              host&X-Amz-Signature=98765asgfadsfdsaDSd4sdfg35asdf67sadf8
+                    buttons: []
+                    thread:
+                      id: 29873
+                      chat_id: 1949863
+                    forwarding: null
+                    parent_message_id: 194274
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+              example:
+                errors:
+                  - key: id
+                    value: 0
+                    message: Не удалось найти
+                    code: not_found
     put:
       tags:
         - messages
@@ -549,9 +964,10 @@ paths:
         content:
           application/json:
             schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/EditMessages'
+              type: object
+              properties:
+                message:
+                  $ref: '#/components/schemas/EditMessages'
       responses:
         '200':
           description: Успешно отредактировано
@@ -564,7 +980,7 @@ paths:
                     type: array
                     description: Созданное сообщение
                     items:
-                      $ref: '#/components/schemas/Messages'
+                      $ref: '#/components/schemas/Message'
         '400':
           description: Нельзя покинуть персональный чат
           content:
@@ -681,8 +1097,106 @@ paths:
     delete:
       tags:
         - reactions to messages
-      summary: '39 / Удаление реакции'
-      description: 'Информация будет добавлена позже.'
+      operationId: deleteMessageReactions
+      summary: Удаление реакции
+      description: >
+        Метод для удаления реакции на сообщение. 
+        Удалить можно только те реакции, которые были поставлены авторизованным пользователем.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Уникальный идентификатор сообщения.
+          schema:
+            type: string
+        - name: code
+          in: query
+          required: true
+          description: Emoji, который нужно удалить.
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Успешное выполнение запроса, тело ответа отсутствует.
+
+        "400":
+          description: Ошибка валидации запроса.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    description: Список ошибок в запросе.
+                    items:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                          description: Ключ параметра, в котором произошла ошибка.
+                        value:
+                          type: string
+                          description: Значение ключа, вызвавшее ошибку.
+                        message:
+                          type: string
+                          description: Текстовое описание ошибки.
+                        code:
+                          type: string
+                          description: Внутренний код ошибки.
+                        payload:
+                          type: object
+                          description: Дополнительная информация об ошибке.
+              examples:
+                blank_field:
+                  summary: Поле code пустое
+                  value:
+                    errors:
+                      - key: "code"
+                        value: ""
+                        message: "Поле не может быть пустым"
+                        code: "blank"
+                exclusion:
+                  summary: Недопустимое значение эмодзи
+                  value:
+                    errors:
+                      - key: "code"
+                        value: "invalid_emoji"
+                        message: "Поле имеет недопустимое значение"
+                        code: "exclusion"
+
+        "404":
+          description: Сообщение или реакция не найдены.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    description: Список ошибок.
+                    items:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                        value:
+                          type: string
+                        message:
+                          type: string
+                        code:
+                          type: string
+                        payload:
+                          type: object
+              examples:
+                not_found:
+                  summary: Сообщение или реакция не найдены
+                  value:
+                    errors:
+                      - key: "reaction"
+                        value: "😊"
+                        message: "Не удалось найти реакцию"
+                        code: "not_found"
     get:
       tags:
         - reactions to messages
@@ -927,6 +1441,48 @@ components:
           description: |
             Тип: пользователь (false) или бот (true)
       description: Базовый класс сотрудника.
+    FileResponse:
+      type: object
+      properties:
+        Content-Disposition:
+          type: string
+        acl:
+          type: string
+        policy:
+          type: string
+        x-amz-credential:
+          type: string
+        x-amz-algorithm:
+          type: string
+        x-amz-date:
+          type: string
+        x-amz-signature:
+          type: string
+        key:
+          type: string
+        direct_url:
+          type: string
+    DirectResponse:
+      type: object
+      properties:
+        Content-Disposition:
+          type: string
+        acl:
+          type: string
+        policy:
+          type: string
+        x-amz-credential:
+          type: string
+        x-amz-algorithm:
+          type: string
+        x-amz-date:
+          type: string
+        x-amz-signature:
+          type: string
+        key:
+          type: string
+        file:
+          type: string
     Employee:
       allOf:
         - $ref: '#/components/schemas/BaseEmployee'
@@ -1012,6 +1568,274 @@ components:
           description: 'Описание ошибки'
           example: "Страница не найдена."
           type: string
+    Errors:
+      title: Errors
+      type: array
+      items:
+        title: Error
+        type: object
+        properties:
+          key:
+            title: key
+            type: string
+          value:
+            title: value
+            type: string
+          message:
+            title: message
+            type: string
+          code:
+            title: code
+            type: string
+          payload:
+            title: payload
+            type: object
+    Buttons:
+      title: Message Buttons
+      type: array
+      maxItems: 100
+      items:
+        title: Row Buttons
+        type: array
+        maxItems: 8
+        items:
+          type: object
+          title: Button
+          required:
+            - text
+          minProperties: 2
+          properties:
+            text:
+              title: Text
+              type: string
+              maxLength: 255
+            url:
+              title: Url
+              type: string
+            data:
+              title: Data
+              type: string
+              maxLength: 255
+    CreateMessage:
+      type: object
+      required:
+        - entity_id
+        - content
+      properties:
+        entity_type:
+          title: Entity Type
+          type: string
+          enum:
+            - 'discussion'
+            - 'user'
+            - 'thread'
+          default: 'discussion'
+        entity_id:
+          title: Entity Id
+          type: integer
+        content:
+          title: Content
+          type: string
+        files:
+          title: Files
+          type: array
+          items:
+            type: object
+            required:
+              - key
+              - name
+              - file_type
+              - size
+            properties:
+              key:
+                title: Key
+                type: string
+              name:
+                title: Name
+                type: string
+              file_type:
+                title: File Type
+                type: string
+                enum:
+                  - 'file'
+                  - 'image'
+              size:
+                title: Size
+                type: integer
+        buttons:
+          title: buttons
+          $ref: '#/components/schemas/Buttons'
+        parent_message_id:
+          title: Parent Massage Id
+          type: integer
+          nullable: true
+          default: null
+        skip_invite_mentions:
+          title: Skip Invite Mentions
+          type: boolean
+          default: false
+        link_preview:
+          title: Link Preview
+          type: boolean
+          default: false
+    EditMessages:
+      type: object
+      description: Для получения сообщения вам необходимо знать его id и указать его в URL запроса.
+      properties:
+        content:
+          type: string
+          description: Текст сообщения
+          default: Текст сообщения
+        files:
+          type: object
+          properties:
+            key:
+              type: string
+              description: Путь к файлу, полученный в результате загрузки файла (каждый файл в каждом сообщении должен иметь свой уникальный key, не допускается использование одного и того же key в разных сообщениях)
+            name:
+              type: string
+              description: Название файла, которое вы хотите отображать пользователю (рекомендуется писать вместе с расширением)
+            file_type:
+              type: string
+              enum:
+                - 'file'
+                - 'image'
+            size:
+              type: integer
+              default: 1234
+              description: Размер файла в байтах, отображаемый пользователю
+        buttons:
+          type: array
+          description: Массив строк, каждая из которых представлена массивом кнопок. Подробнее о том, как формировать строки кнопок и какие есть ограничения вы можете прочитать в статье. Для удаления кнопок у сообщения пришлите пустой массив.
+          items:
+            type: array
+            items:
+              type: object
+              properties:
+                text:
+                  type: string
+                  description: Текст, отображаемый на кнопке пользователю
+                url:
+                  type: string
+                  description: Ссылка, которая будет открыта по нажатию кнопки
+                data: 
+                  type: string
+                  description: Данные, которые будут отправлены в исходящем вебхуке по нажатию кнопки
+    Message:
+      type: object
+      properties:
+        entity_type:
+          title: Entity Type
+          type: string
+          enum:
+            - 'discussion'
+            - 'user'
+            - 'thread'
+          default: 'discussion'
+        entity_id:
+          title: Entity Id
+          type: integer
+        content:
+          title: Content
+          type: string
+        id:
+          title: Id
+          type: integer
+        chat_id:
+          title: Chat Id
+          type: integer
+        user_id:
+          title: User Id
+          type: integer
+        created_at:
+          title: Created At
+          type: string
+          format: date-time
+        files:
+          title: Files
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                title: Id
+                type: integer
+              key:
+                title: Key
+                type: string
+                description: Путь к файлу, полученный в результате загрузки файла (каждый файл в каждом сообщении должен иметь свой уникальный key, не допускается использование одного и того же key в разных сообщениях)
+              name:
+                title: Name
+                type: string
+                description: Название файла, которое вы хотите отображать пользователю (рекомендуется писать вместе с расширением)
+              file_type:
+                title: File Type
+                type: string
+                enum:
+                  - 'file'
+                  - 'image'
+              url:
+                title: Url
+                type: string
+                description: Размер файла в байтах, отображаемый пользователю
+        buttons:
+          title: buttons
+          $ref: '#/components/schemas/Buttons'
+        thread:
+          title: Thread
+          type: object
+          nullable: true
+          default: null
+          properties:
+            id:
+              title: Id
+              type: integer
+            chat_id:
+              title: Chat Id
+              type: integer
+        forwarding:
+          title: Forwarding
+          type: object
+          nullable: true
+          default: null
+          properties:
+            original_message_id:
+              title: Origin Message Id
+              type: integer
+              description: Идентификатор оригинального сообщения
+            original_chat_id:
+              title: Original Chat Id
+              type: integer
+              description: Идентификатор чата, в котором находится оригинальное сообщение
+            author_id:
+              title: Author Id
+              type: integer
+              description: Идентификатор чата, в котором находится оригинальное сообщение
+            original_created_at:
+              title: Original Created At
+              type: integer
+              description: Дата и время создания оригинального сообщения (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ
+            original_thread_id:
+              title: Original Thread Id
+              type: integer
+              nullable: true
+              description: Идентификатор треда, в котором находится оригинальное сообщение. Возвращается как null, если оригинальное сообщение не является комментарием в треде.
+            original_thread_message_id:
+              title: Original Thread Message Id
+              type: integer
+              nullable: true
+              description: Идентификатор сообщения, к которому был создан тред, в котором находится оригинальное сообщение. Возвращается как null, если оригинальное сообщение не является комментарием в треде.
+            original_thread_parent_chat_id:
+              title: Original Thread Parent Chat Id
+              type: integer
+              nullable: true
+              description: Идентификатор чата сообщения, к которому был создан тред, в котором находится оригинальное сообщение. Возвращается как null, если оригинальное сообщение не является комментарием в треде.
+        parent_message_id:
+          title: Parent Massage Id
+          type: integer
+          nullable: true
+          default: null
+          description: Идентификатор сообщения, к которому написан ответ. Возвращается как null, если сообщение не является ответом.
     Reaction:
       type: object
       properties:
@@ -1115,114 +1939,9 @@ components:
         users_count:
           description: Количество сотрудников, которые имеют этот тег
           type: integer
-    Forwarding:
-      type: object
-      description: Информация о пересылаемом сообщении. Возвращается как null, если это сообщение не является пересылаемым с сохранением автора.
-      properties:
-        original_message_id:
-          type: integer
-          description: Идентификатор оригинального сообщения
-        original_chat_id:
-          type: integer
-          description: Идентификатор чата, в котором находится оригинальное сообщение
-        author_id:
-          type: integer
-          description: Идентификатор пользователя, создавшего оригинальное сообщение
-        original_created_at:
-          type: integer
-          description: Дата и время создания оригинального сообщения (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ
-        original_thread_id:
-          type: integer
-          description: Идентификатор треда, в котором находится оригинальное сообщение. Возвращается как null, если оригинальное сообщение не является комментарием в треде.
-        original_thread_message_id:
-          type: integer
-          description: Идентификатор сообщения, к которому был создан тред, в котором находится оригинальное сообщение. Возвращается как null, если оригинальное сообщение не является комментарием в треде.
-        original_thread_parent_chat_id:
-          type: integer
-          description: Идентификатор чата сообщения, к которому был создан тред, в котором находится оригинальное сообщение. Возвращается как null, если оригинальное сообщение не является комментарием в треде.
-        parent_message_id:
-          type: integer
-          description: Идентификатор сообщения, к которому написан ответ. Возвращается как null, если сообщение не является ответом.
-    EditFile:
-      type: array
-      description: Прикрепляемые файлы
-      items:
-        type: object
-        properties:
-          key:
-            type: string
-            description: Путь к файлу, полученный в результате загрузки файла (каждый файл в каждом сообщении должен иметь свой уникальный key, не допускается использование одного и того же key в разных сообщениях)
-          name:
-            type: string
-            description: Название файла, которое вы хотите отображать пользователю (рекомендуется писать вместе с расширением)
-          file_type:
-            type: string
-            description: 'Тип файла: файл (file), изображение (image)'
-          size:
-            type: integer
-            description: Размер файла в байтах, отображаемый пользователю
-    File:
-      allOf:
-        - type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: integer
-                description: Идентификатор файла
-        - $ref: '#/components/schemas/EditFile'
-    EditMessages:
-      type: object
-      description: Для получения сообщения вам необходимо знать его id и указать его в URL запроса.
-      properties:
-        content:
-          type: string
-          description: Текст сообщения
-        file:
-          $ref: '#/components/schemas/EditFile'
-        buttons:
-          type: array
-          description: Массив строк, каждая из которых представлена массивом кнопок. Подробнее о том, как формировать строки кнопок и какие есть ограничения вы можете прочитать в статье. Для удаления кнопок у сообщения пришлите пустой массив.
-          items:
-            type: array
-            items:
-              type: object
-              properties:
-                text:
-                  type: string
-                  description: Текст, отображаемый на кнопке пользователю
-                url:
-                  type: string
-                  description: Ссылка, которая будет открыта по нажатию кнопки
-                data: 
-                  type: string
-                  description: Данные, которые будут отправлены в исходящем вебхуке по нажатию кнопки
-    Messages:
-      allOf:
-        - type: object
-          properties:
-            id:
-              type: integer
-              description: Идентификатор сообщения
-            file:
-              $ref: '#/components/schemas/File'
-            thread:
-              type: object
-              description: Тред сообщения. Возвращается как null, если у сообщения нет комментариев.
-              properties:
-                id:
-                  type: integer
-                  description: Идентификатор треда
-                chat_id:
-                  type: integer
-                  description: Идентификатор чата треда (используется для отправки новых комментариев в тред и получения списка комментариев)
-            forwarding:
-              $ref: '#/components/schemas/Forwarding'
-        - $ref: '#/components/schemas/EditMessages'
   securitySchemes:
-    Token:
-      description: 'Авторизация по токену. <br>
-      Все запросы от имени пользователя должны выполняться с заголовком "Authorization: Token TOKENVALUE"'
+    bearerAuth:
       type: http
-      scheme: token
-      
+      scheme: bearer
+security:
+  - bearerAuth: []
