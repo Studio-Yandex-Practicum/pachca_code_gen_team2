@@ -105,9 +105,9 @@ paths:
       requestBody:
         required: true
         content:
-          application/json:
+          multipart/form-data:
             schema:
-                $ref: '#/components/schemas/FileResponse'
+                $ref: '#/components/schemas/DirectResponse'
       responses:
         '204':
           description: Успешный запрос.
@@ -1112,6 +1112,27 @@ components:
         key:
           type: string
         direct_url:
+          type: string
+    DirectResponse:
+      type: object
+      properties:
+        Content-Disposition:
+          type: string
+        acl:
+          type: string
+        policy:
+          type: string
+        x-amz-credential:
+          type: string
+        x-amz-algorithm:
+          type: string
+        x-amz-date:
+          type: string
+        x-amz-signature:
+          type: string
+        key:
+          type: string
+        file:
           type: string
     Employee:
       allOf:
