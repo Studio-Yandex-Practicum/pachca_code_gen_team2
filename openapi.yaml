@@ -457,7 +457,10 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/QueryChat'
+              type: object
+              properties:
+                chat:
+                  $ref: '#/components/schemas/QueryChat'
       responses:
         '201':
           description: Запрос отработал успешно, сущность создана
@@ -473,32 +476,76 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorsCode'
+                type: object
+                properties:
+                  errors:
+                    $ref: '#/components/schemas/Errors'
               examples:
                 blank:
                   description: Обязательное поле (не может быть пустым)
+                  value:
+                    errors:
+                      - key: name
+                        value: ''
+                        message: message
+                        code: blank
+                        payload: {}
                 too_long:
                   description: Слишком длинное значение (пояснения вы получите в поле message)
+                  value:
+                    errors:
+                      - key: name
+                        value: long_name
+                        message: message
+                        code: too_long
+                        payload: {}
                 invalid:
                   description: Поле не соответствует правилам (пояснения вы получите в поле message)
+                  value:
+                    errors:
+                      - key: name
+                        value: 1234
+                        message: message
+                        code: invalid
+                        payload: {}
         '404':
           description: Запрашиваемый ресурс не существует
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorsCode'
+                type: object
+                properties:
+                  errors:
+                    $ref: '#/components/schemas/Errors'
               examples:
                 not_found:
                   description: Не удалось найти
+                  value:
+                    errors:
+                      - key: string
+                        value: string
+                        message: message
+                        code: not_found
+                        payload: {}
         '422':
           description: С запросом все хорошо, но правила сервиса не позволяют его обработать (например, при попытке создания контакта с уже существующим номером телефона в базе)
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorsCode'
+                type: object
+                properties:
+                  errors:
+                    $ref: '#/components/schemas/Errors'
               examples:
                 invalid:
                   description: Поле имеет неверный формат (идентификатор поля вы получите в поле payload)
+                  value:
+                    errors:
+                      - key: name
+                        value: name
+                        message: message
+                        code: invalid
+                        payload: {}
     get:
       tags:
         - chats and channels
