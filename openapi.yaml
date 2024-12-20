@@ -950,8 +950,53 @@ paths:
     put:
       tags:
         - messages
-      summary: '33 / Редактирование сообщения'
-      description: 'Информация будет добавлена позже.'
+      summary: Редактирование сообщения
+      description: Метод для редактирования сообщения или комментария.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Уникальный идентификатор беседы или канала.
+          schema:
+            type: integer
+      requestBody:
+        description: Массив идентификаторов тегов, которые станут участниками
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  $ref: '#/components/schemas/EditMessages'
+      responses:
+        '200':
+          description: Успешно отредактировано
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: Созданное сообщение
+                    items:
+                      $ref: '#/components/schemas/Message'
+        '400':
+          description: Нельзя покинуть персональный чат
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ErrorsCode'
+        '404':
+          description: 'Не удалось найти'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ErrorsCode'
   /messages/{id}/reactions:
     post:
       tags:
@@ -1633,6 +1678,49 @@ components:
           title: Link Preview
           type: boolean
           default: false
+    EditMessages:
+      type: object
+      description: Для получения сообщения вам необходимо знать его id и указать его в URL запроса.
+      properties:
+        content:
+          type: string
+          description: Текст сообщения
+          default: Текст сообщения
+        files:
+          type: object
+          properties:
+            key:
+              type: string
+              description: Путь к файлу, полученный в результате загрузки файла (каждый файл в каждом сообщении должен иметь свой уникальный key, не допускается использование одного и того же key в разных сообщениях)
+            name:
+              type: string
+              description: Название файла, которое вы хотите отображать пользователю (рекомендуется писать вместе с расширением)
+            file_type:
+              type: string
+              enum:
+                - 'file'
+                - 'image'
+            size:
+              type: integer
+              default: 1234
+              description: Размер файла в байтах, отображаемый пользователю
+        buttons:
+          type: array
+          description: Массив строк, каждая из которых представлена массивом кнопок. Подробнее о том, как формировать строки кнопок и какие есть ограничения вы можете прочитать в статье. Для удаления кнопок у сообщения пришлите пустой массив.
+          items:
+            type: array
+            items:
+              type: object
+              properties:
+                text:
+                  type: string
+                  description: Текст, отображаемый на кнопке пользователю
+                url:
+                  type: string
+                  description: Ссылка, которая будет открыта по нажатию кнопки
+                data: 
+                  type: string
+                  description: Данные, которые будут отправлены в исходящем вебхуке по нажатию кнопки
     Message:
       type: object
       properties:
@@ -1675,9 +1763,11 @@ components:
               key:
                 title: Key
                 type: string
+                description: Путь к файлу, полученный в результате загрузки файла (каждый файл в каждом сообщении должен иметь свой уникальный key, не допускается использование одного и того же key в разных сообщениях)
               name:
                 title: Name
                 type: string
+                description: Название файла, которое вы хотите отображать пользователю (рекомендуется писать вместе с расширением)
               file_type:
                 title: File Type
                 type: string
@@ -1687,6 +1777,7 @@ components:
               url:
                 title: Url
                 type: string
+                description: Размер файла в байтах, отображаемый пользователю
         buttons:
           title: buttons
           $ref: '#/components/schemas/Buttons'
@@ -1711,32 +1802,40 @@ components:
             original_message_id:
               title: Origin Message Id
               type: integer
+              description: Идентификатор оригинального сообщения
             original_chat_id:
               title: Original Chat Id
               type: integer
+              description: Идентификатор чата, в котором находится оригинальное сообщение
             author_id:
               title: Author Id
               type: integer
+              description: Идентификатор чата, в котором находится оригинальное сообщение
             original_created_at:
               title: Original Created At
               type: integer
+              description: Дата и время создания оригинального сообщения (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ
             original_thread_id:
               title: Original Thread Id
               type: integer
               nullable: true
+              description: Идентификатор треда, в котором находится оригинальное сообщение. Возвращается как null, если оригинальное сообщение не является комментарием в треде.
             original_thread_message_id:
               title: Original Thread Message Id
               type: integer
               nullable: true
+              description: Идентификатор сообщения, к которому был создан тред, в котором находится оригинальное сообщение. Возвращается как null, если оригинальное сообщение не является комментарием в треде.
             original_thread_parent_chat_id:
               title: Original Thread Parent Chat Id
               type: integer
               nullable: true
+              description: Идентификатор чата сообщения, к которому был создан тред, в котором находится оригинальное сообщение. Возвращается как null, если оригинальное сообщение не является комментарием в треде.
         parent_message_id:
           title: Parent Massage Id
           type: integer
           nullable: true
           default: null
+          description: Идентификатор сообщения, к которому написан ответ. Возвращается как null, если сообщение не является ответом.
     Reaction:
       type: object
       properties:
