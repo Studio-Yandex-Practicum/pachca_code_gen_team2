@@ -950,7 +950,7 @@ paths:
     put:
       tags:
         - messages
-      summary: '33 / Редактирование сообщения'
+      summary: Редактирование сообщения
       description: Метод для редактирования сообщения или комментария.
       parameters:
         - name: id
