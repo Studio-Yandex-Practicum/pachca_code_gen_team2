@@ -12,7 +12,8 @@ from ...models.post_message_reactions_response_404 import PostMessageReactionsRe
 from ...types import Response
 
 
-def _get_kwargs(
+def _get_kwargs_postMessageReactions(
+    self,
     id: str,
     *,
     body: PostMessageReactionsBody,
@@ -33,8 +34,8 @@ def _get_kwargs(
     return _kwargs
 
 
-def _parse_response(
-    *, client: Union[AuthenticatedClient, Client], response: httpx.Response
+def _parse_response_postMessageReactions(
+    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
 ) -> Optional[
     Union[Any, PostMessageReactionsResponse400, PostMessageReactionsResponse403, PostMessageReactionsResponse404]
 ]:
@@ -59,8 +60,8 @@ def _parse_response(
         return None
 
 
-def _build_response(
-    *, client: Union[AuthenticatedClient, Client], response: httpx.Response
+def _build_response_postMessageReactions(
+    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
 ) -> Response[
     Union[Any, PostMessageReactionsResponse400, PostMessageReactionsResponse403, PostMessageReactionsResponse404]
 ]:
@@ -68,11 +69,12 @@ def _build_response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
         headers=response.headers,
-        parsed=_parse_response(client=client, response=response),
+        parsed=self._parse_response_postMessageReactions(client=client, response=response),
     )
 
 
-def sync_detailed(
+async def asyncio_detailed_postMessageReactions(
+    self,
     id: str,
     *,
     client: Union[AuthenticatedClient, Client],
@@ -98,88 +100,18 @@ def sync_detailed(
         Response[Union[Any, PostMessageReactionsResponse400, PostMessageReactionsResponse403, PostMessageReactionsResponse404]]
     """
 
-    kwargs = _get_kwargs(
-        id=id,
-        body=body,
-    )
-
-    response = client.get_httpx_client().request(
-        **kwargs,
-    )
-
-    return _build_response(client=client, response=response)
-
-
-def sync(
-    id: str,
-    *,
-    client: Union[AuthenticatedClient, Client],
-    body: PostMessageReactionsBody,
-) -> Optional[
-    Union[Any, PostMessageReactionsResponse400, PostMessageReactionsResponse403, PostMessageReactionsResponse404]
-]:
-    """Добавление реакции
-
-     Метод для добавления реакции на сообщение. **Лимиты реакций:** - Каждый пользователь может
-    установить не более 20 уникальных реакций на сообщение. - Сообщение может иметь не более 30
-    уникальных реакций. - Сообщение может иметь не более 1000 реакций.
-
-    Args:
-        id (str):
-        body (PostMessageReactionsBody):
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Union[Any, PostMessageReactionsResponse400, PostMessageReactionsResponse403, PostMessageReactionsResponse404]
-    """
-
-    return sync_detailed(
-        id=id,
-        client=client,
-        body=body,
-    ).parsed
-
-
-async def asyncio_detailed(
-    id: str,
-    *,
-    client: Union[AuthenticatedClient, Client],
-    body: PostMessageReactionsBody,
-) -> Response[
-    Union[Any, PostMessageReactionsResponse400, PostMessageReactionsResponse403, PostMessageReactionsResponse404]
-]:
-    """Добавление реакции
-
-     Метод для добавления реакции на сообщение. **Лимиты реакций:** - Каждый пользователь может
-    установить не более 20 уникальных реакций на сообщение. - Сообщение может иметь не более 30
-    уникальных реакций. - Сообщение может иметь не более 1000 реакций.
-
-    Args:
-        id (str):
-        body (PostMessageReactionsBody):
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Response[Union[Any, PostMessageReactionsResponse400, PostMessageReactionsResponse403, PostMessageReactionsResponse404]]
-    """
-
-    kwargs = _get_kwargs(
+    kwargs = self._get_kwargs_postMessageReactions(
         id=id,
         body=body,
     )
 
     response = await client.get_async_httpx_client().request(**kwargs)
 
-    return _build_response(client=client, response=response)
+    return self._build_response_postMessageReactions(client=client, response=response)
 
 
 async def postMessageReactions(
+    self,
     id: str,
     *,
     client: Union[AuthenticatedClient, Client],
@@ -206,7 +138,7 @@ async def postMessageReactions(
     """
 
     return (
-        await asyncio_detailed(
+        await self.asyncio_detailed_postMessageReactions(
             id=id,
             client=client,
             body=body,

@@ -11,7 +11,8 @@ from ...models.put_messages_id_response_200 import PutMessagesIdResponse200
 from ...types import Response
 
 
-def _get_kwargs(
+def _get_kwargs_put_messages_id(
+    self,
     id: int,
     *,
     body: PutMessagesIdBody,
@@ -32,8 +33,8 @@ def _get_kwargs(
     return _kwargs
 
 
-def _parse_response(
-    *, client: Union[AuthenticatedClient, Client], response: httpx.Response
+def _parse_response_put_messages_id(
+    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
 ) -> Optional[Union[PutMessagesIdResponse200, list["ErrorsCode"]]]:
     if response.status_code == 200:
         response_200 = PutMessagesIdResponse200.from_dict(response.json())
@@ -63,18 +64,19 @@ def _parse_response(
         return None
 
 
-def _build_response(
-    *, client: Union[AuthenticatedClient, Client], response: httpx.Response
+def _build_response_put_messages_id(
+    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
 ) -> Response[Union[PutMessagesIdResponse200, list["ErrorsCode"]]]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
         headers=response.headers,
-        parsed=_parse_response(client=client, response=response),
+        parsed=self._parse_response_put_messages_id(client=client, response=response),
     )
 
 
-def sync_detailed(
+async def asyncio_detailed_put_messages_id(
+    self,
     id: int,
     *,
     client: Union[AuthenticatedClient, Client],
@@ -96,80 +98,18 @@ def sync_detailed(
         Response[Union[PutMessagesIdResponse200, list['ErrorsCode']]]
     """
 
-    kwargs = _get_kwargs(
-        id=id,
-        body=body,
-    )
-
-    response = client.get_httpx_client().request(
-        **kwargs,
-    )
-
-    return _build_response(client=client, response=response)
-
-
-def sync(
-    id: int,
-    *,
-    client: Union[AuthenticatedClient, Client],
-    body: PutMessagesIdBody,
-) -> Optional[Union[PutMessagesIdResponse200, list["ErrorsCode"]]]:
-    """Редактирование сообщения
-
-     Метод для редактирования сообщения или комментария.
-
-    Args:
-        id (int):
-        body (PutMessagesIdBody):
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Union[PutMessagesIdResponse200, list['ErrorsCode']]
-    """
-
-    return sync_detailed(
-        id=id,
-        client=client,
-        body=body,
-    ).parsed
-
-
-async def asyncio_detailed(
-    id: int,
-    *,
-    client: Union[AuthenticatedClient, Client],
-    body: PutMessagesIdBody,
-) -> Response[Union[PutMessagesIdResponse200, list["ErrorsCode"]]]:
-    """Редактирование сообщения
-
-     Метод для редактирования сообщения или комментария.
-
-    Args:
-        id (int):
-        body (PutMessagesIdBody):
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Response[Union[PutMessagesIdResponse200, list['ErrorsCode']]]
-    """
-
-    kwargs = _get_kwargs(
+    kwargs = self._get_kwargs_put_messages_id(
         id=id,
         body=body,
     )
 
     response = await client.get_async_httpx_client().request(**kwargs)
 
-    return _build_response(client=client, response=response)
+    return self._build_response_put_messages_id(client=client, response=response)
 
 
 async def put_messages_id(
+    self,
     id: int,
     *,
     client: Union[AuthenticatedClient, Client],
@@ -192,7 +132,7 @@ async def put_messages_id(
     """
 
     return (
-        await asyncio_detailed(
+        await self.asyncio_detailed_put_messages_id(
             id=id,
             client=client,
             body=body,

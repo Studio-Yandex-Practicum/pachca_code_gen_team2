@@ -10,7 +10,8 @@ from ...models.not_found import NotFound
 from ...types import Response
 
 
-def _get_kwargs(
+def _get_kwargs_getMessage(
+    self,
     id: int,
 ) -> dict[str, Any]:
     _kwargs: dict[str, Any] = {
@@ -21,8 +22,8 @@ def _get_kwargs(
     return _kwargs
 
 
-def _parse_response(
-    *, client: Union[AuthenticatedClient, Client], response: httpx.Response
+def _parse_response_getMessage(
+    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
 ) -> Optional[Union[GetMessageResponse200, NotFound]]:
     if response.status_code == 200:
         response_200 = GetMessageResponse200.from_dict(response.json())
@@ -38,18 +39,19 @@ def _parse_response(
         return None
 
 
-def _build_response(
-    *, client: Union[AuthenticatedClient, Client], response: httpx.Response
+def _build_response_getMessage(
+    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
 ) -> Response[Union[GetMessageResponse200, NotFound]]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
         headers=response.headers,
-        parsed=_parse_response(client=client, response=response),
+        parsed=self._parse_response_getMessage(client=client, response=response),
     )
 
 
-def sync_detailed(
+async def asyncio_detailed_getMessage(
+    self,
     id: int,
     *,
     client: Union[AuthenticatedClient, Client],
@@ -71,77 +73,17 @@ def sync_detailed(
         Response[Union[GetMessageResponse200, NotFound]]
     """
 
-    kwargs = _get_kwargs(
-        id=id,
-    )
-
-    response = client.get_httpx_client().request(
-        **kwargs,
-    )
-
-    return _build_response(client=client, response=response)
-
-
-def sync(
-    id: int,
-    *,
-    client: Union[AuthenticatedClient, Client],
-) -> Optional[Union[GetMessageResponse200, NotFound]]:
-    """получение информации о сообщении
-
-     Метод для получения информации о сообщении.
-
-    Для получения сообщения вам необходимо знать его id и указать его в URL запроса.
-
-    Args:
-        id (int):
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Union[GetMessageResponse200, NotFound]
-    """
-
-    return sync_detailed(
-        id=id,
-        client=client,
-    ).parsed
-
-
-async def asyncio_detailed(
-    id: int,
-    *,
-    client: Union[AuthenticatedClient, Client],
-) -> Response[Union[GetMessageResponse200, NotFound]]:
-    """получение информации о сообщении
-
-     Метод для получения информации о сообщении.
-
-    Для получения сообщения вам необходимо знать его id и указать его в URL запроса.
-
-    Args:
-        id (int):
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Response[Union[GetMessageResponse200, NotFound]]
-    """
-
-    kwargs = _get_kwargs(
+    kwargs = self._get_kwargs_getMessage(
         id=id,
     )
 
     response = await client.get_async_httpx_client().request(**kwargs)
 
-    return _build_response(client=client, response=response)
+    return self._build_response_getMessage(client=client, response=response)
 
 
 async def getMessage(
+    self,
     id: int,
     *,
     client: Union[AuthenticatedClient, Client],
@@ -164,7 +106,7 @@ async def getMessage(
     """
 
     return (
-        await asyncio_detailed(
+        await self.asyncio_detailed_getMessage(
             id=id,
             client=client,
         )

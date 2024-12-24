@@ -9,7 +9,9 @@ from ...models.file_response import FileResponse
 from ...types import Response
 
 
-def _get_kwargs() -> dict[str, Any]:
+def _get_kwargs_getUploads(
+    self,
+) -> dict[str, Any]:
     _kwargs: dict[str, Any] = {
         "method": "post",
         "url": "/uploads",
@@ -18,7 +20,9 @@ def _get_kwargs() -> dict[str, Any]:
     return _kwargs
 
 
-def _parse_response(*, client: Union[AuthenticatedClient, Client], response: httpx.Response) -> Optional[FileResponse]:
+def _parse_response_getUploads(
+    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
+) -> Optional[FileResponse]:
     if response.status_code == 200:
         response_200 = FileResponse.from_dict(response.json())
 
@@ -29,16 +33,19 @@ def _parse_response(*, client: Union[AuthenticatedClient, Client], response: htt
         return None
 
 
-def _build_response(*, client: Union[AuthenticatedClient, Client], response: httpx.Response) -> Response[FileResponse]:
+def _build_response_getUploads(
+    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
+) -> Response[FileResponse]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
         headers=response.headers,
-        parsed=_parse_response(client=client, response=response),
+        parsed=self._parse_response_getUploads(client=client, response=response),
     )
 
 
-def sync_detailed(
+async def asyncio_detailed_getUploads(
+    self,
     *,
     client: Union[AuthenticatedClient, Client],
 ) -> Response[FileResponse]:
@@ -54,60 +61,15 @@ def sync_detailed(
         Response[FileResponse]
     """
 
-    kwargs = _get_kwargs()
-
-    response = client.get_httpx_client().request(
-        **kwargs,
-    )
-
-    return _build_response(client=client, response=response)
-
-
-def sync(
-    *,
-    client: Union[AuthenticatedClient, Client],
-) -> Optional[FileResponse]:
-    """Получение подписи и ключа для загрузки файла
-
-     Возвращает параметры, необходимые для безопасной загрузки файла.
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        FileResponse
-    """
-
-    return sync_detailed(
-        client=client,
-    ).parsed
-
-
-async def asyncio_detailed(
-    *,
-    client: Union[AuthenticatedClient, Client],
-) -> Response[FileResponse]:
-    """Получение подписи и ключа для загрузки файла
-
-     Возвращает параметры, необходимые для безопасной загрузки файла.
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Response[FileResponse]
-    """
-
-    kwargs = _get_kwargs()
+    kwargs = self._get_kwargs_getUploads()
 
     response = await client.get_async_httpx_client().request(**kwargs)
 
-    return _build_response(client=client, response=response)
+    return self._build_response_getUploads(client=client, response=response)
 
 
 async def getUploads(
+    self,
     *,
     client: Union[AuthenticatedClient, Client],
 ) -> Optional[FileResponse]:
@@ -124,7 +86,7 @@ async def getUploads(
     """
 
     return (
-        await asyncio_detailed(
+        await self.asyncio_detailed_getUploads(
             client=client,
         )
     ).parsed

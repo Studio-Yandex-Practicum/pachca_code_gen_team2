@@ -10,7 +10,8 @@ from ...models.get_tags_employees_response_200 import GetTagsEmployeesResponse20
 from ...types import UNSET, Response, Unset
 
 
-def _get_kwargs(
+def _get_kwargs_getTagsEmployees(
+    self,
     id: int,
     *,
     per: Union[Unset, int] = 25,
@@ -33,8 +34,8 @@ def _get_kwargs(
     return _kwargs
 
 
-def _parse_response(
-    *, client: Union[AuthenticatedClient, Client], response: httpx.Response
+def _parse_response_getTagsEmployees(
+    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
 ) -> Optional[Union[BadRequest, GetTagsEmployeesResponse200]]:
     if response.status_code == 200:
         response_200 = GetTagsEmployeesResponse200.from_dict(response.json())
@@ -50,18 +51,19 @@ def _parse_response(
         return None
 
 
-def _build_response(
-    *, client: Union[AuthenticatedClient, Client], response: httpx.Response
+def _build_response_getTagsEmployees(
+    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
 ) -> Response[Union[BadRequest, GetTagsEmployeesResponse200]]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
         headers=response.headers,
-        parsed=_parse_response(client=client, response=response),
+        parsed=self._parse_response_getTagsEmployees(client=client, response=response),
     )
 
 
-def sync_detailed(
+async def asyncio_detailed_getTagsEmployees(
+    self,
     id: int,
     *,
     client: Union[AuthenticatedClient, Client],
@@ -85,76 +87,7 @@ def sync_detailed(
         Response[Union[BadRequest, GetTagsEmployeesResponse200]]
     """
 
-    kwargs = _get_kwargs(
-        id=id,
-        per=per,
-        page=page,
-    )
-
-    response = client.get_httpx_client().request(
-        **kwargs,
-    )
-
-    return _build_response(client=client, response=response)
-
-
-def sync(
-    id: int,
-    *,
-    client: Union[AuthenticatedClient, Client],
-    per: Union[Unset, int] = 25,
-    page: Union[Unset, int] = 1,
-) -> Optional[Union[BadRequest, GetTagsEmployeesResponse200]]:
-    """получение актуального списка сотрудников тега
-
-     Метод для получения актуального списка сотрудников тега.
-
-    Args:
-        id (int):
-        per (Union[Unset, int]):  Default: 25.
-        page (Union[Unset, int]):  Default: 1.
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Union[BadRequest, GetTagsEmployeesResponse200]
-    """
-
-    return sync_detailed(
-        id=id,
-        client=client,
-        per=per,
-        page=page,
-    ).parsed
-
-
-async def asyncio_detailed(
-    id: int,
-    *,
-    client: Union[AuthenticatedClient, Client],
-    per: Union[Unset, int] = 25,
-    page: Union[Unset, int] = 1,
-) -> Response[Union[BadRequest, GetTagsEmployeesResponse200]]:
-    """получение актуального списка сотрудников тега
-
-     Метод для получения актуального списка сотрудников тега.
-
-    Args:
-        id (int):
-        per (Union[Unset, int]):  Default: 25.
-        page (Union[Unset, int]):  Default: 1.
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Response[Union[BadRequest, GetTagsEmployeesResponse200]]
-    """
-
-    kwargs = _get_kwargs(
+    kwargs = self._get_kwargs_getTagsEmployees(
         id=id,
         per=per,
         page=page,
@@ -162,10 +95,11 @@ async def asyncio_detailed(
 
     response = await client.get_async_httpx_client().request(**kwargs)
 
-    return _build_response(client=client, response=response)
+    return self._build_response_getTagsEmployees(client=client, response=response)
 
 
 async def getTagsEmployees(
+    self,
     id: int,
     *,
     client: Union[AuthenticatedClient, Client],
@@ -190,7 +124,7 @@ async def getTagsEmployees(
     """
 
     return (
-        await asyncio_detailed(
+        await self.asyncio_detailed_getTagsEmployees(
             id=id,
             client=client,
             per=per,

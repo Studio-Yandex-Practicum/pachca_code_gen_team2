@@ -11,7 +11,8 @@ from ...models.post_tasks_response_400 import PostTasksResponse400
 from ...types import Response
 
 
-def _get_kwargs(
+def _get_kwargs_post_tasks(
+    self,
     *,
     body: PostTasksBody,
 ) -> dict[str, Any]:
@@ -31,8 +32,8 @@ def _get_kwargs(
     return _kwargs
 
 
-def _parse_response(
-    *, client: Union[AuthenticatedClient, Client], response: httpx.Response
+def _parse_response_post_tasks(
+    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
 ) -> Optional[Union[PostTasksResponse201, PostTasksResponse400]]:
     if response.status_code == 201:
         response_201 = PostTasksResponse201.from_dict(response.json())
@@ -48,18 +49,19 @@ def _parse_response(
         return None
 
 
-def _build_response(
-    *, client: Union[AuthenticatedClient, Client], response: httpx.Response
+def _build_response_post_tasks(
+    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
 ) -> Response[Union[PostTasksResponse201, PostTasksResponse400]]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
         headers=response.headers,
-        parsed=_parse_response(client=client, response=response),
+        parsed=self._parse_response_post_tasks(client=client, response=response),
     )
 
 
-def sync_detailed(
+async def asyncio_detailed_post_tasks(
+    self,
     *,
     client: Union[AuthenticatedClient, Client],
     body: PostTasksBody,
@@ -84,83 +86,17 @@ def sync_detailed(
         Response[Union[PostTasksResponse201, PostTasksResponse400]]
     """
 
-    kwargs = _get_kwargs(
-        body=body,
-    )
-
-    response = client.get_httpx_client().request(
-        **kwargs,
-    )
-
-    return _build_response(client=client, response=response)
-
-
-def sync(
-    *,
-    client: Union[AuthenticatedClient, Client],
-    body: PostTasksBody,
-) -> Optional[Union[PostTasksResponse201, PostTasksResponse400]]:
-    """Метод для создания нового напоминания.
-
-     При создании напоминания обязательным условием является указания типа напоминания: звонок, встреча,
-    простое напоминание, событие или письмо.
-    При этом не требуется дополнительное описание - вы просто создадите напоминание с соответствующим
-    текстом.
-    Если вы укажите описание напоминания - то именно оно и станет текстом напоминания.
-    У напоминания должны быть ответственные, если их не указывать - ответственным назначаетесь вы.
-
-    Args:
-        body (PostTasksBody):
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Union[PostTasksResponse201, PostTasksResponse400]
-    """
-
-    return sync_detailed(
-        client=client,
-        body=body,
-    ).parsed
-
-
-async def asyncio_detailed(
-    *,
-    client: Union[AuthenticatedClient, Client],
-    body: PostTasksBody,
-) -> Response[Union[PostTasksResponse201, PostTasksResponse400]]:
-    """Метод для создания нового напоминания.
-
-     При создании напоминания обязательным условием является указания типа напоминания: звонок, встреча,
-    простое напоминание, событие или письмо.
-    При этом не требуется дополнительное описание - вы просто создадите напоминание с соответствующим
-    текстом.
-    Если вы укажите описание напоминания - то именно оно и станет текстом напоминания.
-    У напоминания должны быть ответственные, если их не указывать - ответственным назначаетесь вы.
-
-    Args:
-        body (PostTasksBody):
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Response[Union[PostTasksResponse201, PostTasksResponse400]]
-    """
-
-    kwargs = _get_kwargs(
+    kwargs = self._get_kwargs_post_tasks(
         body=body,
     )
 
     response = await client.get_async_httpx_client().request(**kwargs)
 
-    return _build_response(client=client, response=response)
+    return self._build_response_post_tasks(client=client, response=response)
 
 
 async def post_tasks(
+    self,
     *,
     client: Union[AuthenticatedClient, Client],
     body: PostTasksBody,
@@ -186,7 +122,7 @@ async def post_tasks(
     """
 
     return (
-        await asyncio_detailed(
+        await self.asyncio_detailed_post_tasks(
             client=client,
             body=body,
         )

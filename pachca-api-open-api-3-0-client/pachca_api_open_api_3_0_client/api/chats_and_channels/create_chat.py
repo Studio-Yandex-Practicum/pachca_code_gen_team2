@@ -13,7 +13,8 @@ from ...models.create_chat_response_422 import CreateChatResponse422
 from ...types import Response
 
 
-def _get_kwargs(
+def _get_kwargs_createChat(
+    self,
     *,
     body: CreateChatBody,
 ) -> dict[str, Any]:
@@ -33,8 +34,8 @@ def _get_kwargs(
     return _kwargs
 
 
-def _parse_response(
-    *, client: Union[AuthenticatedClient, Client], response: httpx.Response
+def _parse_response_createChat(
+    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
 ) -> Optional[Union[CreateChatResponse201, CreateChatResponse400, CreateChatResponse404, CreateChatResponse422]]:
     if response.status_code == 201:
         response_201 = CreateChatResponse201.from_dict(response.json())
@@ -58,18 +59,19 @@ def _parse_response(
         return None
 
 
-def _build_response(
-    *, client: Union[AuthenticatedClient, Client], response: httpx.Response
+def _build_response_createChat(
+    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
 ) -> Response[Union[CreateChatResponse201, CreateChatResponse400, CreateChatResponse404, CreateChatResponse422]]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
         headers=response.headers,
-        parsed=_parse_response(client=client, response=response),
+        parsed=self._parse_response_createChat(client=client, response=response),
     )
 
 
-def sync_detailed(
+async def asyncio_detailed_createChat(
+    self,
     *,
     client: Union[AuthenticatedClient, Client],
     body: CreateChatBody,
@@ -90,75 +92,17 @@ def sync_detailed(
         Response[Union[CreateChatResponse201, CreateChatResponse400, CreateChatResponse404, CreateChatResponse422]]
      """
 
-    kwargs = _get_kwargs(
-        body=body,
-    )
-
-    response = client.get_httpx_client().request(
-        **kwargs,
-    )
-
-    return _build_response(client=client, response=response)
-
-
-def sync(
-    *,
-    client: Union[AuthenticatedClient, Client],
-    body: CreateChatBody,
-) -> Optional[Union[CreateChatResponse201, CreateChatResponse400, CreateChatResponse404, CreateChatResponse422]]:
-    r""" Новая беседа или канал
-
-     Метод для создания новой беседы или нового канала.
-    При создании беседы или канала вы автоматически становитесь участником.\
-
-    Args:
-        body (CreateChatBody):
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Union[CreateChatResponse201, CreateChatResponse400, CreateChatResponse404, CreateChatResponse422]
-     """
-
-    return sync_detailed(
-        client=client,
-        body=body,
-    ).parsed
-
-
-async def asyncio_detailed(
-    *,
-    client: Union[AuthenticatedClient, Client],
-    body: CreateChatBody,
-) -> Response[Union[CreateChatResponse201, CreateChatResponse400, CreateChatResponse404, CreateChatResponse422]]:
-    r""" Новая беседа или канал
-
-     Метод для создания новой беседы или нового канала.
-    При создании беседы или канала вы автоматически становитесь участником.\
-
-    Args:
-        body (CreateChatBody):
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Response[Union[CreateChatResponse201, CreateChatResponse400, CreateChatResponse404, CreateChatResponse422]]
-     """
-
-    kwargs = _get_kwargs(
+    kwargs = self._get_kwargs_createChat(
         body=body,
     )
 
     response = await client.get_async_httpx_client().request(**kwargs)
 
-    return _build_response(client=client, response=response)
+    return self._build_response_createChat(client=client, response=response)
 
 
 async def createChat(
+    self,
     *,
     client: Union[AuthenticatedClient, Client],
     body: CreateChatBody,
@@ -180,7 +124,7 @@ async def createChat(
      """
 
     return (
-        await asyncio_detailed(
+        await self.asyncio_detailed_createChat(
             client=client,
             body=body,
         )

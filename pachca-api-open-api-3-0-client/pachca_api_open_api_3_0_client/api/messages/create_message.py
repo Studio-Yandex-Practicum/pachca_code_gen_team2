@@ -12,7 +12,8 @@ from ...models.error import Error
 from ...types import Response
 
 
-def _get_kwargs(
+def _get_kwargs_createMessage(
+    self,
     *,
     body: CreateMessageBody,
 ) -> dict[str, Any]:
@@ -32,8 +33,8 @@ def _get_kwargs(
     return _kwargs
 
 
-def _parse_response(
-    *, client: Union[AuthenticatedClient, Client], response: httpx.Response
+def _parse_response_createMessage(
+    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
 ) -> Optional[Union[BadRequest, CreateMessageResponse201, list["Error"]]]:
     if response.status_code == 201:
         response_201 = CreateMessageResponse201.from_dict(response.json())
@@ -58,18 +59,19 @@ def _parse_response(
         return None
 
 
-def _build_response(
-    *, client: Union[AuthenticatedClient, Client], response: httpx.Response
+def _build_response_createMessage(
+    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
 ) -> Response[Union[BadRequest, CreateMessageResponse201, list["Error"]]]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
         headers=response.headers,
-        parsed=_parse_response(client=client, response=response),
+        parsed=self._parse_response_createMessage(client=client, response=response),
     )
 
 
-def sync_detailed(
+async def asyncio_detailed_createMessage(
+    self,
     *,
     client: Union[AuthenticatedClient, Client],
     body: CreateMessageBody,
@@ -101,97 +103,17 @@ def sync_detailed(
         Response[Union[BadRequest, CreateMessageResponse201, list['Error']]]
     """
 
-    kwargs = _get_kwargs(
-        body=body,
-    )
-
-    response = client.get_httpx_client().request(
-        **kwargs,
-    )
-
-    return _build_response(client=client, response=response)
-
-
-def sync(
-    *,
-    client: Union[AuthenticatedClient, Client],
-    body: CreateMessageBody,
-) -> Optional[Union[BadRequest, CreateMessageResponse201, list["Error"]]]:
-    r"""создание нового сообщения
-
-     Метод для отправки сообщения в беседу или канал,
-    личного сообщения пользователю или комментария в тред.
-
-    При использовании entity_type: \"discussion\" (или просто без указания entity_type)
-    допускается отправка любого chat_id в поле entity_id.
-    То есть, сообщение можно отправить зная только идентификатор чата.
-    При этом, вы имеете возможность отправить сообщение в тред по его идентификатору
-    или личное сообщение по идентификатору пользователя.
-
-    Для отправки личного сообщения пользователю создавать чат не требуется.
-    Достаточно указать entity_type: \"user\" и идентификатор пользователя.
-    Чат будет создан автоматически, если между вами ещё не было переписки.
-    Между двумя пользователями может быть только один личный чат.
-
-    Args:
-        body (CreateMessageBody):
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Union[BadRequest, CreateMessageResponse201, list['Error']]
-    """
-
-    return sync_detailed(
-        client=client,
-        body=body,
-    ).parsed
-
-
-async def asyncio_detailed(
-    *,
-    client: Union[AuthenticatedClient, Client],
-    body: CreateMessageBody,
-) -> Response[Union[BadRequest, CreateMessageResponse201, list["Error"]]]:
-    r"""создание нового сообщения
-
-     Метод для отправки сообщения в беседу или канал,
-    личного сообщения пользователю или комментария в тред.
-
-    При использовании entity_type: \"discussion\" (или просто без указания entity_type)
-    допускается отправка любого chat_id в поле entity_id.
-    То есть, сообщение можно отправить зная только идентификатор чата.
-    При этом, вы имеете возможность отправить сообщение в тред по его идентификатору
-    или личное сообщение по идентификатору пользователя.
-
-    Для отправки личного сообщения пользователю создавать чат не требуется.
-    Достаточно указать entity_type: \"user\" и идентификатор пользователя.
-    Чат будет создан автоматически, если между вами ещё не было переписки.
-    Между двумя пользователями может быть только один личный чат.
-
-    Args:
-        body (CreateMessageBody):
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Response[Union[BadRequest, CreateMessageResponse201, list['Error']]]
-    """
-
-    kwargs = _get_kwargs(
+    kwargs = self._get_kwargs_createMessage(
         body=body,
     )
 
     response = await client.get_async_httpx_client().request(**kwargs)
 
-    return _build_response(client=client, response=response)
+    return self._build_response_createMessage(client=client, response=response)
 
 
 async def createMessage(
+    self,
     *,
     client: Union[AuthenticatedClient, Client],
     body: CreateMessageBody,
@@ -224,7 +146,7 @@ async def createMessage(
     """
 
     return (
-        await asyncio_detailed(
+        await self.asyncio_detailed_createMessage(
             client=client,
             body=body,
         )

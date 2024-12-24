@@ -10,7 +10,8 @@ from ...models.post_members_to_chats_body import PostMembersToChatsBody
 from ...types import Response
 
 
-def _get_kwargs(
+def _get_kwargs_postMembersToChats(
+    self,
     id: int,
     *,
     body: PostMembersToChatsBody,
@@ -31,8 +32,8 @@ def _get_kwargs(
     return _kwargs
 
 
-def _parse_response(
-    *, client: Union[AuthenticatedClient, Client], response: httpx.Response
+def _parse_response_postMembersToChats(
+    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
 ) -> Optional[Union[Any, list["ErrorsCode"]]]:
     if response.status_code == 201:
         response_201 = cast(Any, None)
@@ -52,18 +53,19 @@ def _parse_response(
         return None
 
 
-def _build_response(
-    *, client: Union[AuthenticatedClient, Client], response: httpx.Response
+def _build_response_postMembersToChats(
+    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
 ) -> Response[Union[Any, list["ErrorsCode"]]]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
         headers=response.headers,
-        parsed=_parse_response(client=client, response=response),
+        parsed=self._parse_response_postMembersToChats(client=client, response=response),
     )
 
 
-def sync_detailed(
+async def asyncio_detailed_postMembersToChats(
+    self,
     id: int,
     *,
     client: Union[AuthenticatedClient, Client],
@@ -85,80 +87,18 @@ def sync_detailed(
         Response[Union[Any, list['ErrorsCode']]]
     """
 
-    kwargs = _get_kwargs(
-        id=id,
-        body=body,
-    )
-
-    response = client.get_httpx_client().request(
-        **kwargs,
-    )
-
-    return _build_response(client=client, response=response)
-
-
-def sync(
-    id: int,
-    *,
-    client: Union[AuthenticatedClient, Client],
-    body: PostMembersToChatsBody,
-) -> Optional[Union[Any, list["ErrorsCode"]]]:
-    """добавление пользователей в состав участников
-
-     Метод для добавления пользователей в состав участников беседы или канала.
-
-    Args:
-        id (int):  Example: 533.
-        body (PostMembersToChatsBody):
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Union[Any, list['ErrorsCode']]
-    """
-
-    return sync_detailed(
-        id=id,
-        client=client,
-        body=body,
-    ).parsed
-
-
-async def asyncio_detailed(
-    id: int,
-    *,
-    client: Union[AuthenticatedClient, Client],
-    body: PostMembersToChatsBody,
-) -> Response[Union[Any, list["ErrorsCode"]]]:
-    """добавление пользователей в состав участников
-
-     Метод для добавления пользователей в состав участников беседы или канала.
-
-    Args:
-        id (int):  Example: 533.
-        body (PostMembersToChatsBody):
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Response[Union[Any, list['ErrorsCode']]]
-    """
-
-    kwargs = _get_kwargs(
+    kwargs = self._get_kwargs_postMembersToChats(
         id=id,
         body=body,
     )
 
     response = await client.get_async_httpx_client().request(**kwargs)
 
-    return _build_response(client=client, response=response)
+    return self._build_response_postMembersToChats(client=client, response=response)
 
 
 async def postMembersToChats(
+    self,
     id: int,
     *,
     client: Union[AuthenticatedClient, Client],
@@ -181,7 +121,7 @@ async def postMembersToChats(
     """
 
     return (
-        await asyncio_detailed(
+        await self.asyncio_detailed_postMembersToChats(
             id=id,
             client=client,
             body=body,

@@ -10,7 +10,8 @@ from ...models.get_common_methods_response_200 import GetCommonMethodsResponse20
 from ...types import UNSET, Response
 
 
-def _get_kwargs(
+def _get_kwargs_getCommonMethods(
+    self,
     *,
     entity_type: str,
 ) -> dict[str, Any]:
@@ -29,8 +30,8 @@ def _get_kwargs(
     return _kwargs
 
 
-def _parse_response(
-    *, client: Union[AuthenticatedClient, Client], response: httpx.Response
+def _parse_response_getCommonMethods(
+    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
 ) -> Optional[Union[BadRequest, GetCommonMethodsResponse200]]:
     if response.status_code == 200:
         response_200 = GetCommonMethodsResponse200.from_dict(response.json())
@@ -46,18 +47,19 @@ def _parse_response(
         return None
 
 
-def _build_response(
-    *, client: Union[AuthenticatedClient, Client], response: httpx.Response
+def _build_response_getCommonMethods(
+    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
 ) -> Response[Union[BadRequest, GetCommonMethodsResponse200]]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
         headers=response.headers,
-        parsed=_parse_response(client=client, response=response),
+        parsed=self._parse_response_getCommonMethods(client=client, response=response),
     )
 
 
-def sync_detailed(
+async def asyncio_detailed_getCommonMethods(
+    self,
     *,
     client: Union[AuthenticatedClient, Client],
     entity_type: str,
@@ -78,75 +80,17 @@ def sync_detailed(
         Response[Union[BadRequest, GetCommonMethodsResponse200]]
     """
 
-    kwargs = _get_kwargs(
-        entity_type=entity_type,
-    )
-
-    response = client.get_httpx_client().request(
-        **kwargs,
-    )
-
-    return _build_response(client=client, response=response)
-
-
-def sync(
-    *,
-    client: Union[AuthenticatedClient, Client],
-    entity_type: str,
-) -> Optional[Union[BadRequest, GetCommonMethodsResponse200]]:
-    """Список дополнительных полей
-
-     Метод для получения актуального списка дополнительных полей участников и напоминаний в вашей
-    компании.
-
-    Args:
-        entity_type (str):
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Union[BadRequest, GetCommonMethodsResponse200]
-    """
-
-    return sync_detailed(
-        client=client,
-        entity_type=entity_type,
-    ).parsed
-
-
-async def asyncio_detailed(
-    *,
-    client: Union[AuthenticatedClient, Client],
-    entity_type: str,
-) -> Response[Union[BadRequest, GetCommonMethodsResponse200]]:
-    """Список дополнительных полей
-
-     Метод для получения актуального списка дополнительных полей участников и напоминаний в вашей
-    компании.
-
-    Args:
-        entity_type (str):
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Response[Union[BadRequest, GetCommonMethodsResponse200]]
-    """
-
-    kwargs = _get_kwargs(
+    kwargs = self._get_kwargs_getCommonMethods(
         entity_type=entity_type,
     )
 
     response = await client.get_async_httpx_client().request(**kwargs)
 
-    return _build_response(client=client, response=response)
+    return self._build_response_getCommonMethods(client=client, response=response)
 
 
 async def getCommonMethods(
+    self,
     *,
     client: Union[AuthenticatedClient, Client],
     entity_type: str,
@@ -168,7 +112,7 @@ async def getCommonMethods(
     """
 
     return (
-        await asyncio_detailed(
+        await self.asyncio_detailed_getCommonMethods(
             client=client,
             entity_type=entity_type,
         )
