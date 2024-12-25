@@ -1,11 +1,5 @@
 import asyncio
 
-from pachca_api_open_api_3_0_client.api.chats_and_channels.create_chat import (
-    createChat,
-)
-from pachca_api_open_api_3_0_client.api.employees.get_employees import (
-    getEmployees,
-)
 from pachca_api_open_api_3_0_client.client import AuthenticatedClient, Pachca
 from pachca_api_open_api_3_0_client.models.create_chat_body import (
     CreateChatBody,
@@ -31,7 +25,6 @@ async def main():
     task2 = asyncio.create_task(pachca.createChat(body=chat_body))
     task3 = asyncio.create_task(pachca.getEmployees())
 
-    print('*' * 30)
     print(await task2)
     print('*' * 30)
     print(await task3)
