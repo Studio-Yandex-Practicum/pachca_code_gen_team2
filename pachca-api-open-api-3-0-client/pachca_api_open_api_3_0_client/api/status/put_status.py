@@ -4,7 +4,6 @@ from typing import Any, Optional, Union
 import httpx
 
 from ... import errors
-from ...client import AuthenticatedClient, Client
 from ...models.bad_request import BadRequest
 from ...models.put_status_response_201 import PutStatusResponse201
 from ...models.query_status import QueryStatus
@@ -13,7 +12,6 @@ from ...types import Response
 
 def _get_kwargs_putStatus(
     self,
-    *,
     body: QueryStatus,
 ) -> dict[str, Any]:
     headers: dict[str, Any] = {}
@@ -32,9 +30,7 @@ def _get_kwargs_putStatus(
     return _kwargs
 
 
-def _parse_response_putStatus(
-    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[BadRequest, PutStatusResponse201]]:
+def _parse_response_putStatus(self, response: httpx.Response) -> Optional[Union[BadRequest, PutStatusResponse201]]:
     if response.status_code == 201:
         response_201 = PutStatusResponse201.from_dict(response.json())
 
@@ -43,27 +39,23 @@ def _parse_response_putStatus(
         response_400 = BadRequest.from_dict(response.json())
 
         return response_400
-    if client.raise_on_unexpected_status:
+    if self.client.raise_on_unexpected_status:
         raise errors.UnexpectedStatus(response.status_code, response.content)
     else:
         return None
 
 
-def _build_response_putStatus(
-    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[BadRequest, PutStatusResponse201]]:
+def _build_response_putStatus(self, response: httpx.Response) -> Response[Union[BadRequest, PutStatusResponse201]]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
         headers=response.headers,
-        parsed=self._parse_response_putStatus(client=client, response=response),
+        parsed=self._parse_response_putStatus(response=response),
     )
 
 
 async def asyncio_detailed_putStatus(
     self,
-    *,
-    client: Union[AuthenticatedClient, Client],
     body: QueryStatus,
 ) -> Response[Union[BadRequest, PutStatusResponse201]]:
     """новый статус
@@ -85,15 +77,13 @@ async def asyncio_detailed_putStatus(
         body=body,
     )
 
-    response = await client.get_async_httpx_client().request(**kwargs)
+    response = await self.client.get_async_httpx_client().request(**kwargs)
 
-    return self._build_response_putStatus(client=client, response=response)
+    return self._build_response_putStatus(response=response)
 
 
 async def putStatus(
     self,
-    *,
-    client: Union[AuthenticatedClient, Client],
     body: QueryStatus,
 ) -> Optional[Union[BadRequest, PutStatusResponse201]]:
     """новый статус
@@ -113,7 +103,6 @@ async def putStatus(
 
     return (
         await self.asyncio_detailed_putStatus(
-            client=client,
             body=body,
         )
     ).parsed

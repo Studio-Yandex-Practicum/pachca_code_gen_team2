@@ -4,7 +4,6 @@ from typing import Any, Optional, Union
 import httpx
 
 from ... import errors
-from ...client import AuthenticatedClient, Client
 from ...models.get_chat_response_200 import GetChatResponse200
 from ...models.get_chat_response_404 import GetChatResponse404
 from ...types import Response
@@ -22,9 +21,7 @@ def _get_kwargs_getChat(
     return _kwargs
 
 
-def _parse_response_getChat(
-    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[GetChatResponse200, GetChatResponse404]]:
+def _parse_response_getChat(self, response: httpx.Response) -> Optional[Union[GetChatResponse200, GetChatResponse404]]:
     if response.status_code == 200:
         response_200 = GetChatResponse200.from_dict(response.json())
 
@@ -33,28 +30,24 @@ def _parse_response_getChat(
         response_404 = GetChatResponse404.from_dict(response.json())
 
         return response_404
-    if client.raise_on_unexpected_status:
+    if self.client.raise_on_unexpected_status:
         raise errors.UnexpectedStatus(response.status_code, response.content)
     else:
         return None
 
 
-def _build_response_getChat(
-    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[GetChatResponse200, GetChatResponse404]]:
+def _build_response_getChat(self, response: httpx.Response) -> Response[Union[GetChatResponse200, GetChatResponse404]]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
         headers=response.headers,
-        parsed=self._parse_response_getChat(client=client, response=response),
+        parsed=self._parse_response_getChat(response=response),
     )
 
 
 async def asyncio_detailed_getChat(
     self,
     id: int,
-    *,
-    client: Union[AuthenticatedClient, Client],
 ) -> Response[Union[GetChatResponse200, GetChatResponse404]]:
     """Информация о беседе или канале
 
@@ -76,16 +69,14 @@ async def asyncio_detailed_getChat(
         id=id,
     )
 
-    response = await client.get_async_httpx_client().request(**kwargs)
+    response = await self.client.get_async_httpx_client().request(**kwargs)
 
-    return self._build_response_getChat(client=client, response=response)
+    return self._build_response_getChat(response=response)
 
 
 async def getChat(
     self,
     id: int,
-    *,
-    client: Union[AuthenticatedClient, Client],
 ) -> Optional[Union[GetChatResponse200, GetChatResponse404]]:
     """Информация о беседе или канале
 
@@ -106,6 +97,5 @@ async def getChat(
     return (
         await self.asyncio_detailed_getChat(
             id=id,
-            client=client,
         )
     ).parsed

@@ -1,10 +1,9 @@
 from http import HTTPStatus
-from typing import Any, Optional, Union
+from typing import Any, Optional
 
 import httpx
 
 from ... import errors
-from ...client import AuthenticatedClient, Client
 from ...models.file_response import FileResponse
 from ...types import Response
 
@@ -20,34 +19,28 @@ def _get_kwargs_getUploads(
     return _kwargs
 
 
-def _parse_response_getUploads(
-    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[FileResponse]:
+def _parse_response_getUploads(self, response: httpx.Response) -> Optional[FileResponse]:
     if response.status_code == 200:
         response_200 = FileResponse.from_dict(response.json())
 
         return response_200
-    if client.raise_on_unexpected_status:
+    if self.client.raise_on_unexpected_status:
         raise errors.UnexpectedStatus(response.status_code, response.content)
     else:
         return None
 
 
-def _build_response_getUploads(
-    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[FileResponse]:
+def _build_response_getUploads(self, response: httpx.Response) -> Response[FileResponse]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
         headers=response.headers,
-        parsed=self._parse_response_getUploads(client=client, response=response),
+        parsed=self._parse_response_getUploads(response=response),
     )
 
 
 async def asyncio_detailed_getUploads(
     self,
-    *,
-    client: Union[AuthenticatedClient, Client],
 ) -> Response[FileResponse]:
     """Получение подписи и ключа для загрузки файла
 
@@ -63,15 +56,13 @@ async def asyncio_detailed_getUploads(
 
     kwargs = self._get_kwargs_getUploads()
 
-    response = await client.get_async_httpx_client().request(**kwargs)
+    response = await self.client.get_async_httpx_client().request(**kwargs)
 
-    return self._build_response_getUploads(client=client, response=response)
+    return self._build_response_getUploads(response=response)
 
 
 async def getUploads(
     self,
-    *,
-    client: Union[AuthenticatedClient, Client],
 ) -> Optional[FileResponse]:
     """Получение подписи и ключа для загрузки файла
 
@@ -85,8 +76,4 @@ async def getUploads(
         FileResponse
     """
 
-    return (
-        await self.asyncio_detailed_getUploads(
-            client=client,
-        )
-    ).parsed
+    return (await self.asyncio_detailed_getUploads()).parsed

@@ -4,7 +4,6 @@ from typing import Any, Optional, Union
 import httpx
 
 from ... import errors
-from ...client import AuthenticatedClient, Client
 from ...models.get_employee_response_200 import GetEmployeeResponse200
 from ...models.not_found import NotFound
 from ...types import Response
@@ -22,9 +21,7 @@ def _get_kwargs_getEmployee(
     return _kwargs
 
 
-def _parse_response_getEmployee(
-    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[GetEmployeeResponse200, NotFound]]:
+def _parse_response_getEmployee(self, response: httpx.Response) -> Optional[Union[GetEmployeeResponse200, NotFound]]:
     if response.status_code == 200:
         response_200 = GetEmployeeResponse200.from_dict(response.json())
 
@@ -33,28 +30,24 @@ def _parse_response_getEmployee(
         response_404 = NotFound.from_dict(response.json())
 
         return response_404
-    if client.raise_on_unexpected_status:
+    if self.client.raise_on_unexpected_status:
         raise errors.UnexpectedStatus(response.status_code, response.content)
     else:
         return None
 
 
-def _build_response_getEmployee(
-    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[GetEmployeeResponse200, NotFound]]:
+def _build_response_getEmployee(self, response: httpx.Response) -> Response[Union[GetEmployeeResponse200, NotFound]]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
         headers=response.headers,
-        parsed=self._parse_response_getEmployee(client=client, response=response),
+        parsed=self._parse_response_getEmployee(response=response),
     )
 
 
 async def asyncio_detailed_getEmployee(
     self,
     id: int,
-    *,
-    client: Union[AuthenticatedClient, Client],
 ) -> Response[Union[GetEmployeeResponse200, NotFound]]:
     """получение информации о сотруднике
 
@@ -76,16 +69,14 @@ async def asyncio_detailed_getEmployee(
         id=id,
     )
 
-    response = await client.get_async_httpx_client().request(**kwargs)
+    response = await self.client.get_async_httpx_client().request(**kwargs)
 
-    return self._build_response_getEmployee(client=client, response=response)
+    return self._build_response_getEmployee(response=response)
 
 
 async def getEmployee(
     self,
     id: int,
-    *,
-    client: Union[AuthenticatedClient, Client],
 ) -> Optional[Union[GetEmployeeResponse200, NotFound]]:
     """получение информации о сотруднике
 
@@ -106,6 +97,5 @@ async def getEmployee(
     return (
         await self.asyncio_detailed_getEmployee(
             id=id,
-            client=client,
         )
     ).parsed

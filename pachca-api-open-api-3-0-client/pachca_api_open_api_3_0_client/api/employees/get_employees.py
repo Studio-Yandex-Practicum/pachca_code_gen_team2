@@ -4,14 +4,12 @@ from typing import Any, Optional, Union
 import httpx
 
 from ... import errors
-from ...client import AuthenticatedClient, Client
 from ...models.get_employees_response_200 import GetEmployeesResponse200
 from ...types import UNSET, Response, Unset
 
 
 def _get_kwargs_getEmployees(
     self,
-    *,
     per: Union[Unset, int] = 50,
     page: Union[Unset, int] = 1,
     query: Union[Unset, str] = UNSET,
@@ -35,34 +33,28 @@ def _get_kwargs_getEmployees(
     return _kwargs
 
 
-def _parse_response_getEmployees(
-    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[GetEmployeesResponse200]:
+def _parse_response_getEmployees(self, response: httpx.Response) -> Optional[GetEmployeesResponse200]:
     if response.status_code == 200:
         response_200 = GetEmployeesResponse200.from_dict(response.json())
 
         return response_200
-    if client.raise_on_unexpected_status:
+    if self.client.raise_on_unexpected_status:
         raise errors.UnexpectedStatus(response.status_code, response.content)
     else:
         return None
 
 
-def _build_response_getEmployees(
-    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[GetEmployeesResponse200]:
+def _build_response_getEmployees(self, response: httpx.Response) -> Response[GetEmployeesResponse200]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
         headers=response.headers,
-        parsed=self._parse_response_getEmployees(client=client, response=response),
+        parsed=self._parse_response_getEmployees(response=response),
     )
 
 
 async def asyncio_detailed_getEmployees(
     self,
-    *,
-    client: Union[AuthenticatedClient, Client],
     per: Union[Unset, int] = 50,
     page: Union[Unset, int] = 1,
     query: Union[Unset, str] = UNSET,
@@ -90,15 +82,13 @@ async def asyncio_detailed_getEmployees(
         query=query,
     )
 
-    response = await client.get_async_httpx_client().request(**kwargs)
+    response = await self.client.get_async_httpx_client().request(**kwargs)
 
-    return self._build_response_getEmployees(client=client, response=response)
+    return self._build_response_getEmployees(response=response)
 
 
 async def getEmployees(
     self,
-    *,
-    client: Union[AuthenticatedClient, Client],
     per: Union[Unset, int] = 50,
     page: Union[Unset, int] = 1,
     query: Union[Unset, str] = UNSET,
@@ -122,7 +112,6 @@ async def getEmployees(
 
     return (
         await self.asyncio_detailed_getEmployees(
-            client=client,
             per=per,
             page=page,
             query=query,

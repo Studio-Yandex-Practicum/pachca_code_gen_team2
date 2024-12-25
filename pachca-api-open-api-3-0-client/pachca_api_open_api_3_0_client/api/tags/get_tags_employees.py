@@ -4,7 +4,6 @@ from typing import Any, Optional, Union
 import httpx
 
 from ... import errors
-from ...client import AuthenticatedClient, Client
 from ...models.bad_request import BadRequest
 from ...models.get_tags_employees_response_200 import GetTagsEmployeesResponse200
 from ...types import UNSET, Response, Unset
@@ -13,7 +12,6 @@ from ...types import UNSET, Response, Unset
 def _get_kwargs_getTagsEmployees(
     self,
     id: int,
-    *,
     per: Union[Unset, int] = 25,
     page: Union[Unset, int] = 1,
 ) -> dict[str, Any]:
@@ -35,7 +33,7 @@ def _get_kwargs_getTagsEmployees(
 
 
 def _parse_response_getTagsEmployees(
-    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
+    self, response: httpx.Response
 ) -> Optional[Union[BadRequest, GetTagsEmployeesResponse200]]:
     if response.status_code == 200:
         response_200 = GetTagsEmployeesResponse200.from_dict(response.json())
@@ -45,28 +43,26 @@ def _parse_response_getTagsEmployees(
         response_400 = BadRequest.from_dict(response.json())
 
         return response_400
-    if client.raise_on_unexpected_status:
+    if self.client.raise_on_unexpected_status:
         raise errors.UnexpectedStatus(response.status_code, response.content)
     else:
         return None
 
 
 def _build_response_getTagsEmployees(
-    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
+    self, response: httpx.Response
 ) -> Response[Union[BadRequest, GetTagsEmployeesResponse200]]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
         headers=response.headers,
-        parsed=self._parse_response_getTagsEmployees(client=client, response=response),
+        parsed=self._parse_response_getTagsEmployees(response=response),
     )
 
 
 async def asyncio_detailed_getTagsEmployees(
     self,
     id: int,
-    *,
-    client: Union[AuthenticatedClient, Client],
     per: Union[Unset, int] = 25,
     page: Union[Unset, int] = 1,
 ) -> Response[Union[BadRequest, GetTagsEmployeesResponse200]]:
@@ -93,16 +89,14 @@ async def asyncio_detailed_getTagsEmployees(
         page=page,
     )
 
-    response = await client.get_async_httpx_client().request(**kwargs)
+    response = await self.client.get_async_httpx_client().request(**kwargs)
 
-    return self._build_response_getTagsEmployees(client=client, response=response)
+    return self._build_response_getTagsEmployees(response=response)
 
 
 async def getTagsEmployees(
     self,
     id: int,
-    *,
-    client: Union[AuthenticatedClient, Client],
     per: Union[Unset, int] = 25,
     page: Union[Unset, int] = 1,
 ) -> Optional[Union[BadRequest, GetTagsEmployeesResponse200]]:
@@ -126,7 +120,6 @@ async def getTagsEmployees(
     return (
         await self.asyncio_detailed_getTagsEmployees(
             id=id,
-            client=client,
             per=per,
             page=page,
         )

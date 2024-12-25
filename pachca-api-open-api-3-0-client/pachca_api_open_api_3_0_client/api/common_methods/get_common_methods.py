@@ -4,7 +4,6 @@ from typing import Any, Optional, Union
 import httpx
 
 from ... import errors
-from ...client import AuthenticatedClient, Client
 from ...models.bad_request import BadRequest
 from ...models.get_common_methods_response_200 import GetCommonMethodsResponse200
 from ...types import UNSET, Response
@@ -12,7 +11,6 @@ from ...types import UNSET, Response
 
 def _get_kwargs_getCommonMethods(
     self,
-    *,
     entity_type: str,
 ) -> dict[str, Any]:
     params: dict[str, Any] = {}
@@ -31,7 +29,7 @@ def _get_kwargs_getCommonMethods(
 
 
 def _parse_response_getCommonMethods(
-    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
+    self, response: httpx.Response
 ) -> Optional[Union[BadRequest, GetCommonMethodsResponse200]]:
     if response.status_code == 200:
         response_200 = GetCommonMethodsResponse200.from_dict(response.json())
@@ -41,27 +39,25 @@ def _parse_response_getCommonMethods(
         response_400 = BadRequest.from_dict(response.json())
 
         return response_400
-    if client.raise_on_unexpected_status:
+    if self.client.raise_on_unexpected_status:
         raise errors.UnexpectedStatus(response.status_code, response.content)
     else:
         return None
 
 
 def _build_response_getCommonMethods(
-    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
+    self, response: httpx.Response
 ) -> Response[Union[BadRequest, GetCommonMethodsResponse200]]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
         headers=response.headers,
-        parsed=self._parse_response_getCommonMethods(client=client, response=response),
+        parsed=self._parse_response_getCommonMethods(response=response),
     )
 
 
 async def asyncio_detailed_getCommonMethods(
     self,
-    *,
-    client: Union[AuthenticatedClient, Client],
     entity_type: str,
 ) -> Response[Union[BadRequest, GetCommonMethodsResponse200]]:
     """Список дополнительных полей
@@ -84,15 +80,13 @@ async def asyncio_detailed_getCommonMethods(
         entity_type=entity_type,
     )
 
-    response = await client.get_async_httpx_client().request(**kwargs)
+    response = await self.client.get_async_httpx_client().request(**kwargs)
 
-    return self._build_response_getCommonMethods(client=client, response=response)
+    return self._build_response_getCommonMethods(response=response)
 
 
 async def getCommonMethods(
     self,
-    *,
-    client: Union[AuthenticatedClient, Client],
     entity_type: str,
 ) -> Optional[Union[BadRequest, GetCommonMethodsResponse200]]:
     """Список дополнительных полей
@@ -113,7 +107,6 @@ async def getCommonMethods(
 
     return (
         await self.asyncio_detailed_getCommonMethods(
-            client=client,
             entity_type=entity_type,
         )
     ).parsed

@@ -4,7 +4,6 @@ from typing import Any, Optional, Union, cast
 import httpx
 
 from ... import errors
-from ...client import AuthenticatedClient, Client
 from ...models.errors_code import ErrorsCode
 from ...types import Response
 
@@ -21,9 +20,7 @@ def _get_kwargs_delete_chats_id_leave(
     return _kwargs
 
 
-def _parse_response_delete_chats_id_leave(
-    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[Any, list["ErrorsCode"]]]:
+def _parse_response_delete_chats_id_leave(self, response: httpx.Response) -> Optional[Union[Any, list["ErrorsCode"]]]:
     if response.status_code == 200:
         response_200 = cast(Any, None)
         return response_200
@@ -45,28 +42,24 @@ def _parse_response_delete_chats_id_leave(
             response_404.append(response_404_item)
 
         return response_404
-    if client.raise_on_unexpected_status:
+    if self.client.raise_on_unexpected_status:
         raise errors.UnexpectedStatus(response.status_code, response.content)
     else:
         return None
 
 
-def _build_response_delete_chats_id_leave(
-    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[Any, list["ErrorsCode"]]]:
+def _build_response_delete_chats_id_leave(self, response: httpx.Response) -> Response[Union[Any, list["ErrorsCode"]]]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
         headers=response.headers,
-        parsed=self._parse_response_delete_chats_id_leave(client=client, response=response),
+        parsed=self._parse_response_delete_chats_id_leave(response=response),
     )
 
 
 async def asyncio_detailed_delete_chats_id_leave(
     self,
     id: int,
-    *,
-    client: Union[AuthenticatedClient, Client],
 ) -> Response[Union[Any, list["ErrorsCode"]]]:
     """Выход из беседы или канала
 
@@ -87,16 +80,14 @@ async def asyncio_detailed_delete_chats_id_leave(
         id=id,
     )
 
-    response = await client.get_async_httpx_client().request(**kwargs)
+    response = await self.client.get_async_httpx_client().request(**kwargs)
 
-    return self._build_response_delete_chats_id_leave(client=client, response=response)
+    return self._build_response_delete_chats_id_leave(response=response)
 
 
 async def delete_chats_id_leave(
     self,
     id: int,
-    *,
-    client: Union[AuthenticatedClient, Client],
 ) -> Optional[Union[Any, list["ErrorsCode"]]]:
     """Выход из беседы или канала
 
@@ -116,6 +107,5 @@ async def delete_chats_id_leave(
     return (
         await self.asyncio_detailed_delete_chats_id_leave(
             id=id,
-            client=client,
         )
     ).parsed

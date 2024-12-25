@@ -4,7 +4,6 @@ from typing import Any, Optional, Union
 import httpx
 
 from ... import errors
-from ...client import AuthenticatedClient, Client
 from ...models.errors_code import ErrorsCode
 from ...models.put_messages_id_body import PutMessagesIdBody
 from ...models.put_messages_id_response_200 import PutMessagesIdResponse200
@@ -14,7 +13,6 @@ from ...types import Response
 def _get_kwargs_put_messages_id(
     self,
     id: int,
-    *,
     body: PutMessagesIdBody,
 ) -> dict[str, Any]:
     headers: dict[str, Any] = {}
@@ -34,7 +32,7 @@ def _get_kwargs_put_messages_id(
 
 
 def _parse_response_put_messages_id(
-    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
+    self, response: httpx.Response
 ) -> Optional[Union[PutMessagesIdResponse200, list["ErrorsCode"]]]:
     if response.status_code == 200:
         response_200 = PutMessagesIdResponse200.from_dict(response.json())
@@ -58,28 +56,26 @@ def _parse_response_put_messages_id(
             response_404.append(response_404_item)
 
         return response_404
-    if client.raise_on_unexpected_status:
+    if self.client.raise_on_unexpected_status:
         raise errors.UnexpectedStatus(response.status_code, response.content)
     else:
         return None
 
 
 def _build_response_put_messages_id(
-    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
+    self, response: httpx.Response
 ) -> Response[Union[PutMessagesIdResponse200, list["ErrorsCode"]]]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
         headers=response.headers,
-        parsed=self._parse_response_put_messages_id(client=client, response=response),
+        parsed=self._parse_response_put_messages_id(response=response),
     )
 
 
 async def asyncio_detailed_put_messages_id(
     self,
     id: int,
-    *,
-    client: Union[AuthenticatedClient, Client],
     body: PutMessagesIdBody,
 ) -> Response[Union[PutMessagesIdResponse200, list["ErrorsCode"]]]:
     """Редактирование сообщения
@@ -103,16 +99,14 @@ async def asyncio_detailed_put_messages_id(
         body=body,
     )
 
-    response = await client.get_async_httpx_client().request(**kwargs)
+    response = await self.client.get_async_httpx_client().request(**kwargs)
 
-    return self._build_response_put_messages_id(client=client, response=response)
+    return self._build_response_put_messages_id(response=response)
 
 
 async def put_messages_id(
     self,
     id: int,
-    *,
-    client: Union[AuthenticatedClient, Client],
     body: PutMessagesIdBody,
 ) -> Optional[Union[PutMessagesIdResponse200, list["ErrorsCode"]]]:
     """Редактирование сообщения
@@ -134,7 +128,6 @@ async def put_messages_id(
     return (
         await self.asyncio_detailed_put_messages_id(
             id=id,
-            client=client,
             body=body,
         )
     ).parsed

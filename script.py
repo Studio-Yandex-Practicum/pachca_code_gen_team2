@@ -4,15 +4,16 @@ import os
 from jinja2 import Environment, FileSystemLoader
 
 
-def extract_functions_and_imports_from_file(file_path):
+def extract_functions_and_imports_from_file(file_path) -> None:
     with open(file_path, "r", encoding="utf-8") as file:
         tree = ast.parse(file.read())
 
     functions = []
     imports = []
-    
+
     for node in ast.walk(tree):
-        if isinstance(node, ast.AsyncFunctionDef) or isinstance(node, ast.FunctionDef):
+        if isinstance(node, ast.AsyncFunctionDef) or isinstance(node,
+                                                                ast.FunctionDef):
             functions.append(ast.unparse(node))
         elif isinstance(node, ast.ImportFrom):
             # Убираем пробел после 'from' и обрабатываем импорты

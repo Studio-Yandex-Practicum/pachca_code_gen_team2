@@ -4,7 +4,6 @@ from typing import Any, Optional, Union
 import httpx
 
 from ... import errors
-from ...client import AuthenticatedClient, Client
 from ...models.get_message_response_200 import GetMessageResponse200
 from ...models.not_found import NotFound
 from ...types import Response
@@ -22,9 +21,7 @@ def _get_kwargs_getMessage(
     return _kwargs
 
 
-def _parse_response_getMessage(
-    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[GetMessageResponse200, NotFound]]:
+def _parse_response_getMessage(self, response: httpx.Response) -> Optional[Union[GetMessageResponse200, NotFound]]:
     if response.status_code == 200:
         response_200 = GetMessageResponse200.from_dict(response.json())
 
@@ -33,28 +30,24 @@ def _parse_response_getMessage(
         response_404 = NotFound.from_dict(response.json())
 
         return response_404
-    if client.raise_on_unexpected_status:
+    if self.client.raise_on_unexpected_status:
         raise errors.UnexpectedStatus(response.status_code, response.content)
     else:
         return None
 
 
-def _build_response_getMessage(
-    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[GetMessageResponse200, NotFound]]:
+def _build_response_getMessage(self, response: httpx.Response) -> Response[Union[GetMessageResponse200, NotFound]]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
         headers=response.headers,
-        parsed=self._parse_response_getMessage(client=client, response=response),
+        parsed=self._parse_response_getMessage(response=response),
     )
 
 
 async def asyncio_detailed_getMessage(
     self,
     id: int,
-    *,
-    client: Union[AuthenticatedClient, Client],
 ) -> Response[Union[GetMessageResponse200, NotFound]]:
     """получение информации о сообщении
 
@@ -77,16 +70,14 @@ async def asyncio_detailed_getMessage(
         id=id,
     )
 
-    response = await client.get_async_httpx_client().request(**kwargs)
+    response = await self.client.get_async_httpx_client().request(**kwargs)
 
-    return self._build_response_getMessage(client=client, response=response)
+    return self._build_response_getMessage(response=response)
 
 
 async def getMessage(
     self,
     id: int,
-    *,
-    client: Union[AuthenticatedClient, Client],
 ) -> Optional[Union[GetMessageResponse200, NotFound]]:
     """получение информации о сообщении
 
@@ -108,6 +99,5 @@ async def getMessage(
     return (
         await self.asyncio_detailed_getMessage(
             id=id,
-            client=client,
         )
     ).parsed

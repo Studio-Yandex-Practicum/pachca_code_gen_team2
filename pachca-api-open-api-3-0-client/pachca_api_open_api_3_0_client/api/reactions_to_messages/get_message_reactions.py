@@ -4,7 +4,6 @@ from typing import Any, Optional, Union
 import httpx
 
 from ... import errors
-from ...client import AuthenticatedClient, Client
 from ...models.bad_request import BadRequest
 from ...models.get_message_reactions_body import GetMessageReactionsBody
 from ...models.get_message_reactions_response_200 import GetMessageReactionsResponse200
@@ -15,7 +14,6 @@ from ...types import Response
 def _get_kwargs_getMessageReactions(
     self,
     id: int,
-    *,
     body: GetMessageReactionsBody,
 ) -> dict[str, Any]:
     headers: dict[str, Any] = {}
@@ -35,7 +33,7 @@ def _get_kwargs_getMessageReactions(
 
 
 def _parse_response_getMessageReactions(
-    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
+    self, response: httpx.Response
 ) -> Optional[Union[BadRequest, GetMessageReactionsResponse200, NotFound]]:
     if response.status_code == 200:
         response_200 = GetMessageReactionsResponse200.from_dict(response.json())
@@ -49,28 +47,26 @@ def _parse_response_getMessageReactions(
         response_400 = BadRequest.from_dict(response.json())
 
         return response_400
-    if client.raise_on_unexpected_status:
+    if self.client.raise_on_unexpected_status:
         raise errors.UnexpectedStatus(response.status_code, response.content)
     else:
         return None
 
 
 def _build_response_getMessageReactions(
-    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
+    self, response: httpx.Response
 ) -> Response[Union[BadRequest, GetMessageReactionsResponse200, NotFound]]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
         headers=response.headers,
-        parsed=self._parse_response_getMessageReactions(client=client, response=response),
+        parsed=self._parse_response_getMessageReactions(response=response),
     )
 
 
 async def asyncio_detailed_getMessageReactions(
     self,
     id: int,
-    *,
-    client: Union[AuthenticatedClient, Client],
     body: GetMessageReactionsBody,
 ) -> Response[Union[BadRequest, GetMessageReactionsResponse200, NotFound]]:
     """Получение актуального списка реакций.
@@ -95,16 +91,14 @@ async def asyncio_detailed_getMessageReactions(
         body=body,
     )
 
-    response = await client.get_async_httpx_client().request(**kwargs)
+    response = await self.client.get_async_httpx_client().request(**kwargs)
 
-    return self._build_response_getMessageReactions(client=client, response=response)
+    return self._build_response_getMessageReactions(response=response)
 
 
 async def getMessageReactions(
     self,
     id: int,
-    *,
-    client: Union[AuthenticatedClient, Client],
     body: GetMessageReactionsBody,
 ) -> Optional[Union[BadRequest, GetMessageReactionsResponse200, NotFound]]:
     """Получение актуального списка реакций.
@@ -127,7 +121,6 @@ async def getMessageReactions(
     return (
         await self.asyncio_detailed_getMessageReactions(
             id=id,
-            client=client,
             body=body,
         )
     ).parsed

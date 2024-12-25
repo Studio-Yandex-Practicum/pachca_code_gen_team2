@@ -4,7 +4,6 @@ from typing import Any, Optional, Union
 import httpx
 
 from ... import errors
-from ...client import AuthenticatedClient, Client
 from ...models.post_tasks_body import PostTasksBody
 from ...models.post_tasks_response_201 import PostTasksResponse201
 from ...models.post_tasks_response_400 import PostTasksResponse400
@@ -13,7 +12,6 @@ from ...types import Response
 
 def _get_kwargs_post_tasks(
     self,
-    *,
     body: PostTasksBody,
 ) -> dict[str, Any]:
     headers: dict[str, Any] = {}
@@ -33,7 +31,7 @@ def _get_kwargs_post_tasks(
 
 
 def _parse_response_post_tasks(
-    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
+    self, response: httpx.Response
 ) -> Optional[Union[PostTasksResponse201, PostTasksResponse400]]:
     if response.status_code == 201:
         response_201 = PostTasksResponse201.from_dict(response.json())
@@ -43,27 +41,25 @@ def _parse_response_post_tasks(
         response_400 = PostTasksResponse400.from_dict(response.json())
 
         return response_400
-    if client.raise_on_unexpected_status:
+    if self.client.raise_on_unexpected_status:
         raise errors.UnexpectedStatus(response.status_code, response.content)
     else:
         return None
 
 
 def _build_response_post_tasks(
-    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
+    self, response: httpx.Response
 ) -> Response[Union[PostTasksResponse201, PostTasksResponse400]]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
         headers=response.headers,
-        parsed=self._parse_response_post_tasks(client=client, response=response),
+        parsed=self._parse_response_post_tasks(response=response),
     )
 
 
 async def asyncio_detailed_post_tasks(
     self,
-    *,
-    client: Union[AuthenticatedClient, Client],
     body: PostTasksBody,
 ) -> Response[Union[PostTasksResponse201, PostTasksResponse400]]:
     """Метод для создания нового напоминания.
@@ -90,15 +86,13 @@ async def asyncio_detailed_post_tasks(
         body=body,
     )
 
-    response = await client.get_async_httpx_client().request(**kwargs)
+    response = await self.client.get_async_httpx_client().request(**kwargs)
 
-    return self._build_response_post_tasks(client=client, response=response)
+    return self._build_response_post_tasks(response=response)
 
 
 async def post_tasks(
     self,
-    *,
-    client: Union[AuthenticatedClient, Client],
     body: PostTasksBody,
 ) -> Optional[Union[PostTasksResponse201, PostTasksResponse400]]:
     """Метод для создания нового напоминания.
@@ -123,7 +117,6 @@ async def post_tasks(
 
     return (
         await self.asyncio_detailed_post_tasks(
-            client=client,
             body=body,
         )
     ).parsed

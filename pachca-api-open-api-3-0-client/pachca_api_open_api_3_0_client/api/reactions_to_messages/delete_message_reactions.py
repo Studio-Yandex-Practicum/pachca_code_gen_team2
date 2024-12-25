@@ -4,7 +4,6 @@ from typing import Any, Optional, Union, cast
 import httpx
 
 from ... import errors
-from ...client import AuthenticatedClient, Client
 from ...models.delete_message_reactions_response_400 import DeleteMessageReactionsResponse400
 from ...models.delete_message_reactions_response_404 import DeleteMessageReactionsResponse404
 from ...types import UNSET, Response
@@ -13,7 +12,6 @@ from ...types import UNSET, Response
 def _get_kwargs_deleteMessageReactions(
     self,
     id: str,
-    *,
     code: str,
 ) -> dict[str, Any]:
     params: dict[str, Any] = {}
@@ -32,7 +30,7 @@ def _get_kwargs_deleteMessageReactions(
 
 
 def _parse_response_deleteMessageReactions(
-    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
+    self, response: httpx.Response
 ) -> Optional[Union[Any, DeleteMessageReactionsResponse400, DeleteMessageReactionsResponse404]]:
     if response.status_code == 204:
         response_204 = cast(Any, None)
@@ -45,28 +43,26 @@ def _parse_response_deleteMessageReactions(
         response_404 = DeleteMessageReactionsResponse404.from_dict(response.json())
 
         return response_404
-    if client.raise_on_unexpected_status:
+    if self.client.raise_on_unexpected_status:
         raise errors.UnexpectedStatus(response.status_code, response.content)
     else:
         return None
 
 
 def _build_response_deleteMessageReactions(
-    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
+    self, response: httpx.Response
 ) -> Response[Union[Any, DeleteMessageReactionsResponse400, DeleteMessageReactionsResponse404]]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
         headers=response.headers,
-        parsed=self._parse_response_deleteMessageReactions(client=client, response=response),
+        parsed=self._parse_response_deleteMessageReactions(response=response),
     )
 
 
 async def asyncio_detailed_deleteMessageReactions(
     self,
     id: str,
-    *,
-    client: Union[AuthenticatedClient, Client],
     code: str,
 ) -> Response[Union[Any, DeleteMessageReactionsResponse400, DeleteMessageReactionsResponse404]]:
     """Удаление реакции
@@ -91,16 +87,14 @@ async def asyncio_detailed_deleteMessageReactions(
         code=code,
     )
 
-    response = await client.get_async_httpx_client().request(**kwargs)
+    response = await self.client.get_async_httpx_client().request(**kwargs)
 
-    return self._build_response_deleteMessageReactions(client=client, response=response)
+    return self._build_response_deleteMessageReactions(response=response)
 
 
 async def deleteMessageReactions(
     self,
     id: str,
-    *,
-    client: Union[AuthenticatedClient, Client],
     code: str,
 ) -> Optional[Union[Any, DeleteMessageReactionsResponse400, DeleteMessageReactionsResponse404]]:
     """Удаление реакции
@@ -123,7 +117,6 @@ async def deleteMessageReactions(
     return (
         await self.asyncio_detailed_deleteMessageReactions(
             id=id,
-            client=client,
             code=code,
         )
     ).parsed

@@ -4,7 +4,6 @@ from typing import Any, Optional, Union, cast
 import httpx
 
 from ... import errors
-from ...client import AuthenticatedClient, Client
 from ...models.post_message_reactions_body import PostMessageReactionsBody
 from ...models.post_message_reactions_response_400 import PostMessageReactionsResponse400
 from ...models.post_message_reactions_response_403 import PostMessageReactionsResponse403
@@ -15,7 +14,6 @@ from ...types import Response
 def _get_kwargs_postMessageReactions(
     self,
     id: str,
-    *,
     body: PostMessageReactionsBody,
 ) -> dict[str, Any]:
     headers: dict[str, Any] = {}
@@ -35,7 +33,7 @@ def _get_kwargs_postMessageReactions(
 
 
 def _parse_response_postMessageReactions(
-    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
+    self, response: httpx.Response
 ) -> Optional[
     Union[Any, PostMessageReactionsResponse400, PostMessageReactionsResponse403, PostMessageReactionsResponse404]
 ]:
@@ -54,14 +52,14 @@ def _parse_response_postMessageReactions(
         response_404 = PostMessageReactionsResponse404.from_dict(response.json())
 
         return response_404
-    if client.raise_on_unexpected_status:
+    if self.client.raise_on_unexpected_status:
         raise errors.UnexpectedStatus(response.status_code, response.content)
     else:
         return None
 
 
 def _build_response_postMessageReactions(
-    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
+    self, response: httpx.Response
 ) -> Response[
     Union[Any, PostMessageReactionsResponse400, PostMessageReactionsResponse403, PostMessageReactionsResponse404]
 ]:
@@ -69,15 +67,13 @@ def _build_response_postMessageReactions(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
         headers=response.headers,
-        parsed=self._parse_response_postMessageReactions(client=client, response=response),
+        parsed=self._parse_response_postMessageReactions(response=response),
     )
 
 
 async def asyncio_detailed_postMessageReactions(
     self,
     id: str,
-    *,
-    client: Union[AuthenticatedClient, Client],
     body: PostMessageReactionsBody,
 ) -> Response[
     Union[Any, PostMessageReactionsResponse400, PostMessageReactionsResponse403, PostMessageReactionsResponse404]
@@ -105,16 +101,14 @@ async def asyncio_detailed_postMessageReactions(
         body=body,
     )
 
-    response = await client.get_async_httpx_client().request(**kwargs)
+    response = await self.client.get_async_httpx_client().request(**kwargs)
 
-    return self._build_response_postMessageReactions(client=client, response=response)
+    return self._build_response_postMessageReactions(response=response)
 
 
 async def postMessageReactions(
     self,
     id: str,
-    *,
-    client: Union[AuthenticatedClient, Client],
     body: PostMessageReactionsBody,
 ) -> Optional[
     Union[Any, PostMessageReactionsResponse400, PostMessageReactionsResponse403, PostMessageReactionsResponse404]
@@ -140,7 +134,6 @@ async def postMessageReactions(
     return (
         await self.asyncio_detailed_postMessageReactions(
             id=id,
-            client=client,
             body=body,
         )
     ).parsed

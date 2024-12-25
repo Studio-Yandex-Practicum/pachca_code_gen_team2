@@ -1,17 +1,15 @@
 from http import HTTPStatus
-from typing import Any, Optional, Union
+from typing import Any, Optional
 
 import httpx
 
 from ... import errors
-from ...client import AuthenticatedClient, Client
 from ...models.direct_response import DirectResponse
 from ...types import Response
 
 
 def _get_kwargs_getDirectUrl(
     self,
-    *,
     body: DirectResponse,
 ) -> dict[str, Any]:
     headers: dict[str, Any] = {}
@@ -29,32 +27,26 @@ def _get_kwargs_getDirectUrl(
     return _kwargs
 
 
-def _parse_response_getDirectUrl(
-    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Any]:
+def _parse_response_getDirectUrl(self, response: httpx.Response) -> Optional[Any]:
     if response.status_code == 204:
         return None
-    if client.raise_on_unexpected_status:
+    if self.client.raise_on_unexpected_status:
         raise errors.UnexpectedStatus(response.status_code, response.content)
     else:
         return None
 
 
-def _build_response_getDirectUrl(
-    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Any]:
+def _build_response_getDirectUrl(self, response: httpx.Response) -> Response[Any]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
         headers=response.headers,
-        parsed=self._parse_response_getDirectUrl(client=client, response=response),
+        parsed=self._parse_response_getDirectUrl(response=response),
     )
 
 
 async def asyncio_detailed_getDirectUrl(
     self,
-    *,
-    client: Union[AuthenticatedClient, Client],
     body: DirectResponse,
 ) -> Response[Any]:
     """Получение URL для загрузки
@@ -76,6 +68,6 @@ async def asyncio_detailed_getDirectUrl(
         body=body,
     )
 
-    response = await client.get_async_httpx_client().request(**kwargs)
+    response = await self.client.get_async_httpx_client().request(**kwargs)
 
-    return self._build_response_getDirectUrl(client=client, response=response)
+    return self._build_response_getDirectUrl(response=response)

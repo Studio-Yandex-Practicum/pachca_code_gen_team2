@@ -5,7 +5,6 @@ from typing import Any, Optional, Union
 import httpx
 
 from ... import errors
-from ...client import AuthenticatedClient, Client
 from ...models.get_chats_availability import GetChatsAvailability
 from ...models.get_chats_response_200 import GetChatsResponse200
 from ...models.get_chats_response_400 import GetChatsResponse400
@@ -17,7 +16,6 @@ from ...types import UNSET, Response, Unset
 
 def _get_kwargs_getChats(
     self,
-    *,
     sortid: Union[Unset, GetChatsSortid] = GetChatsSortid.DESC,
     per: Union[Unset, int] = 25,
     page: Union[Unset, int] = 1,
@@ -65,7 +63,7 @@ def _get_kwargs_getChats(
 
 
 def _parse_response_getChats(
-    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
+    self, response: httpx.Response
 ) -> Optional[Union[GetChatsResponse200, GetChatsResponse400, GetChatsResponse404, GetChatsResponse422]]:
     if response.status_code == 200:
         response_200 = GetChatsResponse200.from_dict(response.json())
@@ -83,27 +81,25 @@ def _parse_response_getChats(
         response_422 = GetChatsResponse422.from_dict(response.json())
 
         return response_422
-    if client.raise_on_unexpected_status:
+    if self.client.raise_on_unexpected_status:
         raise errors.UnexpectedStatus(response.status_code, response.content)
     else:
         return None
 
 
 def _build_response_getChats(
-    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
+    self, response: httpx.Response
 ) -> Response[Union[GetChatsResponse200, GetChatsResponse400, GetChatsResponse404, GetChatsResponse422]]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
         headers=response.headers,
-        parsed=self._parse_response_getChats(client=client, response=response),
+        parsed=self._parse_response_getChats(response=response),
     )
 
 
 async def asyncio_detailed_getChats(
     self,
-    *,
-    client: Union[AuthenticatedClient, Client],
     sortid: Union[Unset, GetChatsSortid] = GetChatsSortid.DESC,
     per: Union[Unset, int] = 25,
     page: Union[Unset, int] = 1,
@@ -141,15 +137,13 @@ async def asyncio_detailed_getChats(
         last_message_at_before=last_message_at_before,
     )
 
-    response = await client.get_async_httpx_client().request(**kwargs)
+    response = await self.client.get_async_httpx_client().request(**kwargs)
 
-    return self._build_response_getChats(client=client, response=response)
+    return self._build_response_getChats(response=response)
 
 
 async def getChats(
     self,
-    *,
-    client: Union[AuthenticatedClient, Client],
     sortid: Union[Unset, GetChatsSortid] = GetChatsSortid.DESC,
     per: Union[Unset, int] = 25,
     page: Union[Unset, int] = 1,
@@ -180,7 +174,6 @@ async def getChats(
 
     return (
         await self.asyncio_detailed_getChats(
-            client=client,
             sortid=sortid,
             per=per,
             page=page,

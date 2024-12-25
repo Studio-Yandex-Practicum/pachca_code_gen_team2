@@ -4,7 +4,6 @@ from typing import Any, Optional, Union
 import httpx
 
 from ... import errors
-from ...client import AuthenticatedClient, Client
 from ...models.create_chat_body import CreateChatBody
 from ...models.create_chat_response_201 import CreateChatResponse201
 from ...models.create_chat_response_400 import CreateChatResponse400
@@ -15,7 +14,6 @@ from ...types import Response
 
 def _get_kwargs_createChat(
     self,
-    *,
     body: CreateChatBody,
 ) -> dict[str, Any]:
     headers: dict[str, Any] = {}
@@ -35,7 +33,7 @@ def _get_kwargs_createChat(
 
 
 def _parse_response_createChat(
-    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
+    self, response: httpx.Response
 ) -> Optional[Union[CreateChatResponse201, CreateChatResponse400, CreateChatResponse404, CreateChatResponse422]]:
     if response.status_code == 201:
         response_201 = CreateChatResponse201.from_dict(response.json())
@@ -53,27 +51,25 @@ def _parse_response_createChat(
         response_422 = CreateChatResponse422.from_dict(response.json())
 
         return response_422
-    if client.raise_on_unexpected_status:
+    if self.client.raise_on_unexpected_status:
         raise errors.UnexpectedStatus(response.status_code, response.content)
     else:
         return None
 
 
 def _build_response_createChat(
-    self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response
+    self, response: httpx.Response
 ) -> Response[Union[CreateChatResponse201, CreateChatResponse400, CreateChatResponse404, CreateChatResponse422]]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
         headers=response.headers,
-        parsed=self._parse_response_createChat(client=client, response=response),
+        parsed=self._parse_response_createChat(response=response),
     )
 
 
 async def asyncio_detailed_createChat(
     self,
-    *,
-    client: Union[AuthenticatedClient, Client],
     body: CreateChatBody,
 ) -> Response[Union[CreateChatResponse201, CreateChatResponse400, CreateChatResponse404, CreateChatResponse422]]:
     r""" Новая беседа или канал
@@ -96,15 +92,13 @@ async def asyncio_detailed_createChat(
         body=body,
     )
 
-    response = await client.get_async_httpx_client().request(**kwargs)
+    response = await self.client.get_async_httpx_client().request(**kwargs)
 
-    return self._build_response_createChat(client=client, response=response)
+    return self._build_response_createChat(response=response)
 
 
 async def createChat(
     self,
-    *,
-    client: Union[AuthenticatedClient, Client],
     body: CreateChatBody,
 ) -> Optional[Union[CreateChatResponse201, CreateChatResponse400, CreateChatResponse404, CreateChatResponse422]]:
     r""" Новая беседа или канал
@@ -125,7 +119,6 @@ async def createChat(
 
     return (
         await self.asyncio_detailed_createChat(
-            client=client,
             body=body,
         )
     ).parsed

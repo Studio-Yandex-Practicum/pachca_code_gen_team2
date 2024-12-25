@@ -68,7 +68,7 @@ def _get_kwargs_{{ endpoint.name }}(self,
     return _kwargs
 
 
-def _parse_response_{{ endpoint.name }}(self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response) -> Optional[{{ return_string }}]:
+def _parse_response_{{ endpoint.name }}(self, response: httpx.Response) -> Optional[{{ return_string }}]:
     {% for response in endpoint.responses %}
     if response.status_code == {{ response.status_code.value }}:
         {% if parsed_responses %}{% import "property_templates/" + response.prop.template as prop_template %}
@@ -84,18 +84,18 @@ def _parse_response_{{ endpoint.name }}(self, *, client: Union[AuthenticatedClie
         return None
         {% endif %}
     {% endfor %}
-    if client.raise_on_unexpected_status:
+    if self.client.raise_on_unexpected_status:
         raise errors.UnexpectedStatus(response.status_code, response.content)
     else:
         return None
 
 
-def _build_response_{{ endpoint.name }}(self, *, client: Union[AuthenticatedClient, Client], response: httpx.Response) -> Response[{{ return_string }}]:
+def _build_response_{{ endpoint.name }}(self, response: httpx.Response) -> Response[{{ return_string }}]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
         headers=response.headers,
-        parsed=self._parse_response_{{ endpoint.name }}(client=client, response=response),
+        parsed=self._parse_response_{{ endpoint.name }}(response=response),
     )
 
 async def asyncio_detailed_{{ endpoint.name }}(self,
@@ -107,11 +107,11 @@ async def asyncio_detailed_{{ endpoint.name }}(self,
         {{ kwargs(endpoint, include_client=False) }}
     )
 
-    response = await client.get_async_httpx_client().request(
+    response = await self.client.get_async_httpx_client().request(
         **kwargs
     )
 
-    return self._build_response_{{ endpoint.name }}(client=client, response=response)
+    return self._build_response_{{ endpoint.name }}(response=response)
 
 {% if parsed_responses %}
 async def {{ endpoint.name }}(self,
