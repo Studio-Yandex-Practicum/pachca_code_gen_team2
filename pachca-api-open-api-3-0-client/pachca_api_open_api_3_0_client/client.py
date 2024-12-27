@@ -1,62 +1,62 @@
-from .models.create_chat_response_404 import CreateChatResponse404
-from .models.get_chats_response_200 import GetChatsResponse200
-from http import HTTPStatus
-from .models.post_message_reactions_response_403 import PostMessageReactionsResponse403
-from .models.post_tasks_response_201 import PostTasksResponse201
-from .models.get_tags_response_400 import GetTagsResponse400
-from .models.get_chats_response_400 import GetChatsResponse400
-from .models.create_chat_response_400 import CreateChatResponse400
-from .models.get_tags_employees_response_200 import GetTagsEmployeesResponse200
-from .models.not_found import NotFound
-from .types import UNSET
-from .models.get_message_reactions_body import GetMessageReactionsBody
-from .models.get_employee_response_200 import GetEmployeeResponse200
-from .models.get_list_message_response_200 import GetListMessageResponse200
-from .models.create_message_response_201 import CreateMessageResponse201
-from .models.errors_code import ErrorsCode
-from .models.get_tags_response_200 import GetTagsResponse200
-from typing import Any
-from .models.get_employees_response_200 import GetEmployeesResponse200
-from .models.get_message_reactions_response_200 import GetMessageReactionsResponse200
-from .models.get_tag_response_200 import GetTagResponse200
-from .models.get_chat_response_200 import GetChatResponse200
-from .models.get_message_response_200 import GetMessageResponse200
-from .models.create_chat_response_422 import CreateChatResponse422
-from typing import Optional
-from .models.create_chat_response_201 import CreateChatResponse201
-from .models.put_messages_id_response_200 import PutMessagesIdResponse200
-from typing import Union
-from . import errors
-from .models.error import Error
-from .models.put_messages_id_body import PutMessagesIdBody
-from .models.get_tag_response_404 import GetTagResponse404
 from typing import cast
-from .models.direct_response import DirectResponse
-from .models.get_common_methods_response_200 import GetCommonMethodsResponse200
-from .types import Unset
-from .models.post_tasks_body import PostTasksBody
-from .models.post_message_reactions_response_400 import PostMessageReactionsResponse400
-from .models.get_chats_response_404 import GetChatsResponse404
-from .models.get_status_response_200 import GetStatusResponse200
-from .models.get_chats_sortid import GetChatsSortid
-from .types import Response
-from .models.query_status import QueryStatus
-from .models.bad_request import BadRequest
-from .models.post_message_reactions_response_404 import PostMessageReactionsResponse404
-from .models.post_members_to_chats_body import PostMembersToChatsBody
-from .models.create_chat_body import CreateChatBody
-from .models.create_message_body import CreateMessageBody
-from .models.get_chats_availability import GetChatsAvailability
+from .models.post_tasks_response_201 import PostTasksResponse201
+from .models.get_list_message_response_200 import GetListMessageResponse200
 from .models.post_tags_to_chats_body import PostTagsToChatsBody
 from .models.create_thread_response_200 import CreateThreadResponse200
-from .models.post_tasks_response_400 import PostTasksResponse400
-from .models.get_chat_response_404 import GetChatResponse404
+from .models.get_tag_response_404 import GetTagResponse404
+from http import HTTPStatus
+from .models.create_chat_response_404 import CreateChatResponse404
+from .models.create_chat_response_422 import CreateChatResponse422
+from .models.get_tag_response_200 import GetTagResponse200
 from .models.get_chats_response_422 import GetChatsResponse422
-from .models.delete_message_reactions_response_400 import DeleteMessageReactionsResponse400
-from .models.delete_message_reactions_response_404 import DeleteMessageReactionsResponse404
-from .models.file_response import FileResponse
-from .models.post_message_reactions_body import PostMessageReactionsBody
+from .models.create_message_response_201 import CreateMessageResponse201
+from .models.create_chat_response_400 import CreateChatResponse400
+from .models.post_tasks_body import PostTasksBody
+from .models.post_message_reactions_response_404 import PostMessageReactionsResponse404
+from .models.get_chats_response_400 import GetChatsResponse400
+from .models.get_chats_availability import GetChatsAvailability
+from .models.errors_code import ErrorsCode
+from .models.put_messages_id_response_200 import PutMessagesIdResponse200
+from .models.post_message_reactions_response_400 import PostMessageReactionsResponse400
 from .models.put_status_response_201 import PutStatusResponse201
+from .models.get_chats_response_404 import GetChatsResponse404
+from .types import Response
+from .models.get_message_reactions_body import GetMessageReactionsBody
+from typing import Union
+from .models.get_chats_sortid import GetChatsSortid
+from .models.get_chat_response_200 import GetChatResponse200
+from .models.error import Error
+from .models.get_employee_response_200 import GetEmployeeResponse200
+from .models.post_message_reactions_response_403 import PostMessageReactionsResponse403
+from .models.get_employees_response_200 import GetEmployeesResponse200
+from .models.create_chat_response_201 import CreateChatResponse201
+from . import errors
+from .models.post_members_to_chats_body import PostMembersToChatsBody
+from typing import Any
+from .models.get_message_response_200 import GetMessageResponse200
+from .models.delete_message_reactions_response_404 import DeleteMessageReactionsResponse404
+from .models.get_tags_employees_response_200 import GetTagsEmployeesResponse200
+from .models.get_chat_response_404 import GetChatResponse404
+from .models.not_found import NotFound
+from .models.direct_response import DirectResponse
+from .models.get_tags_response_400 import GetTagsResponse400
+from .models.query_status import QueryStatus
+from .models.post_tasks_response_400 import PostTasksResponse400
+from .models.bad_request import BadRequest
+from .models.delete_message_reactions_response_400 import DeleteMessageReactionsResponse400
+from .models.get_chats_response_200 import GetChatsResponse200
+from .models.create_message_body import CreateMessageBody
+from .types import Unset
+from .models.get_status_response_200 import GetStatusResponse200
+from .models.post_message_reactions_body import PostMessageReactionsBody
+from typing import Optional
+from .types import UNSET
+from .models.file_response import FileResponse
+from .models.get_message_reactions_response_200 import GetMessageReactionsResponse200
+from .models.get_tags_response_200 import GetTagsResponse200
+from .models.put_messages_id_body import PutMessagesIdBody
+from .models.get_common_methods_response_200 import GetCommonMethodsResponse200
+from .models.create_chat_body import CreateChatBody
 
 import datetime
 import ssl
@@ -99,7 +99,11 @@ class Client:
     """
 
     raise_on_unexpected_status: bool = field(default=False, kw_only=True)
-    _base_url: str = field(alias="base_url")
+    _base_url: str = field(
+        default="https://api.pachca.com/api/shared/v1",
+        kw_only=True, 
+        alias="base_url"
+    )
     _cookies: dict[str, str] = field(factory=dict, kw_only=True, alias="cookies")
     _headers: dict[str, str] = field(factory=dict, kw_only=True, alias="headers")
     _timeout: Optional[httpx.Timeout] = field(default=None, kw_only=True, alias="timeout")
@@ -227,7 +231,11 @@ class AuthenticatedClient:
     """
 
     raise_on_unexpected_status: bool = field(default=False, kw_only=True)
-    _base_url: str = field(alias="base_url")
+    _base_url: str = field(
+        default="https://api.pachca.com/api/shared/v1", 
+        kw_only=True, 
+        alias="base_url"
+    )
     _cookies: dict[str, str] = field(factory=dict, kw_only=True, alias="cookies")
     _headers: dict[str, str] = field(factory=dict, kw_only=True, alias="headers")
     _timeout: Optional[httpx.Timeout] = field(default=None, kw_only=True, alias="timeout")
@@ -333,8 +341,8 @@ class AuthenticatedClient:
 class Pachca:
     """Главный класс библиотеки."""
 
-    def __init__(self, base_url, token):
-        self.client = AuthenticatedClient(base_url=base_url, token=token)
+    def __init__(self, token):
+        self.client = AuthenticatedClient(token=token)
 
     
     
@@ -1965,5 +1973,6 @@ class Pachca:
             Union[Any, list['ErrorsCode']]
         """
         return (await self.asyncio_detailed_postTagsToChats(id=id, body=body)).parsed
+    
     
     
