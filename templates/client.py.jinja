@@ -39,7 +39,11 @@ class Client:
     """
 {% macro attributes() %}
     raise_on_unexpected_status: bool = field(default=False, kw_only=True)
-    _base_url: str = field(alias="base_url")
+    _base_url: str = field(
+        default="https://api.pachca.com/api/shared/v1",
+        kw_only=True, 
+        alias="base_url"
+    )
     _cookies: dict[str, str] = field(factory=dict, kw_only=True, alias="cookies")
     _headers: dict[str, str] = field(factory=dict, kw_only=True, alias="headers")
     _timeout: Optional[httpx.Timeout] = field(default=None, kw_only=True, alias="timeout")
@@ -153,7 +157,11 @@ class AuthenticatedClient:
     """
 
     raise_on_unexpected_status: bool = field(default=False, kw_only=True)
-    _base_url: str = field(alias="base_url")
+    _base_url: str = field(
+        default="https://api.pachca.com/api/shared/v1", 
+        kw_only=True, 
+        alias="base_url"
+    )
     _cookies: dict[str, str] = field(factory=dict, kw_only=True, alias="cookies")
     _headers: dict[str, str] = field(factory=dict, kw_only=True, alias="headers")
     _timeout: Optional[httpx.Timeout] = field(default=None, kw_only=True, alias="timeout")
@@ -259,11 +267,12 @@ class AuthenticatedClient:
 class Pachca:
     """Главный класс библиотеки."""
 
-    def __init__(self, base_url, token):
-        self.client = AuthenticatedClient(base_url=base_url, token=token)
+    def __init__(self, token):
+        self.client = AuthenticatedClient(token=token)
 
     {% if endpoints %}
     {% for endpoint in endpoints %}
     {{ endpoint | indent(4, first=Fasle) }}
     {% endfor %}
     {% endif %}
+    
