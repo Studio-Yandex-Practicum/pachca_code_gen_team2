@@ -56,35 +56,6 @@ def _build_response_getCommonMethods(
     )
 
 
-async def asyncio_detailed_getCommonMethods(
-    self,
-    entity_type: str,
-) -> Response[Union[BadRequest, GetCommonMethodsResponse200]]:
-    """Список дополнительных полей
-
-     Метод для получения актуального списка дополнительных полей участников и напоминаний в вашей
-    компании.
-
-    Args:
-        entity_type (str):
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Response[Union[BadRequest, GetCommonMethodsResponse200]]
-    """
-
-    kwargs = self._get_kwargs_getCommonMethods(
-        entity_type=entity_type,
-    )
-
-    response = await self.client.get_async_httpx_client().request(**kwargs)
-
-    return self._build_response_getCommonMethods(response=response)
-
-
 async def getCommonMethods(
     self,
     entity_type: str,
@@ -105,8 +76,10 @@ async def getCommonMethods(
         Union[BadRequest, GetCommonMethodsResponse200]
     """
 
-    return (
-        await self.asyncio_detailed_getCommonMethods(
-            entity_type=entity_type,
-        )
-    ).parsed
+    kwargs = self._get_kwargs_getCommonMethods(
+        entity_type=entity_type,
+    )
+
+    response = await self.client.get_async_httpx_client().request(**kwargs)
+
+    return self._build_response_getCommonMethods(response=response).parsed

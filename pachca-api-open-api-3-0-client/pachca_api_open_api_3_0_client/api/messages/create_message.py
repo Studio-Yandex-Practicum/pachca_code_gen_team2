@@ -68,46 +68,6 @@ def _build_response_createMessage(
     )
 
 
-async def asyncio_detailed_createMessage(
-    self,
-    body: CreateMessageBody,
-) -> Response[Union[BadRequest, CreateMessageResponse201, list["Error"]]]:
-    r"""создание нового сообщения
-
-     Метод для отправки сообщения в беседу или канал,
-    личного сообщения пользователю или комментария в тред.
-
-    При использовании entity_type: \"discussion\" (или просто без указания entity_type)
-    допускается отправка любого chat_id в поле entity_id.
-    То есть, сообщение можно отправить зная только идентификатор чата.
-    При этом, вы имеете возможность отправить сообщение в тред по его идентификатору
-    или личное сообщение по идентификатору пользователя.
-
-    Для отправки личного сообщения пользователю создавать чат не требуется.
-    Достаточно указать entity_type: \"user\" и идентификатор пользователя.
-    Чат будет создан автоматически, если между вами ещё не было переписки.
-    Между двумя пользователями может быть только один личный чат.
-
-    Args:
-        body (CreateMessageBody):
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Response[Union[BadRequest, CreateMessageResponse201, list['Error']]]
-    """
-
-    kwargs = self._get_kwargs_createMessage(
-        body=body,
-    )
-
-    response = await self.client.get_async_httpx_client().request(**kwargs)
-
-    return self._build_response_createMessage(response=response)
-
-
 async def createMessage(
     self,
     body: CreateMessageBody,
@@ -139,8 +99,10 @@ async def createMessage(
         Union[BadRequest, CreateMessageResponse201, list['Error']]
     """
 
-    return (
-        await self.asyncio_detailed_createMessage(
-            body=body,
-        )
-    ).parsed
+    kwargs = self._get_kwargs_createMessage(
+        body=body,
+    )
+
+    response = await self.client.get_async_httpx_client().request(**kwargs)
+
+    return self._build_response_createMessage(response=response).parsed

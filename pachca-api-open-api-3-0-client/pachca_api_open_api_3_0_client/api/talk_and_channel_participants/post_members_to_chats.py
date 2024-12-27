@@ -58,37 +58,6 @@ def _build_response_postMembersToChats(self, response: httpx.Response) -> Respon
     )
 
 
-async def asyncio_detailed_postMembersToChats(
-    self,
-    id: int,
-    body: PostMembersToChatsBody,
-) -> Response[Union[Any, list["ErrorsCode"]]]:
-    """добавление пользователей в состав участников
-
-     Метод для добавления пользователей в состав участников беседы или канала.
-
-    Args:
-        id (int):  Example: 533.
-        body (PostMembersToChatsBody):
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Response[Union[Any, list['ErrorsCode']]]
-    """
-
-    kwargs = self._get_kwargs_postMembersToChats(
-        id=id,
-        body=body,
-    )
-
-    response = await self.client.get_async_httpx_client().request(**kwargs)
-
-    return self._build_response_postMembersToChats(response=response)
-
-
 async def postMembersToChats(
     self,
     id: int,
@@ -110,9 +79,11 @@ async def postMembersToChats(
         Union[Any, list['ErrorsCode']]
     """
 
-    return (
-        await self.asyncio_detailed_postMembersToChats(
-            id=id,
-            body=body,
-        )
-    ).parsed
+    kwargs = self._get_kwargs_postMembersToChats(
+        id=id,
+        body=body,
+    )
+
+    response = await self.client.get_async_httpx_client().request(**kwargs)
+
+    return self._build_response_postMembersToChats(response=response).parsed

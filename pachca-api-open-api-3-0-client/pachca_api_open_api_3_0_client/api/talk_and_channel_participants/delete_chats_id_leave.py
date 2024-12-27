@@ -57,34 +57,6 @@ def _build_response_delete_chats_id_leave(self, response: httpx.Response) -> Res
     )
 
 
-async def asyncio_detailed_delete_chats_id_leave(
-    self,
-    id: int,
-) -> Response[Union[Any, list["ErrorsCode"]]]:
-    """Выход из беседы или канала
-
-     Метод для самостоятельного выхода из беседы или канала.
-
-    Args:
-        id (int):
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Response[Union[Any, list['ErrorsCode']]]
-    """
-
-    kwargs = self._get_kwargs_delete_chats_id_leave(
-        id=id,
-    )
-
-    response = await self.client.get_async_httpx_client().request(**kwargs)
-
-    return self._build_response_delete_chats_id_leave(response=response)
-
-
 async def delete_chats_id_leave(
     self,
     id: int,
@@ -104,8 +76,10 @@ async def delete_chats_id_leave(
         Union[Any, list['ErrorsCode']]
     """
 
-    return (
-        await self.asyncio_detailed_delete_chats_id_leave(
-            id=id,
-        )
-    ).parsed
+    kwargs = self._get_kwargs_delete_chats_id_leave(
+        id=id,
+    )
+
+    response = await self.client.get_async_httpx_client().request(**kwargs)
+
+    return self._build_response_delete_chats_id_leave(response=response).parsed

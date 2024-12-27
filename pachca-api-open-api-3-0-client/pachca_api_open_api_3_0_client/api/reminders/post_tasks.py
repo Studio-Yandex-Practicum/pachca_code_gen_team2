@@ -58,39 +58,6 @@ def _build_response_post_tasks(
     )
 
 
-async def asyncio_detailed_post_tasks(
-    self,
-    body: PostTasksBody,
-) -> Response[Union[PostTasksResponse201, PostTasksResponse400]]:
-    """Метод для создания нового напоминания.
-
-     При создании напоминания обязательным условием является указания типа напоминания: звонок, встреча,
-    простое напоминание, событие или письмо.
-    При этом не требуется дополнительное описание - вы просто создадите напоминание с соответствующим
-    текстом.
-    Если вы укажите описание напоминания - то именно оно и станет текстом напоминания.
-    У напоминания должны быть ответственные, если их не указывать - ответственным назначаетесь вы.
-
-    Args:
-        body (PostTasksBody):
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Response[Union[PostTasksResponse201, PostTasksResponse400]]
-    """
-
-    kwargs = self._get_kwargs_post_tasks(
-        body=body,
-    )
-
-    response = await self.client.get_async_httpx_client().request(**kwargs)
-
-    return self._build_response_post_tasks(response=response)
-
-
 async def post_tasks(
     self,
     body: PostTasksBody,
@@ -115,8 +82,10 @@ async def post_tasks(
         Union[PostTasksResponse201, PostTasksResponse400]
     """
 
-    return (
-        await self.asyncio_detailed_post_tasks(
-            body=body,
-        )
-    ).parsed
+    kwargs = self._get_kwargs_post_tasks(
+        body=body,
+    )
+
+    response = await self.client.get_async_httpx_client().request(**kwargs)
+
+    return self._build_response_post_tasks(response=response).parsed

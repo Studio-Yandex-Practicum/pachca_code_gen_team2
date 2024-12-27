@@ -39,28 +39,6 @@ def _build_response_getUploads(self, response: httpx.Response) -> Response[FileR
     )
 
 
-async def asyncio_detailed_getUploads(
-    self,
-) -> Response[FileResponse]:
-    """Получение подписи и ключа для загрузки файла
-
-     Возвращает параметры, необходимые для безопасной загрузки файла.
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Response[FileResponse]
-    """
-
-    kwargs = self._get_kwargs_getUploads()
-
-    response = await self.client.get_async_httpx_client().request(**kwargs)
-
-    return self._build_response_getUploads(response=response)
-
-
 async def getUploads(
     self,
 ) -> Optional[FileResponse]:
@@ -76,4 +54,8 @@ async def getUploads(
         FileResponse
     """
 
-    return (await self.asyncio_detailed_getUploads()).parsed
+    kwargs = self._get_kwargs_getUploads()
+
+    response = await self.client.get_async_httpx_client().request(**kwargs)
+
+    return self._build_response_getUploads(response=response).parsed

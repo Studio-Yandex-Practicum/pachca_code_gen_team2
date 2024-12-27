@@ -98,50 +98,6 @@ def _build_response_getChats(
     )
 
 
-async def asyncio_detailed_getChats(
-    self,
-    sortid: Union[Unset, GetChatsSortid] = GetChatsSortid.DESC,
-    per: Union[Unset, int] = 25,
-    page: Union[Unset, int] = 1,
-    availability: Union[Unset, GetChatsAvailability] = GetChatsAvailability.IS_MEMBER,
-    last_message_at_after: Union[Unset, datetime.datetime] = UNSET,
-    last_message_at_before: Union[Unset, datetime.datetime] = UNSET,
-) -> Response[Union[GetChatsResponse200, GetChatsResponse400, GetChatsResponse404, GetChatsResponse422]]:
-    """Список бесед и каналов
-
-     Получения списка бесед и каналов по заданным параметрам.
-
-    Args:
-        sortid (Union[Unset, GetChatsSortid]):  Default: GetChatsSortid.DESC.
-        per (Union[Unset, int]):  Default: 25.
-        page (Union[Unset, int]):  Default: 1.
-        availability (Union[Unset, GetChatsAvailability]):  Default:
-            GetChatsAvailability.IS_MEMBER.
-        last_message_at_after (Union[Unset, datetime.datetime]):
-        last_message_at_before (Union[Unset, datetime.datetime]):
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Response[Union[GetChatsResponse200, GetChatsResponse400, GetChatsResponse404, GetChatsResponse422]]
-    """
-
-    kwargs = self._get_kwargs_getChats(
-        sortid=sortid,
-        per=per,
-        page=page,
-        availability=availability,
-        last_message_at_after=last_message_at_after,
-        last_message_at_before=last_message_at_before,
-    )
-
-    response = await self.client.get_async_httpx_client().request(**kwargs)
-
-    return self._build_response_getChats(response=response)
-
-
 async def getChats(
     self,
     sortid: Union[Unset, GetChatsSortid] = GetChatsSortid.DESC,
@@ -172,13 +128,15 @@ async def getChats(
         Union[GetChatsResponse200, GetChatsResponse400, GetChatsResponse404, GetChatsResponse422]
     """
 
-    return (
-        await self.asyncio_detailed_getChats(
-            sortid=sortid,
-            per=per,
-            page=page,
-            availability=availability,
-            last_message_at_after=last_message_at_after,
-            last_message_at_before=last_message_at_before,
-        )
-    ).parsed
+    kwargs = self._get_kwargs_getChats(
+        sortid=sortid,
+        per=per,
+        page=page,
+        availability=availability,
+        last_message_at_after=last_message_at_after,
+        last_message_at_before=last_message_at_before,
+    )
+
+    response = await self.client.get_async_httpx_client().request(**kwargs)
+
+    return self._build_response_getChats(response=response).parsed

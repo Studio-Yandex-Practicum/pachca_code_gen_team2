@@ -68,35 +68,6 @@ def _build_response_createChat(
     )
 
 
-async def asyncio_detailed_createChat(
-    self,
-    body: CreateChatBody,
-) -> Response[Union[CreateChatResponse201, CreateChatResponse400, CreateChatResponse404, CreateChatResponse422]]:
-    r""" Новая беседа или канал
-
-     Метод для создания новой беседы или нового канала.
-    При создании беседы или канала вы автоматически становитесь участником.\
-
-    Args:
-        body (CreateChatBody):
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Response[Union[CreateChatResponse201, CreateChatResponse400, CreateChatResponse404, CreateChatResponse422]]
-     """
-
-    kwargs = self._get_kwargs_createChat(
-        body=body,
-    )
-
-    response = await self.client.get_async_httpx_client().request(**kwargs)
-
-    return self._build_response_createChat(response=response)
-
-
 async def createChat(
     self,
     body: CreateChatBody,
@@ -117,8 +88,10 @@ async def createChat(
         Union[CreateChatResponse201, CreateChatResponse400, CreateChatResponse404, CreateChatResponse422]
      """
 
-    return (
-        await self.asyncio_detailed_createChat(
-            body=body,
-        )
-    ).parsed
+    kwargs = self._get_kwargs_createChat(
+        body=body,
+    )
+
+    response = await self.client.get_async_httpx_client().request(**kwargs)
+
+    return self._build_response_createChat(response=response).parsed

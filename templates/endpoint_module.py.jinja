@@ -98,10 +98,12 @@ def _build_response_{{ endpoint.name }}(self, response: httpx.Response) -> Respo
         parsed=self._parse_response_{{ endpoint.name }}(response=response),
     )
 
-async def asyncio_detailed_{{ endpoint.name }}(self,
+
+{% if parsed_responses %}
+async def {{ endpoint.name }}(self,
     {{ arguments(endpoint) | indent(4) }}
-) -> Response[{{ return_string }}]:
-    {{ docstring(endpoint, return_string, is_detailed=true) | indent(4) }}
+) -> Optional[{{ return_string }}]:
+    {{ docstring(endpoint, return_string, is_detailed=false) | indent(4) }}
 
     kwargs = self._get_kwargs_{{ endpoint.name }}(
         {{ kwargs(endpoint, include_client=False) }}
@@ -111,16 +113,7 @@ async def asyncio_detailed_{{ endpoint.name }}(self,
         **kwargs
     )
 
-    return self._build_response_{{ endpoint.name }}(response=response)
-
-{% if parsed_responses %}
-async def {{ endpoint.name }}(self,
-    {{ arguments(endpoint) | indent(4) }}
-) -> Optional[{{ return_string }}]:
-    {{ docstring(endpoint, return_string, is_detailed=false) | indent(4) }}
-
-    return (await self.asyncio_detailed_{{ endpoint.name }}(
-        {{ kwargs(endpoint) }}
-    )).parsed
+    return self._build_response_{{ endpoint.name }}(
+        response=response).parsed
 {% endif %}
 

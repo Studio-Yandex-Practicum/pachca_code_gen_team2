@@ -43,31 +43,3 @@ def _build_response_getDirectUrl(self, response: httpx.Response) -> Response[Any
         headers=response.headers,
         parsed=self._parse_response_getDirectUrl(response=response),
     )
-
-
-async def asyncio_detailed_getDirectUrl(
-    self,
-    body: DirectResponse,
-) -> Response[Any]:
-    """Получение URL для загрузки
-
-     Отправляет запрос для получения URL для безопасной загрузки файла.
-
-    Args:
-        body (DirectResponse):
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Response[Any]
-    """
-
-    kwargs = self._get_kwargs_getDirectUrl(
-        body=body,
-    )
-
-    response = await self.client.get_async_httpx_client().request(**kwargs)
-
-    return self._build_response_getDirectUrl(response=response)

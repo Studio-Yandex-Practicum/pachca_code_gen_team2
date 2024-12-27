@@ -54,34 +54,6 @@ def _build_response_putStatus(self, response: httpx.Response) -> Response[Union[
     )
 
 
-async def asyncio_detailed_putStatus(
-    self,
-    body: QueryStatus,
-) -> Response[Union[BadRequest, PutStatusResponse201]]:
-    """новый статус
-
-     Создание нового статуса.
-
-    Args:
-        body (QueryStatus):
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Response[Union[BadRequest, PutStatusResponse201]]
-    """
-
-    kwargs = self._get_kwargs_putStatus(
-        body=body,
-    )
-
-    response = await self.client.get_async_httpx_client().request(**kwargs)
-
-    return self._build_response_putStatus(response=response)
-
-
 async def putStatus(
     self,
     body: QueryStatus,
@@ -101,8 +73,10 @@ async def putStatus(
         Union[BadRequest, PutStatusResponse201]
     """
 
-    return (
-        await self.asyncio_detailed_putStatus(
-            body=body,
-        )
-    ).parsed
+    kwargs = self._get_kwargs_putStatus(
+        body=body,
+    )
+
+    response = await self.client.get_async_httpx_client().request(**kwargs)
+
+    return self._build_response_putStatus(response=response).parsed

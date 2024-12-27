@@ -60,38 +60,6 @@ def _build_response_deleteMessageReactions(
     )
 
 
-async def asyncio_detailed_deleteMessageReactions(
-    self,
-    id: int,
-    code: str,
-) -> Response[Union[Any, DeleteMessageReactionsResponse400, DeleteMessageReactionsResponse404]]:
-    """Удаление реакции
-
-     Метод для удаления реакции на сообщение.  Удалить можно только те реакции, которые были поставлены
-    авторизованным пользователем.
-
-    Args:
-        id (int):
-        code (str):
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Response[Union[Any, DeleteMessageReactionsResponse400, DeleteMessageReactionsResponse404]]
-    """
-
-    kwargs = self._get_kwargs_deleteMessageReactions(
-        id=id,
-        code=code,
-    )
-
-    response = await self.client.get_async_httpx_client().request(**kwargs)
-
-    return self._build_response_deleteMessageReactions(response=response)
-
-
 async def deleteMessageReactions(
     self,
     id: int,
@@ -114,9 +82,11 @@ async def deleteMessageReactions(
         Union[Any, DeleteMessageReactionsResponse400, DeleteMessageReactionsResponse404]
     """
 
-    return (
-        await self.asyncio_detailed_deleteMessageReactions(
-            id=id,
-            code=code,
-        )
-    ).parsed
+    kwargs = self._get_kwargs_deleteMessageReactions(
+        id=id,
+        code=code,
+    )
+
+    response = await self.client.get_async_httpx_client().request(**kwargs)
+
+    return self._build_response_deleteMessageReactions(response=response).parsed

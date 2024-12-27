@@ -45,34 +45,6 @@ def _build_response_getTag(self, response: httpx.Response) -> Response[Union[Get
     )
 
 
-async def asyncio_detailed_getTag(
-    self,
-    id: int,
-) -> Response[Union[GetTagResponse200, GetTagResponse404]]:
-    """Информация о теге
-
-     Параметры запроса отсутствуют
-
-    Args:
-        id (int):
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Response[Union[GetTagResponse200, GetTagResponse404]]
-    """
-
-    kwargs = self._get_kwargs_getTag(
-        id=id,
-    )
-
-    response = await self.client.get_async_httpx_client().request(**kwargs)
-
-    return self._build_response_getTag(response=response)
-
-
 async def getTag(
     self,
     id: int,
@@ -92,8 +64,10 @@ async def getTag(
         Union[GetTagResponse200, GetTagResponse404]
     """
 
-    return (
-        await self.asyncio_detailed_getTag(
-            id=id,
-        )
-    ).parsed
+    kwargs = self._get_kwargs_getTag(
+        id=id,
+    )
+
+    response = await self.client.get_async_httpx_client().request(**kwargs)
+
+    return self._build_response_getTag(response=response).parsed

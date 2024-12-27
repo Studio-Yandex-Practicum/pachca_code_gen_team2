@@ -67,45 +67,6 @@ def _build_response_getListMessage(
     )
 
 
-async def asyncio_detailed_getListMessage(
-    self,
-    chat_id: int,
-    per: Union[Unset, int] = 25,
-    page: Union[Unset, int] = 1,
-) -> Response[Union[BadRequest, GetListMessageResponse200, NotFound]]:
-    """получение списка сообщений чата
-
-     Метод для получения списка сообщений бесед, каналов, тредов и личных сообщений.
-
-    Для получения сообщений вам необходимо знать chat_id требуемой беседы, канала,
-    треда или диалога, и указать его в URL запроса. Сообщения будут возвращены
-    в порядке убывания даты отправки (то есть, сначала будут идти последние сообщения чата).
-    Для получения более ранних сообщений чата доступны параметры per и page.
-
-    Args:
-        chat_id (int):
-        per (Union[Unset, int]):  Default: 25.
-        page (Union[Unset, int]):  Default: 1.
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Response[Union[BadRequest, GetListMessageResponse200, NotFound]]
-    """
-
-    kwargs = self._get_kwargs_getListMessage(
-        chat_id=chat_id,
-        per=per,
-        page=page,
-    )
-
-    response = await self.client.get_async_httpx_client().request(**kwargs)
-
-    return self._build_response_getListMessage(response=response)
-
-
 async def getListMessage(
     self,
     chat_id: int,
@@ -134,10 +95,12 @@ async def getListMessage(
         Union[BadRequest, GetListMessageResponse200, NotFound]
     """
 
-    return (
-        await self.asyncio_detailed_getListMessage(
-            chat_id=chat_id,
-            per=per,
-            page=page,
-        )
-    ).parsed
+    kwargs = self._get_kwargs_getListMessage(
+        chat_id=chat_id,
+        per=per,
+        page=page,
+    )
+
+    response = await self.client.get_async_httpx_client().request(**kwargs)
+
+    return self._build_response_getListMessage(response=response).parsed

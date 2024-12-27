@@ -39,28 +39,6 @@ def _build_response_getStatus(self, response: httpx.Response) -> Response[GetSta
     )
 
 
-async def asyncio_detailed_getStatus(
-    self,
-) -> Response[GetStatusResponse200]:
-    """получение информации о своем статусе
-
-     Параметры запроса отсутствуют
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Response[GetStatusResponse200]
-    """
-
-    kwargs = self._get_kwargs_getStatus()
-
-    response = await self.client.get_async_httpx_client().request(**kwargs)
-
-    return self._build_response_getStatus(response=response)
-
-
 async def getStatus(
     self,
 ) -> Optional[GetStatusResponse200]:
@@ -76,4 +54,8 @@ async def getStatus(
         GetStatusResponse200
     """
 
-    return (await self.asyncio_detailed_getStatus()).parsed
+    kwargs = self._get_kwargs_getStatus()
+
+    response = await self.client.get_async_httpx_client().request(**kwargs)
+
+    return self._build_response_getStatus(response=response).parsed

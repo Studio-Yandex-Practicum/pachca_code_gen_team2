@@ -45,35 +45,6 @@ def _build_response_getChat(self, response: httpx.Response) -> Response[Union[Ge
     )
 
 
-async def asyncio_detailed_getChat(
-    self,
-    id: int,
-) -> Response[Union[GetChatResponse200, GetChatResponse404]]:
-    """Информация о беседе или канале
-
-     Получения информации о беседе или канале.
-    Для получения беседы или канала вам необходимо знать её id и указать его в URL запроса.
-
-    Args:
-        id (int):
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Response[Union[GetChatResponse200, GetChatResponse404]]
-    """
-
-    kwargs = self._get_kwargs_getChat(
-        id=id,
-    )
-
-    response = await self.client.get_async_httpx_client().request(**kwargs)
-
-    return self._build_response_getChat(response=response)
-
-
 async def getChat(
     self,
     id: int,
@@ -94,8 +65,10 @@ async def getChat(
         Union[GetChatResponse200, GetChatResponse404]
     """
 
-    return (
-        await self.asyncio_detailed_getChat(
-            id=id,
-        )
-    ).parsed
+    kwargs = self._get_kwargs_getChat(
+        id=id,
+    )
+
+    response = await self.client.get_async_httpx_client().request(**kwargs)
+
+    return self._build_response_getChat(response=response).parsed

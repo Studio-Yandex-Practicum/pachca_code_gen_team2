@@ -45,35 +45,6 @@ def _build_response_getEmployee(self, response: httpx.Response) -> Response[Unio
     )
 
 
-async def asyncio_detailed_getEmployee(
-    self,
-    id: int,
-) -> Response[Union[GetEmployeeResponse200, NotFound]]:
-    """получение информации о сотруднике
-
-     Метод для получения информации о сотруднике.
-    Для получения сотрудника вам необходимо знать его id и указать его в URL запроса.
-
-    Args:
-        id (int):
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Response[Union[GetEmployeeResponse200, NotFound]]
-    """
-
-    kwargs = self._get_kwargs_getEmployee(
-        id=id,
-    )
-
-    response = await self.client.get_async_httpx_client().request(**kwargs)
-
-    return self._build_response_getEmployee(response=response)
-
-
 async def getEmployee(
     self,
     id: int,
@@ -94,8 +65,10 @@ async def getEmployee(
         Union[GetEmployeeResponse200, NotFound]
     """
 
-    return (
-        await self.asyncio_detailed_getEmployee(
-            id=id,
-        )
-    ).parsed
+    kwargs = self._get_kwargs_getEmployee(
+        id=id,
+    )
+
+    response = await self.client.get_async_httpx_client().request(**kwargs)
+
+    return self._build_response_getEmployee(response=response).parsed

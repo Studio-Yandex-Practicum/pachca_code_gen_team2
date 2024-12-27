@@ -55,37 +55,6 @@ def _build_response_getTags(self, response: httpx.Response) -> Response[Union[Ge
     )
 
 
-async def asyncio_detailed_getTags(
-    self,
-    per: Union[Unset, int] = 50,
-    page: Union[Unset, int] = 1,
-) -> Response[Union[GetTagsResponse200, GetTagsResponse400]]:
-    """Список тегов сотрудников
-
-     Метод для получения актуального списка тегов сотрудников.
-
-    Args:
-        per (Union[Unset, int]):  Default: 50.
-        page (Union[Unset, int]):  Default: 1.
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Response[Union[GetTagsResponse200, GetTagsResponse400]]
-    """
-
-    kwargs = self._get_kwargs_getTags(
-        per=per,
-        page=page,
-    )
-
-    response = await self.client.get_async_httpx_client().request(**kwargs)
-
-    return self._build_response_getTags(response=response)
-
-
 async def getTags(
     self,
     per: Union[Unset, int] = 50,
@@ -107,9 +76,11 @@ async def getTags(
         Union[GetTagsResponse200, GetTagsResponse400]
     """
 
-    return (
-        await self.asyncio_detailed_getTags(
-            per=per,
-            page=page,
-        )
-    ).parsed
+    kwargs = self._get_kwargs_getTags(
+        per=per,
+        page=page,
+    )
+
+    response = await self.client.get_async_httpx_client().request(**kwargs)
+
+    return self._build_response_getTags(response=response).parsed

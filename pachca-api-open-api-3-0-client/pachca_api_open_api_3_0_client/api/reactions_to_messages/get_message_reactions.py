@@ -64,38 +64,6 @@ def _build_response_getMessageReactions(
     )
 
 
-async def asyncio_detailed_getMessageReactions(
-    self,
-    id: int,
-    body: GetMessageReactionsBody,
-) -> Response[Union[BadRequest, GetMessageReactionsResponse200, NotFound]]:
-    """Получение актуального списка реакций.
-
-     Этот метод позволяет получить список всех реакций, оставленных пользователями на указанное
-    сообщение.
-
-    Args:
-        id (int):
-        body (GetMessageReactionsBody):
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Response[Union[BadRequest, GetMessageReactionsResponse200, NotFound]]
-    """
-
-    kwargs = self._get_kwargs_getMessageReactions(
-        id=id,
-        body=body,
-    )
-
-    response = await self.client.get_async_httpx_client().request(**kwargs)
-
-    return self._build_response_getMessageReactions(response=response)
-
-
 async def getMessageReactions(
     self,
     id: int,
@@ -118,9 +86,11 @@ async def getMessageReactions(
         Union[BadRequest, GetMessageReactionsResponse200, NotFound]
     """
 
-    return (
-        await self.asyncio_detailed_getMessageReactions(
-            id=id,
-            body=body,
-        )
-    ).parsed
+    kwargs = self._get_kwargs_getMessageReactions(
+        id=id,
+        body=body,
+    )
+
+    response = await self.client.get_async_httpx_client().request(**kwargs)
+
+    return self._build_response_getMessageReactions(response=response).parsed

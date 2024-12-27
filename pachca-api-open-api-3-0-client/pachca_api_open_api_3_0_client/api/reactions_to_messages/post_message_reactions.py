@@ -71,41 +71,6 @@ def _build_response_postMessageReactions(
     )
 
 
-async def asyncio_detailed_postMessageReactions(
-    self,
-    id: int,
-    body: PostMessageReactionsBody,
-) -> Response[
-    Union[Any, PostMessageReactionsResponse400, PostMessageReactionsResponse403, PostMessageReactionsResponse404]
-]:
-    """Добавление реакции
-
-     Метод для добавления реакции на сообщение. **Лимиты реакций:** - Каждый пользователь может
-    установить не более 20 уникальных реакций на сообщение. - Сообщение может иметь не более 30
-    уникальных реакций. - Сообщение может иметь не более 1000 реакций.
-
-    Args:
-        id (int):
-        body (PostMessageReactionsBody):
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Response[Union[Any, PostMessageReactionsResponse400, PostMessageReactionsResponse403, PostMessageReactionsResponse404]]
-    """
-
-    kwargs = self._get_kwargs_postMessageReactions(
-        id=id,
-        body=body,
-    )
-
-    response = await self.client.get_async_httpx_client().request(**kwargs)
-
-    return self._build_response_postMessageReactions(response=response)
-
-
 async def postMessageReactions(
     self,
     id: int,
@@ -131,9 +96,11 @@ async def postMessageReactions(
         Union[Any, PostMessageReactionsResponse400, PostMessageReactionsResponse403, PostMessageReactionsResponse404]
     """
 
-    return (
-        await self.asyncio_detailed_postMessageReactions(
-            id=id,
-            body=body,
-        )
-    ).parsed
+    kwargs = self._get_kwargs_postMessageReactions(
+        id=id,
+        body=body,
+    )
+
+    response = await self.client.get_async_httpx_client().request(**kwargs)
+
+    return self._build_response_postMessageReactions(response=response).parsed

@@ -54,35 +54,6 @@ def _build_response_createThread(
     )
 
 
-async def asyncio_detailed_createThread(
-    self,
-    id: int,
-) -> Response[Union[BadRequest, CreateThreadResponse200, NotFound]]:
-    """Создание нового треда
-
-     Этот метод позволяет создать новый тред к сообщению. Если у сообщения уже был создан тред, то в
-    ответе вернётся информация об уже созданном ранее треде.
-
-    Args:
-        id (int):
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Response[Union[BadRequest, CreateThreadResponse200, NotFound]]
-    """
-
-    kwargs = self._get_kwargs_createThread(
-        id=id,
-    )
-
-    response = await self.client.get_async_httpx_client().request(**kwargs)
-
-    return self._build_response_createThread(response=response)
-
-
 async def createThread(
     self,
     id: int,
@@ -103,8 +74,10 @@ async def createThread(
         Union[BadRequest, CreateThreadResponse200, NotFound]
     """
 
-    return (
-        await self.asyncio_detailed_createThread(
-            id=id,
-        )
-    ).parsed
+    kwargs = self._get_kwargs_createThread(
+        id=id,
+    )
+
+    response = await self.client.get_async_httpx_client().request(**kwargs)
+
+    return self._build_response_createThread(response=response).parsed

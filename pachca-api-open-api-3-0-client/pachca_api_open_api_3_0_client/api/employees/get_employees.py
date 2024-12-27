@@ -53,40 +53,6 @@ def _build_response_getEmployees(self, response: httpx.Response) -> Response[Get
     )
 
 
-async def asyncio_detailed_getEmployees(
-    self,
-    per: Union[Unset, int] = 50,
-    page: Union[Unset, int] = 1,
-    query: Union[Unset, str] = UNSET,
-) -> Response[GetEmployeesResponse200]:
-    """получение актуального списка всех сотрудников компании
-
-     Fetch a paginated list of employees with optional filtering by query.
-
-    Args:
-        per (Union[Unset, int]):  Default: 50.
-        page (Union[Unset, int]):  Default: 1.
-        query (Union[Unset, str]):
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Response[GetEmployeesResponse200]
-    """
-
-    kwargs = self._get_kwargs_getEmployees(
-        per=per,
-        page=page,
-        query=query,
-    )
-
-    response = await self.client.get_async_httpx_client().request(**kwargs)
-
-    return self._build_response_getEmployees(response=response)
-
-
 async def getEmployees(
     self,
     per: Union[Unset, int] = 50,
@@ -110,10 +76,12 @@ async def getEmployees(
         GetEmployeesResponse200
     """
 
-    return (
-        await self.asyncio_detailed_getEmployees(
-            per=per,
-            page=page,
-            query=query,
-        )
-    ).parsed
+    kwargs = self._get_kwargs_getEmployees(
+        per=per,
+        page=page,
+        query=query,
+    )
+
+    response = await self.client.get_async_httpx_client().request(**kwargs)
+
+    return self._build_response_getEmployees(response=response).parsed

@@ -1,63 +1,70 @@
-import datetime
-import ssl
-from http import HTTPStatus
-from typing import Any, Optional, Union, cast
-
-import httpx
-from attrs import define, evolve, field
-
-from . import errors
-from .models.bad_request import BadRequest
-from .models.create_chat_body import CreateChatBody
-from .models.create_chat_response_201 import CreateChatResponse201
-from .models.create_chat_response_400 import CreateChatResponse400
+from .models.get_employee_response_200 import GetEmployeeResponse200
+from .models.get_common_methods_response_200 import GetCommonMethodsResponse200
+from .models.get_message_response_200 import GetMessageResponse200
+from .models.get_chats_response_200 import GetChatsResponse200
+from .models.get_message_reactions_response_200 import GetMessageReactionsResponse200
 from .models.create_chat_response_404 import CreateChatResponse404
+from .models.post_message_reactions_response_404 import PostMessageReactionsResponse404
+from .models.get_list_message_response_200 import GetListMessageResponse200
+from .models.get_chats_response_400 import GetChatsResponse400
+from typing import Optional
+from .models.post_message_reactions_body import PostMessageReactionsBody
+from .types import UNSET
+from .models.post_tasks_response_201 import PostTasksResponse201
+from .models.get_chat_response_200 import GetChatResponse200
+from typing import cast
+from .models.get_chats_availability import GetChatsAvailability
+from .models.get_status_response_200 import GetStatusResponse200
 from .models.create_chat_response_422 import CreateChatResponse422
+from .models.not_found import NotFound
 from .models.create_message_body import CreateMessageBody
+from .types import Response
+from .models.direct_response import DirectResponse
+from .models.get_chat_response_404 import GetChatResponse404
 from .models.create_message_response_201 import CreateMessageResponse201
 from .models.create_thread_response_200 import CreateThreadResponse200
-from .models.delete_message_reactions_response_400 import DeleteMessageReactionsResponse400
-from .models.delete_message_reactions_response_404 import DeleteMessageReactionsResponse404
-from .models.direct_response import DirectResponse
-from .models.error import Error
-from .models.errors_code import ErrorsCode
-from .models.file_response import FileResponse
-from .models.get_chat_response_200 import GetChatResponse200
-from .models.get_chat_response_404 import GetChatResponse404
-from .models.get_chats_availability import GetChatsAvailability
-from .models.get_chats_response_200 import GetChatsResponse200
-from .models.get_chats_response_400 import GetChatsResponse400
-from .models.get_chats_response_404 import GetChatsResponse404
-from .models.get_chats_response_422 import GetChatsResponse422
-from .models.get_chats_sortid import GetChatsSortid
-from .models.get_common_methods_response_200 import GetCommonMethodsResponse200
-from .models.get_employee_response_200 import GetEmployeeResponse200
-from .models.get_employees_response_200 import GetEmployeesResponse200
-from .models.get_list_message_response_200 import GetListMessageResponse200
-from .models.get_message_reactions_body import GetMessageReactionsBody
-from .models.get_message_reactions_response_200 import GetMessageReactionsResponse200
-from .models.get_message_response_200 import GetMessageResponse200
-from .models.get_status_response_200 import GetStatusResponse200
-from .models.get_tag_response_200 import GetTagResponse200
-from .models.get_tag_response_404 import GetTagResponse404
-from .models.get_tags_employees_response_200 import GetTagsEmployeesResponse200
-from .models.get_tags_response_200 import GetTagsResponse200
-from .models.get_tags_response_400 import GetTagsResponse400
-from .models.not_found import NotFound
-from .models.post_members_to_chats_body import PostMembersToChatsBody
-from .models.post_message_reactions_body import PostMessageReactionsBody
-from .models.post_message_reactions_response_400 import PostMessageReactionsResponse400
-from .models.post_message_reactions_response_403 import PostMessageReactionsResponse403
-from .models.post_message_reactions_response_404 import PostMessageReactionsResponse404
-from .models.post_tags_to_chats_body import PostTagsToChatsBody
-from .models.post_tasks_body import PostTasksBody
-from .models.post_tasks_response_201 import PostTasksResponse201
-from .models.post_tasks_response_400 import PostTasksResponse400
-from .models.put_messages_id_body import PutMessagesIdBody
-from .models.put_messages_id_response_200 import PutMessagesIdResponse200
-from .models.put_status_response_201 import PutStatusResponse201
+from .models.create_chat_body import CreateChatBody
 from .models.query_status import QueryStatus
-from .types import UNSET, Response, Unset
+from .models.post_message_reactions_response_400 import PostMessageReactionsResponse400
+from typing import Any
+from .models.create_chat_response_201 import CreateChatResponse201
+from .models.get_tag_response_200 import GetTagResponse200
+from .models.get_message_reactions_body import GetMessageReactionsBody
+from .models.get_employees_response_200 import GetEmployeesResponse200
+from .models.delete_message_reactions_response_404 import DeleteMessageReactionsResponse404
+from .models.bad_request import BadRequest
+from .models.file_response import FileResponse
+from .models.get_tag_response_404 import GetTagResponse404
+from http import HTTPStatus
+from .models.get_chats_response_422 import GetChatsResponse422
+from .models.get_tags_response_200 import GetTagsResponse200
+from . import errors
+from typing import Union
+from .types import Unset
+from .models.get_tags_employees_response_200 import GetTagsEmployeesResponse200
+from .models.error import Error
+from .models.get_chats_sortid import GetChatsSortid
+from .models.get_chats_response_404 import GetChatsResponse404
+from .models.put_messages_id_body import PutMessagesIdBody
+from .models.put_status_response_201 import PutStatusResponse201
+from .models.errors_code import ErrorsCode
+from .models.create_chat_response_400 import CreateChatResponse400
+from .models.post_tasks_body import PostTasksBody
+from .models.get_tags_response_400 import GetTagsResponse400
+from .models.post_members_to_chats_body import PostMembersToChatsBody
+from .models.delete_message_reactions_response_400 import DeleteMessageReactionsResponse400
+from .models.post_tasks_response_400 import PostTasksResponse400
+from .models.post_tags_to_chats_body import PostTagsToChatsBody
+from .models.put_messages_id_response_200 import PutMessagesIdResponse200
+from .models.post_message_reactions_response_403 import PostMessageReactionsResponse403
+
+import datetime
+import ssl
+from typing import Any, Union, Optional
+
+from attrs import define, field, evolve
+import httpx
+
 
 
 @define
@@ -361,26 +368,6 @@ class Pachca:
     def _build_response_createThread(self, response: httpx.Response) -> Response[Union[BadRequest, CreateThreadResponse200, NotFound]]:
         return Response(status_code=HTTPStatus(response.status_code), content=response.content, headers=response.headers, parsed=self._parse_response_createThread(response=response))
     
-    async def asyncio_detailed_createThread(self, id: int) -> Response[Union[BadRequest, CreateThreadResponse200, NotFound]]:
-        """Создание нового треда
-
-         Этот метод позволяет создать новый тред к сообщению. Если у сообщения уже был создан тред, то в
-        ответе вернётся информация об уже созданном ранее треде.
-
-        Args:
-            id (int):
-
-        Raises:
-            errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-            httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-        Returns:
-            Response[Union[BadRequest, CreateThreadResponse200, NotFound]]
-        """
-        kwargs = self._get_kwargs_createThread(id=id)
-        response = await self.client.get_async_httpx_client().request(**kwargs)
-        return self._build_response_createThread(response=response)
-    
     async def createThread(self, id: int) -> Optional[Union[BadRequest, CreateThreadResponse200, NotFound]]:
         """Создание нового треда
 
@@ -397,7 +384,9 @@ class Pachca:
         Returns:
             Union[BadRequest, CreateThreadResponse200, NotFound]
         """
-        return (await self.asyncio_detailed_createThread(id=id)).parsed
+        kwargs = self._get_kwargs_createThread(id=id)
+        response = await self.client.get_async_httpx_client().request(**kwargs)
+        return self._build_response_createThread(response=response).parsed
     
     def _get_kwargs_getCommonMethods(self, entity_type: str) -> dict[str, Any]:
         params: dict[str, Any] = {}
@@ -421,26 +410,6 @@ class Pachca:
     def _build_response_getCommonMethods(self, response: httpx.Response) -> Response[Union[BadRequest, GetCommonMethodsResponse200]]:
         return Response(status_code=HTTPStatus(response.status_code), content=response.content, headers=response.headers, parsed=self._parse_response_getCommonMethods(response=response))
     
-    async def asyncio_detailed_getCommonMethods(self, entity_type: str) -> Response[Union[BadRequest, GetCommonMethodsResponse200]]:
-        """Список дополнительных полей
-
-         Метод для получения актуального списка дополнительных полей участников и напоминаний в вашей
-        компании.
-
-        Args:
-            entity_type (str):
-
-        Raises:
-            errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-            httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-        Returns:
-            Response[Union[BadRequest, GetCommonMethodsResponse200]]
-        """
-        kwargs = self._get_kwargs_getCommonMethods(entity_type=entity_type)
-        response = await self.client.get_async_httpx_client().request(**kwargs)
-        return self._build_response_getCommonMethods(response=response)
-    
     async def getCommonMethods(self, entity_type: str) -> Optional[Union[BadRequest, GetCommonMethodsResponse200]]:
         """Список дополнительных полей
 
@@ -457,7 +426,9 @@ class Pachca:
         Returns:
             Union[BadRequest, GetCommonMethodsResponse200]
         """
-        return (await self.asyncio_detailed_getCommonMethods(entity_type=entity_type)).parsed
+        kwargs = self._get_kwargs_getCommonMethods(entity_type=entity_type)
+        response = await self.client.get_async_httpx_client().request(**kwargs)
+        return self._build_response_getCommonMethods(response=response).parsed
     
     def _get_kwargs_getDirectUrl(self, body: DirectResponse) -> dict[str, Any]:
         headers: dict[str, Any] = {}
@@ -478,25 +449,6 @@ class Pachca:
     def _build_response_getDirectUrl(self, response: httpx.Response) -> Response[Any]:
         return Response(status_code=HTTPStatus(response.status_code), content=response.content, headers=response.headers, parsed=self._parse_response_getDirectUrl(response=response))
     
-    async def asyncio_detailed_getDirectUrl(self, body: DirectResponse) -> Response[Any]:
-        """Получение URL для загрузки
-
-         Отправляет запрос для получения URL для безопасной загрузки файла.
-
-        Args:
-            body (DirectResponse):
-
-        Raises:
-            errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-            httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-        Returns:
-            Response[Any]
-        """
-        kwargs = self._get_kwargs_getDirectUrl(body=body)
-        response = await self.client.get_async_httpx_client().request(**kwargs)
-        return self._build_response_getDirectUrl(response=response)
-    
     def _get_kwargs_getUploads(self) -> dict[str, Any]:
         _kwargs: dict[str, Any] = {'method': 'post', 'url': '/uploads'}
         return _kwargs
@@ -513,22 +465,6 @@ class Pachca:
     def _build_response_getUploads(self, response: httpx.Response) -> Response[FileResponse]:
         return Response(status_code=HTTPStatus(response.status_code), content=response.content, headers=response.headers, parsed=self._parse_response_getUploads(response=response))
     
-    async def asyncio_detailed_getUploads(self) -> Response[FileResponse]:
-        """Получение подписи и ключа для загрузки файла
-
-         Возвращает параметры, необходимые для безопасной загрузки файла.
-
-        Raises:
-            errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-            httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-        Returns:
-            Response[FileResponse]
-        """
-        kwargs = self._get_kwargs_getUploads()
-        response = await self.client.get_async_httpx_client().request(**kwargs)
-        return self._build_response_getUploads(response=response)
-    
     async def getUploads(self) -> Optional[FileResponse]:
         """Получение подписи и ключа для загрузки файла
 
@@ -541,7 +477,9 @@ class Pachca:
         Returns:
             FileResponse
         """
-        return (await self.asyncio_detailed_getUploads()).parsed
+        kwargs = self._get_kwargs_getUploads()
+        response = await self.client.get_async_httpx_client().request(**kwargs)
+        return self._build_response_getUploads(response=response).parsed
     
     def _get_kwargs_put_messages_id(self, id: int, body: PutMessagesIdBody) -> dict[str, Any]:
         headers: dict[str, Any] = {}
@@ -578,26 +516,6 @@ class Pachca:
     def _build_response_put_messages_id(self, response: httpx.Response) -> Response[Union[PutMessagesIdResponse200, list['ErrorsCode']]]:
         return Response(status_code=HTTPStatus(response.status_code), content=response.content, headers=response.headers, parsed=self._parse_response_put_messages_id(response=response))
     
-    async def asyncio_detailed_put_messages_id(self, id: int, body: PutMessagesIdBody) -> Response[Union[PutMessagesIdResponse200, list['ErrorsCode']]]:
-        """Редактирование сообщения
-
-         Метод для редактирования сообщения или комментария.
-
-        Args:
-            id (int):
-            body (PutMessagesIdBody):
-
-        Raises:
-            errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-            httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-        Returns:
-            Response[Union[PutMessagesIdResponse200, list['ErrorsCode']]]
-        """
-        kwargs = self._get_kwargs_put_messages_id(id=id, body=body)
-        response = await self.client.get_async_httpx_client().request(**kwargs)
-        return self._build_response_put_messages_id(response=response)
-    
     async def put_messages_id(self, id: int, body: PutMessagesIdBody) -> Optional[Union[PutMessagesIdResponse200, list['ErrorsCode']]]:
         """Редактирование сообщения
 
@@ -614,7 +532,9 @@ class Pachca:
         Returns:
             Union[PutMessagesIdResponse200, list['ErrorsCode']]
         """
-        return (await self.asyncio_detailed_put_messages_id(id=id, body=body)).parsed
+        kwargs = self._get_kwargs_put_messages_id(id=id, body=body)
+        response = await self.client.get_async_httpx_client().request(**kwargs)
+        return self._build_response_put_messages_id(response=response).parsed
     
     def _get_kwargs_createMessage(self, body: CreateMessageBody) -> dict[str, Any]:
         headers: dict[str, Any] = {}
@@ -647,37 +567,6 @@ class Pachca:
     def _build_response_createMessage(self, response: httpx.Response) -> Response[Union[BadRequest, CreateMessageResponse201, list['Error']]]:
         return Response(status_code=HTTPStatus(response.status_code), content=response.content, headers=response.headers, parsed=self._parse_response_createMessage(response=response))
     
-    async def asyncio_detailed_createMessage(self, body: CreateMessageBody) -> Response[Union[BadRequest, CreateMessageResponse201, list['Error']]]:
-        """создание нового сообщения
-
-         Метод для отправки сообщения в беседу или канал,
-        личного сообщения пользователю или комментария в тред.
-
-        При использовании entity_type: \\"discussion\\" (или просто без указания entity_type)
-        допускается отправка любого chat_id в поле entity_id.
-        То есть, сообщение можно отправить зная только идентификатор чата.
-        При этом, вы имеете возможность отправить сообщение в тред по его идентификатору
-        или личное сообщение по идентификатору пользователя.
-
-        Для отправки личного сообщения пользователю создавать чат не требуется.
-        Достаточно указать entity_type: \\"user\\" и идентификатор пользователя.
-        Чат будет создан автоматически, если между вами ещё не было переписки.
-        Между двумя пользователями может быть только один личный чат.
-
-        Args:
-            body (CreateMessageBody):
-
-        Raises:
-            errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-            httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-        Returns:
-            Response[Union[BadRequest, CreateMessageResponse201, list['Error']]]
-        """
-        kwargs = self._get_kwargs_createMessage(body=body)
-        response = await self.client.get_async_httpx_client().request(**kwargs)
-        return self._build_response_createMessage(response=response)
-    
     async def createMessage(self, body: CreateMessageBody) -> Optional[Union[BadRequest, CreateMessageResponse201, list['Error']]]:
         """создание нового сообщения
 
@@ -705,7 +594,9 @@ class Pachca:
         Returns:
             Union[BadRequest, CreateMessageResponse201, list['Error']]
         """
-        return (await self.asyncio_detailed_createMessage(body=body)).parsed
+        kwargs = self._get_kwargs_createMessage(body=body)
+        response = await self.client.get_async_httpx_client().request(**kwargs)
+        return self._build_response_createMessage(response=response).parsed
     
     def _get_kwargs_getMessage(self, id: int) -> dict[str, Any]:
         _kwargs: dict[str, Any] = {'method': 'get', 'url': f'/messages/{id}'}
@@ -726,27 +617,6 @@ class Pachca:
     def _build_response_getMessage(self, response: httpx.Response) -> Response[Union[GetMessageResponse200, NotFound]]:
         return Response(status_code=HTTPStatus(response.status_code), content=response.content, headers=response.headers, parsed=self._parse_response_getMessage(response=response))
     
-    async def asyncio_detailed_getMessage(self, id: int) -> Response[Union[GetMessageResponse200, NotFound]]:
-        """получение информации о сообщении
-
-         Метод для получения информации о сообщении.
-
-        Для получения сообщения вам необходимо знать его id и указать его в URL запроса.
-
-        Args:
-            id (int):
-
-        Raises:
-            errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-            httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-        Returns:
-            Response[Union[GetMessageResponse200, NotFound]]
-        """
-        kwargs = self._get_kwargs_getMessage(id=id)
-        response = await self.client.get_async_httpx_client().request(**kwargs)
-        return self._build_response_getMessage(response=response)
-    
     async def getMessage(self, id: int) -> Optional[Union[GetMessageResponse200, NotFound]]:
         """получение информации о сообщении
 
@@ -764,7 +634,9 @@ class Pachca:
         Returns:
             Union[GetMessageResponse200, NotFound]
         """
-        return (await self.asyncio_detailed_getMessage(id=id)).parsed
+        kwargs = self._get_kwargs_getMessage(id=id)
+        response = await self.client.get_async_httpx_client().request(**kwargs)
+        return self._build_response_getMessage(response=response).parsed
     
     def _get_kwargs_getListMessage(self, chat_id: int, per: Union[Unset, int]=25, page: Union[Unset, int]=1) -> dict[str, Any]:
         params: dict[str, Any] = {}
@@ -793,32 +665,6 @@ class Pachca:
     def _build_response_getListMessage(self, response: httpx.Response) -> Response[Union[BadRequest, GetListMessageResponse200, NotFound]]:
         return Response(status_code=HTTPStatus(response.status_code), content=response.content, headers=response.headers, parsed=self._parse_response_getListMessage(response=response))
     
-    async def asyncio_detailed_getListMessage(self, chat_id: int, per: Union[Unset, int]=25, page: Union[Unset, int]=1) -> Response[Union[BadRequest, GetListMessageResponse200, NotFound]]:
-        """получение списка сообщений чата
-
-         Метод для получения списка сообщений бесед, каналов, тредов и личных сообщений.
-
-        Для получения сообщений вам необходимо знать chat_id требуемой беседы, канала,
-        треда или диалога, и указать его в URL запроса. Сообщения будут возвращены
-        в порядке убывания даты отправки (то есть, сначала будут идти последние сообщения чата).
-        Для получения более ранних сообщений чата доступны параметры per и page.
-
-        Args:
-            chat_id (int):
-            per (Union[Unset, int]):  Default: 25.
-            page (Union[Unset, int]):  Default: 1.
-
-        Raises:
-            errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-            httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-        Returns:
-            Response[Union[BadRequest, GetListMessageResponse200, NotFound]]
-        """
-        kwargs = self._get_kwargs_getListMessage(chat_id=chat_id, per=per, page=page)
-        response = await self.client.get_async_httpx_client().request(**kwargs)
-        return self._build_response_getListMessage(response=response)
-    
     async def getListMessage(self, chat_id: int, per: Union[Unset, int]=25, page: Union[Unset, int]=1) -> Optional[Union[BadRequest, GetListMessageResponse200, NotFound]]:
         """получение списка сообщений чата
 
@@ -841,7 +687,9 @@ class Pachca:
         Returns:
             Union[BadRequest, GetListMessageResponse200, NotFound]
         """
-        return (await self.asyncio_detailed_getListMessage(chat_id=chat_id, per=per, page=page)).parsed
+        kwargs = self._get_kwargs_getListMessage(chat_id=chat_id, per=per, page=page)
+        response = await self.client.get_async_httpx_client().request(**kwargs)
+        return self._build_response_getListMessage(response=response).parsed
     
     def _get_kwargs_postTagsToChats(self, id: int, body: PostTagsToChatsBody) -> dict[str, Any]:
         headers: dict[str, Any] = {}
@@ -871,26 +719,6 @@ class Pachca:
     def _build_response_postTagsToChats(self, response: httpx.Response) -> Response[Union[Any, list['ErrorsCode']]]:
         return Response(status_code=HTTPStatus(response.status_code), content=response.content, headers=response.headers, parsed=self._parse_response_postTagsToChats(response=response))
     
-    async def asyncio_detailed_postTagsToChats(self, id: int, body: PostTagsToChatsBody) -> Response[Union[Any, list['ErrorsCode']]]:
-        """добавление тегов в состав участников беседы или канала
-
-         Метод для добавления тегов в состав участников беседы или канала.
-
-        Args:
-            id (int):  Example: 533.
-            body (PostTagsToChatsBody):
-
-        Raises:
-            errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-            httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-        Returns:
-            Response[Union[Any, list['ErrorsCode']]]
-        """
-        kwargs = self._get_kwargs_postTagsToChats(id=id, body=body)
-        response = await self.client.get_async_httpx_client().request(**kwargs)
-        return self._build_response_postTagsToChats(response=response)
-    
     async def postTagsToChats(self, id: int, body: PostTagsToChatsBody) -> Optional[Union[Any, list['ErrorsCode']]]:
         """добавление тегов в состав участников беседы или канала
 
@@ -907,7 +735,9 @@ class Pachca:
         Returns:
             Union[Any, list['ErrorsCode']]
         """
-        return (await self.asyncio_detailed_postTagsToChats(id=id, body=body)).parsed
+        kwargs = self._get_kwargs_postTagsToChats(id=id, body=body)
+        response = await self.client.get_async_httpx_client().request(**kwargs)
+        return self._build_response_postTagsToChats(response=response).parsed
     
     def _get_kwargs_delete_chats_id_leave(self, id: int) -> dict[str, Any]:
         _kwargs: dict[str, Any] = {'method': 'delete', 'url': f'/chats/{id}/leave'}
@@ -939,25 +769,6 @@ class Pachca:
     def _build_response_delete_chats_id_leave(self, response: httpx.Response) -> Response[Union[Any, list['ErrorsCode']]]:
         return Response(status_code=HTTPStatus(response.status_code), content=response.content, headers=response.headers, parsed=self._parse_response_delete_chats_id_leave(response=response))
     
-    async def asyncio_detailed_delete_chats_id_leave(self, id: int) -> Response[Union[Any, list['ErrorsCode']]]:
-        """Выход из беседы или канала
-
-         Метод для самостоятельного выхода из беседы или канала.
-
-        Args:
-            id (int):
-
-        Raises:
-            errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-            httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-        Returns:
-            Response[Union[Any, list['ErrorsCode']]]
-        """
-        kwargs = self._get_kwargs_delete_chats_id_leave(id=id)
-        response = await self.client.get_async_httpx_client().request(**kwargs)
-        return self._build_response_delete_chats_id_leave(response=response)
-    
     async def delete_chats_id_leave(self, id: int) -> Optional[Union[Any, list['ErrorsCode']]]:
         """Выход из беседы или канала
 
@@ -973,7 +784,9 @@ class Pachca:
         Returns:
             Union[Any, list['ErrorsCode']]
         """
-        return (await self.asyncio_detailed_delete_chats_id_leave(id=id)).parsed
+        kwargs = self._get_kwargs_delete_chats_id_leave(id=id)
+        response = await self.client.get_async_httpx_client().request(**kwargs)
+        return self._build_response_delete_chats_id_leave(response=response).parsed
     
     def _get_kwargs_postMembersToChats(self, id: int, body: PostMembersToChatsBody) -> dict[str, Any]:
         headers: dict[str, Any] = {}
@@ -1003,26 +816,6 @@ class Pachca:
     def _build_response_postMembersToChats(self, response: httpx.Response) -> Response[Union[Any, list['ErrorsCode']]]:
         return Response(status_code=HTTPStatus(response.status_code), content=response.content, headers=response.headers, parsed=self._parse_response_postMembersToChats(response=response))
     
-    async def asyncio_detailed_postMembersToChats(self, id: int, body: PostMembersToChatsBody) -> Response[Union[Any, list['ErrorsCode']]]:
-        """добавление пользователей в состав участников
-
-         Метод для добавления пользователей в состав участников беседы или канала.
-
-        Args:
-            id (int):  Example: 533.
-            body (PostMembersToChatsBody):
-
-        Raises:
-            errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-            httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-        Returns:
-            Response[Union[Any, list['ErrorsCode']]]
-        """
-        kwargs = self._get_kwargs_postMembersToChats(id=id, body=body)
-        response = await self.client.get_async_httpx_client().request(**kwargs)
-        return self._build_response_postMembersToChats(response=response)
-    
     async def postMembersToChats(self, id: int, body: PostMembersToChatsBody) -> Optional[Union[Any, list['ErrorsCode']]]:
         """добавление пользователей в состав участников
 
@@ -1039,7 +832,9 @@ class Pachca:
         Returns:
             Union[Any, list['ErrorsCode']]
         """
-        return (await self.asyncio_detailed_postMembersToChats(id=id, body=body)).parsed
+        kwargs = self._get_kwargs_postMembersToChats(id=id, body=body)
+        response = await self.client.get_async_httpx_client().request(**kwargs)
+        return self._build_response_postMembersToChats(response=response).parsed
     
     def _get_kwargs_getChat(self, id: int) -> dict[str, Any]:
         _kwargs: dict[str, Any] = {'method': 'get', 'url': f'/chats/{id}'}
@@ -1060,26 +855,6 @@ class Pachca:
     def _build_response_getChat(self, response: httpx.Response) -> Response[Union[GetChatResponse200, GetChatResponse404]]:
         return Response(status_code=HTTPStatus(response.status_code), content=response.content, headers=response.headers, parsed=self._parse_response_getChat(response=response))
     
-    async def asyncio_detailed_getChat(self, id: int) -> Response[Union[GetChatResponse200, GetChatResponse404]]:
-        """Информация о беседе или канале
-
-         Получения информации о беседе или канале.
-        Для получения беседы или канала вам необходимо знать её id и указать его в URL запроса.
-
-        Args:
-            id (int):
-
-        Raises:
-            errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-            httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-        Returns:
-            Response[Union[GetChatResponse200, GetChatResponse404]]
-        """
-        kwargs = self._get_kwargs_getChat(id=id)
-        response = await self.client.get_async_httpx_client().request(**kwargs)
-        return self._build_response_getChat(response=response)
-    
     async def getChat(self, id: int) -> Optional[Union[GetChatResponse200, GetChatResponse404]]:
         """Информация о беседе или канале
 
@@ -1096,7 +871,9 @@ class Pachca:
         Returns:
             Union[GetChatResponse200, GetChatResponse404]
         """
-        return (await self.asyncio_detailed_getChat(id=id)).parsed
+        kwargs = self._get_kwargs_getChat(id=id)
+        response = await self.client.get_async_httpx_client().request(**kwargs)
+        return self._build_response_getChat(response=response).parsed
     
     def _get_kwargs_createChat(self, body: CreateChatBody) -> dict[str, Any]:
         headers: dict[str, Any] = {}
@@ -1128,26 +905,6 @@ class Pachca:
     def _build_response_createChat(self, response: httpx.Response) -> Response[Union[CreateChatResponse201, CreateChatResponse400, CreateChatResponse404, CreateChatResponse422]]:
         return Response(status_code=HTTPStatus(response.status_code), content=response.content, headers=response.headers, parsed=self._parse_response_createChat(response=response))
     
-    async def asyncio_detailed_createChat(self, body: CreateChatBody) -> Response[Union[CreateChatResponse201, CreateChatResponse400, CreateChatResponse404, CreateChatResponse422]]:
-        """ Новая беседа или канал
-
-         Метод для создания новой беседы или нового канала.
-        При создании беседы или канала вы автоматически становитесь участником.\\
-
-        Args:
-            body (CreateChatBody):
-
-        Raises:
-            errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-            httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-        Returns:
-            Response[Union[CreateChatResponse201, CreateChatResponse400, CreateChatResponse404, CreateChatResponse422]]
-         """
-        kwargs = self._get_kwargs_createChat(body=body)
-        response = await self.client.get_async_httpx_client().request(**kwargs)
-        return self._build_response_createChat(response=response)
-    
     async def createChat(self, body: CreateChatBody) -> Optional[Union[CreateChatResponse201, CreateChatResponse400, CreateChatResponse404, CreateChatResponse422]]:
         """ Новая беседа или канал
 
@@ -1164,7 +921,9 @@ class Pachca:
         Returns:
             Union[CreateChatResponse201, CreateChatResponse400, CreateChatResponse404, CreateChatResponse422]
          """
-        return (await self.asyncio_detailed_createChat(body=body)).parsed
+        kwargs = self._get_kwargs_createChat(body=body)
+        response = await self.client.get_async_httpx_client().request(**kwargs)
+        return self._build_response_createChat(response=response).parsed
     
     def _get_kwargs_getChats(self, sortid: Union[Unset, GetChatsSortid]=GetChatsSortid.DESC, per: Union[Unset, int]=25, page: Union[Unset, int]=1, availability: Union[Unset, GetChatsAvailability]=GetChatsAvailability.IS_MEMBER, last_message_at_after: Union[Unset, datetime.datetime]=UNSET, last_message_at_before: Union[Unset, datetime.datetime]=UNSET) -> dict[str, Any]:
         params: dict[str, Any] = {}
@@ -1211,31 +970,6 @@ class Pachca:
     def _build_response_getChats(self, response: httpx.Response) -> Response[Union[GetChatsResponse200, GetChatsResponse400, GetChatsResponse404, GetChatsResponse422]]:
         return Response(status_code=HTTPStatus(response.status_code), content=response.content, headers=response.headers, parsed=self._parse_response_getChats(response=response))
     
-    async def asyncio_detailed_getChats(self, sortid: Union[Unset, GetChatsSortid]=GetChatsSortid.DESC, per: Union[Unset, int]=25, page: Union[Unset, int]=1, availability: Union[Unset, GetChatsAvailability]=GetChatsAvailability.IS_MEMBER, last_message_at_after: Union[Unset, datetime.datetime]=UNSET, last_message_at_before: Union[Unset, datetime.datetime]=UNSET) -> Response[Union[GetChatsResponse200, GetChatsResponse400, GetChatsResponse404, GetChatsResponse422]]:
-        """Список бесед и каналов
-
-         Получения списка бесед и каналов по заданным параметрам.
-
-        Args:
-            sortid (Union[Unset, GetChatsSortid]):  Default: GetChatsSortid.DESC.
-            per (Union[Unset, int]):  Default: 25.
-            page (Union[Unset, int]):  Default: 1.
-            availability (Union[Unset, GetChatsAvailability]):  Default:
-                GetChatsAvailability.IS_MEMBER.
-            last_message_at_after (Union[Unset, datetime.datetime]):
-            last_message_at_before (Union[Unset, datetime.datetime]):
-
-        Raises:
-            errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-            httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-        Returns:
-            Response[Union[GetChatsResponse200, GetChatsResponse400, GetChatsResponse404, GetChatsResponse422]]
-        """
-        kwargs = self._get_kwargs_getChats(sortid=sortid, per=per, page=page, availability=availability, last_message_at_after=last_message_at_after, last_message_at_before=last_message_at_before)
-        response = await self.client.get_async_httpx_client().request(**kwargs)
-        return self._build_response_getChats(response=response)
-    
     async def getChats(self, sortid: Union[Unset, GetChatsSortid]=GetChatsSortid.DESC, per: Union[Unset, int]=25, page: Union[Unset, int]=1, availability: Union[Unset, GetChatsAvailability]=GetChatsAvailability.IS_MEMBER, last_message_at_after: Union[Unset, datetime.datetime]=UNSET, last_message_at_before: Union[Unset, datetime.datetime]=UNSET) -> Optional[Union[GetChatsResponse200, GetChatsResponse400, GetChatsResponse404, GetChatsResponse422]]:
         """Список бесед и каналов
 
@@ -1257,7 +991,9 @@ class Pachca:
         Returns:
             Union[GetChatsResponse200, GetChatsResponse400, GetChatsResponse404, GetChatsResponse422]
         """
-        return (await self.asyncio_detailed_getChats(sortid=sortid, per=per, page=page, availability=availability, last_message_at_after=last_message_at_after, last_message_at_before=last_message_at_before)).parsed
+        kwargs = self._get_kwargs_getChats(sortid=sortid, per=per, page=page, availability=availability, last_message_at_after=last_message_at_after, last_message_at_before=last_message_at_before)
+        response = await self.client.get_async_httpx_client().request(**kwargs)
+        return self._build_response_getChats(response=response).parsed
     
     def _get_kwargs_getStatus(self) -> dict[str, Any]:
         _kwargs: dict[str, Any] = {'method': 'get', 'url': '/profile/status'}
@@ -1275,22 +1011,6 @@ class Pachca:
     def _build_response_getStatus(self, response: httpx.Response) -> Response[GetStatusResponse200]:
         return Response(status_code=HTTPStatus(response.status_code), content=response.content, headers=response.headers, parsed=self._parse_response_getStatus(response=response))
     
-    async def asyncio_detailed_getStatus(self) -> Response[GetStatusResponse200]:
-        """получение информации о своем статусе
-
-         Параметры запроса отсутствуют
-
-        Raises:
-            errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-            httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-        Returns:
-            Response[GetStatusResponse200]
-        """
-        kwargs = self._get_kwargs_getStatus()
-        response = await self.client.get_async_httpx_client().request(**kwargs)
-        return self._build_response_getStatus(response=response)
-    
     async def getStatus(self) -> Optional[GetStatusResponse200]:
         """получение информации о своем статусе
 
@@ -1303,7 +1023,9 @@ class Pachca:
         Returns:
             GetStatusResponse200
         """
-        return (await self.asyncio_detailed_getStatus()).parsed
+        kwargs = self._get_kwargs_getStatus()
+        response = await self.client.get_async_httpx_client().request(**kwargs)
+        return self._build_response_getStatus(response=response).parsed
     
     def _get_kwargs_putStatus(self, body: QueryStatus) -> dict[str, Any]:
         headers: dict[str, Any] = {}
@@ -1329,25 +1051,6 @@ class Pachca:
     def _build_response_putStatus(self, response: httpx.Response) -> Response[Union[BadRequest, PutStatusResponse201]]:
         return Response(status_code=HTTPStatus(response.status_code), content=response.content, headers=response.headers, parsed=self._parse_response_putStatus(response=response))
     
-    async def asyncio_detailed_putStatus(self, body: QueryStatus) -> Response[Union[BadRequest, PutStatusResponse201]]:
-        """новый статус
-
-         Создание нового статуса.
-
-        Args:
-            body (QueryStatus):
-
-        Raises:
-            errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-            httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-        Returns:
-            Response[Union[BadRequest, PutStatusResponse201]]
-        """
-        kwargs = self._get_kwargs_putStatus(body=body)
-        response = await self.client.get_async_httpx_client().request(**kwargs)
-        return self._build_response_putStatus(response=response)
-    
     async def putStatus(self, body: QueryStatus) -> Optional[Union[BadRequest, PutStatusResponse201]]:
         """новый статус
 
@@ -1363,7 +1066,9 @@ class Pachca:
         Returns:
             Union[BadRequest, PutStatusResponse201]
         """
-        return (await self.asyncio_detailed_putStatus(body=body)).parsed
+        kwargs = self._get_kwargs_putStatus(body=body)
+        response = await self.client.get_async_httpx_client().request(**kwargs)
+        return self._build_response_putStatus(response=response).parsed
     
     def _get_kwargs_delStatus(self) -> dict[str, Any]:
         _kwargs: dict[str, Any] = {'method': 'delete', 'url': '/profile/status'}
@@ -1379,22 +1084,6 @@ class Pachca:
     
     def _build_response_delStatus(self, response: httpx.Response) -> Response[Any]:
         return Response(status_code=HTTPStatus(response.status_code), content=response.content, headers=response.headers, parsed=self._parse_response_delStatus(response=response))
-    
-    async def asyncio_detailed_delStatus(self) -> Response[Any]:
-        """удаление своего статуса
-
-         Параметры запроса отсутствуют
-
-        Raises:
-            errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-            httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-        Returns:
-            Response[Any]
-        """
-        kwargs = self._get_kwargs_delStatus()
-        response = await self.client.get_async_httpx_client().request(**kwargs)
-        return self._build_response_delStatus(response=response)
     
     def _get_kwargs_getTags(self, per: Union[Unset, int]=50, page: Union[Unset, int]=1) -> dict[str, Any]:
         params: dict[str, Any] = {}
@@ -1419,26 +1108,6 @@ class Pachca:
     def _build_response_getTags(self, response: httpx.Response) -> Response[Union[GetTagsResponse200, GetTagsResponse400]]:
         return Response(status_code=HTTPStatus(response.status_code), content=response.content, headers=response.headers, parsed=self._parse_response_getTags(response=response))
     
-    async def asyncio_detailed_getTags(self, per: Union[Unset, int]=50, page: Union[Unset, int]=1) -> Response[Union[GetTagsResponse200, GetTagsResponse400]]:
-        """Список тегов сотрудников
-
-         Метод для получения актуального списка тегов сотрудников.
-
-        Args:
-            per (Union[Unset, int]):  Default: 50.
-            page (Union[Unset, int]):  Default: 1.
-
-        Raises:
-            errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-            httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-        Returns:
-            Response[Union[GetTagsResponse200, GetTagsResponse400]]
-        """
-        kwargs = self._get_kwargs_getTags(per=per, page=page)
-        response = await self.client.get_async_httpx_client().request(**kwargs)
-        return self._build_response_getTags(response=response)
-    
     async def getTags(self, per: Union[Unset, int]=50, page: Union[Unset, int]=1) -> Optional[Union[GetTagsResponse200, GetTagsResponse400]]:
         """Список тегов сотрудников
 
@@ -1455,7 +1124,9 @@ class Pachca:
         Returns:
             Union[GetTagsResponse200, GetTagsResponse400]
         """
-        return (await self.asyncio_detailed_getTags(per=per, page=page)).parsed
+        kwargs = self._get_kwargs_getTags(per=per, page=page)
+        response = await self.client.get_async_httpx_client().request(**kwargs)
+        return self._build_response_getTags(response=response).parsed
     
     def _get_kwargs_getTag(self, id: int) -> dict[str, Any]:
         _kwargs: dict[str, Any] = {'method': 'get', 'url': f'/group_tags/{id}'}
@@ -1476,25 +1147,6 @@ class Pachca:
     def _build_response_getTag(self, response: httpx.Response) -> Response[Union[GetTagResponse200, GetTagResponse404]]:
         return Response(status_code=HTTPStatus(response.status_code), content=response.content, headers=response.headers, parsed=self._parse_response_getTag(response=response))
     
-    async def asyncio_detailed_getTag(self, id: int) -> Response[Union[GetTagResponse200, GetTagResponse404]]:
-        """Информация о теге
-
-         Параметры запроса отсутствуют
-
-        Args:
-            id (int):
-
-        Raises:
-            errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-            httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-        Returns:
-            Response[Union[GetTagResponse200, GetTagResponse404]]
-        """
-        kwargs = self._get_kwargs_getTag(id=id)
-        response = await self.client.get_async_httpx_client().request(**kwargs)
-        return self._build_response_getTag(response=response)
-    
     async def getTag(self, id: int) -> Optional[Union[GetTagResponse200, GetTagResponse404]]:
         """Информация о теге
 
@@ -1510,7 +1162,9 @@ class Pachca:
         Returns:
             Union[GetTagResponse200, GetTagResponse404]
         """
-        return (await self.asyncio_detailed_getTag(id=id)).parsed
+        kwargs = self._get_kwargs_getTag(id=id)
+        response = await self.client.get_async_httpx_client().request(**kwargs)
+        return self._build_response_getTag(response=response).parsed
     
     def _get_kwargs_getTagsEmployees(self, id: int, per: Union[Unset, int]=25, page: Union[Unset, int]=1) -> dict[str, Any]:
         params: dict[str, Any] = {}
@@ -1535,27 +1189,6 @@ class Pachca:
     def _build_response_getTagsEmployees(self, response: httpx.Response) -> Response[Union[BadRequest, GetTagsEmployeesResponse200]]:
         return Response(status_code=HTTPStatus(response.status_code), content=response.content, headers=response.headers, parsed=self._parse_response_getTagsEmployees(response=response))
     
-    async def asyncio_detailed_getTagsEmployees(self, id: int, per: Union[Unset, int]=25, page: Union[Unset, int]=1) -> Response[Union[BadRequest, GetTagsEmployeesResponse200]]:
-        """получение актуального списка сотрудников тега
-
-         Метод для получения актуального списка сотрудников тега.
-
-        Args:
-            id (int):
-            per (Union[Unset, int]):  Default: 25.
-            page (Union[Unset, int]):  Default: 1.
-
-        Raises:
-            errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-            httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-        Returns:
-            Response[Union[BadRequest, GetTagsEmployeesResponse200]]
-        """
-        kwargs = self._get_kwargs_getTagsEmployees(id=id, per=per, page=page)
-        response = await self.client.get_async_httpx_client().request(**kwargs)
-        return self._build_response_getTagsEmployees(response=response)
-    
     async def getTagsEmployees(self, id: int, per: Union[Unset, int]=25, page: Union[Unset, int]=1) -> Optional[Union[BadRequest, GetTagsEmployeesResponse200]]:
         """получение актуального списка сотрудников тега
 
@@ -1573,7 +1206,9 @@ class Pachca:
         Returns:
             Union[BadRequest, GetTagsEmployeesResponse200]
         """
-        return (await self.asyncio_detailed_getTagsEmployees(id=id, per=per, page=page)).parsed
+        kwargs = self._get_kwargs_getTagsEmployees(id=id, per=per, page=page)
+        response = await self.client.get_async_httpx_client().request(**kwargs)
+        return self._build_response_getTagsEmployees(response=response).parsed
     
     def _get_kwargs_post_tasks(self, body: PostTasksBody) -> dict[str, Any]:
         headers: dict[str, Any] = {}
@@ -1599,30 +1234,6 @@ class Pachca:
     def _build_response_post_tasks(self, response: httpx.Response) -> Response[Union[PostTasksResponse201, PostTasksResponse400]]:
         return Response(status_code=HTTPStatus(response.status_code), content=response.content, headers=response.headers, parsed=self._parse_response_post_tasks(response=response))
     
-    async def asyncio_detailed_post_tasks(self, body: PostTasksBody) -> Response[Union[PostTasksResponse201, PostTasksResponse400]]:
-        """Метод для создания нового напоминания.
-
-         При создании напоминания обязательным условием является указания типа напоминания: звонок, встреча,
-        простое напоминание, событие или письмо.
-        При этом не требуется дополнительное описание - вы просто создадите напоминание с соответствующим
-        текстом.
-        Если вы укажите описание напоминания - то именно оно и станет текстом напоминания.
-        У напоминания должны быть ответственные, если их не указывать - ответственным назначаетесь вы.
-
-        Args:
-            body (PostTasksBody):
-
-        Raises:
-            errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-            httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-        Returns:
-            Response[Union[PostTasksResponse201, PostTasksResponse400]]
-        """
-        kwargs = self._get_kwargs_post_tasks(body=body)
-        response = await self.client.get_async_httpx_client().request(**kwargs)
-        return self._build_response_post_tasks(response=response)
-    
     async def post_tasks(self, body: PostTasksBody) -> Optional[Union[PostTasksResponse201, PostTasksResponse400]]:
         """Метод для создания нового напоминания.
 
@@ -1643,7 +1254,9 @@ class Pachca:
         Returns:
             Union[PostTasksResponse201, PostTasksResponse400]
         """
-        return (await self.asyncio_detailed_post_tasks(body=body)).parsed
+        kwargs = self._get_kwargs_post_tasks(body=body)
+        response = await self.client.get_async_httpx_client().request(**kwargs)
+        return self._build_response_post_tasks(response=response).parsed
     
     def _get_kwargs_postMessageReactions(self, id: int, body: PostMessageReactionsBody) -> dict[str, Any]:
         headers: dict[str, Any] = {}
@@ -1675,28 +1288,6 @@ class Pachca:
     def _build_response_postMessageReactions(self, response: httpx.Response) -> Response[Union[Any, PostMessageReactionsResponse400, PostMessageReactionsResponse403, PostMessageReactionsResponse404]]:
         return Response(status_code=HTTPStatus(response.status_code), content=response.content, headers=response.headers, parsed=self._parse_response_postMessageReactions(response=response))
     
-    async def asyncio_detailed_postMessageReactions(self, id: int, body: PostMessageReactionsBody) -> Response[Union[Any, PostMessageReactionsResponse400, PostMessageReactionsResponse403, PostMessageReactionsResponse404]]:
-        """Добавление реакции
-
-         Метод для добавления реакции на сообщение. **Лимиты реакций:** - Каждый пользователь может
-        установить не более 20 уникальных реакций на сообщение. - Сообщение может иметь не более 30
-        уникальных реакций. - Сообщение может иметь не более 1000 реакций.
-
-        Args:
-            id (int):
-            body (PostMessageReactionsBody):
-
-        Raises:
-            errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-            httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-        Returns:
-            Response[Union[Any, PostMessageReactionsResponse400, PostMessageReactionsResponse403, PostMessageReactionsResponse404]]
-        """
-        kwargs = self._get_kwargs_postMessageReactions(id=id, body=body)
-        response = await self.client.get_async_httpx_client().request(**kwargs)
-        return self._build_response_postMessageReactions(response=response)
-    
     async def postMessageReactions(self, id: int, body: PostMessageReactionsBody) -> Optional[Union[Any, PostMessageReactionsResponse400, PostMessageReactionsResponse403, PostMessageReactionsResponse404]]:
         """Добавление реакции
 
@@ -1715,7 +1306,9 @@ class Pachca:
         Returns:
             Union[Any, PostMessageReactionsResponse400, PostMessageReactionsResponse403, PostMessageReactionsResponse404]
         """
-        return (await self.asyncio_detailed_postMessageReactions(id=id, body=body)).parsed
+        kwargs = self._get_kwargs_postMessageReactions(id=id, body=body)
+        response = await self.client.get_async_httpx_client().request(**kwargs)
+        return self._build_response_postMessageReactions(response=response).parsed
     
     def _get_kwargs_getMessageReactions(self, id: int, body: GetMessageReactionsBody) -> dict[str, Any]:
         headers: dict[str, Any] = {}
@@ -1744,27 +1337,6 @@ class Pachca:
     def _build_response_getMessageReactions(self, response: httpx.Response) -> Response[Union[BadRequest, GetMessageReactionsResponse200, NotFound]]:
         return Response(status_code=HTTPStatus(response.status_code), content=response.content, headers=response.headers, parsed=self._parse_response_getMessageReactions(response=response))
     
-    async def asyncio_detailed_getMessageReactions(self, id: int, body: GetMessageReactionsBody) -> Response[Union[BadRequest, GetMessageReactionsResponse200, NotFound]]:
-        """Получение актуального списка реакций.
-
-         Этот метод позволяет получить список всех реакций, оставленных пользователями на указанное
-        сообщение.
-
-        Args:
-            id (int):
-            body (GetMessageReactionsBody):
-
-        Raises:
-            errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-            httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-        Returns:
-            Response[Union[BadRequest, GetMessageReactionsResponse200, NotFound]]
-        """
-        kwargs = self._get_kwargs_getMessageReactions(id=id, body=body)
-        response = await self.client.get_async_httpx_client().request(**kwargs)
-        return self._build_response_getMessageReactions(response=response)
-    
     async def getMessageReactions(self, id: int, body: GetMessageReactionsBody) -> Optional[Union[BadRequest, GetMessageReactionsResponse200, NotFound]]:
         """Получение актуального списка реакций.
 
@@ -1782,7 +1354,9 @@ class Pachca:
         Returns:
             Union[BadRequest, GetMessageReactionsResponse200, NotFound]
         """
-        return (await self.asyncio_detailed_getMessageReactions(id=id, body=body)).parsed
+        kwargs = self._get_kwargs_getMessageReactions(id=id, body=body)
+        response = await self.client.get_async_httpx_client().request(**kwargs)
+        return self._build_response_getMessageReactions(response=response).parsed
     
     def _get_kwargs_deleteMessageReactions(self, id: int, code: str) -> dict[str, Any]:
         params: dict[str, Any] = {}
@@ -1809,27 +1383,6 @@ class Pachca:
     def _build_response_deleteMessageReactions(self, response: httpx.Response) -> Response[Union[Any, DeleteMessageReactionsResponse400, DeleteMessageReactionsResponse404]]:
         return Response(status_code=HTTPStatus(response.status_code), content=response.content, headers=response.headers, parsed=self._parse_response_deleteMessageReactions(response=response))
     
-    async def asyncio_detailed_deleteMessageReactions(self, id: int, code: str) -> Response[Union[Any, DeleteMessageReactionsResponse400, DeleteMessageReactionsResponse404]]:
-        """Удаление реакции
-
-         Метод для удаления реакции на сообщение.  Удалить можно только те реакции, которые были поставлены
-        авторизованным пользователем.
-
-        Args:
-            id (int):
-            code (str):
-
-        Raises:
-            errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-            httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-        Returns:
-            Response[Union[Any, DeleteMessageReactionsResponse400, DeleteMessageReactionsResponse404]]
-        """
-        kwargs = self._get_kwargs_deleteMessageReactions(id=id, code=code)
-        response = await self.client.get_async_httpx_client().request(**kwargs)
-        return self._build_response_deleteMessageReactions(response=response)
-    
     async def deleteMessageReactions(self, id: int, code: str) -> Optional[Union[Any, DeleteMessageReactionsResponse400, DeleteMessageReactionsResponse404]]:
         """Удаление реакции
 
@@ -1847,7 +1400,9 @@ class Pachca:
         Returns:
             Union[Any, DeleteMessageReactionsResponse400, DeleteMessageReactionsResponse404]
         """
-        return (await self.asyncio_detailed_deleteMessageReactions(id=id, code=code)).parsed
+        kwargs = self._get_kwargs_deleteMessageReactions(id=id, code=code)
+        response = await self.client.get_async_httpx_client().request(**kwargs)
+        return self._build_response_deleteMessageReactions(response=response).parsed
     
     def _get_kwargs_getEmployees(self, per: Union[Unset, int]=50, page: Union[Unset, int]=1, query: Union[Unset, str]=UNSET) -> dict[str, Any]:
         params: dict[str, Any] = {}
@@ -1870,27 +1425,6 @@ class Pachca:
     def _build_response_getEmployees(self, response: httpx.Response) -> Response[GetEmployeesResponse200]:
         return Response(status_code=HTTPStatus(response.status_code), content=response.content, headers=response.headers, parsed=self._parse_response_getEmployees(response=response))
     
-    async def asyncio_detailed_getEmployees(self, per: Union[Unset, int]=50, page: Union[Unset, int]=1, query: Union[Unset, str]=UNSET) -> Response[GetEmployeesResponse200]:
-        """получение актуального списка всех сотрудников компании
-
-         Fetch a paginated list of employees with optional filtering by query.
-
-        Args:
-            per (Union[Unset, int]):  Default: 50.
-            page (Union[Unset, int]):  Default: 1.
-            query (Union[Unset, str]):
-
-        Raises:
-            errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-            httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-        Returns:
-            Response[GetEmployeesResponse200]
-        """
-        kwargs = self._get_kwargs_getEmployees(per=per, page=page, query=query)
-        response = await self.client.get_async_httpx_client().request(**kwargs)
-        return self._build_response_getEmployees(response=response)
-    
     async def getEmployees(self, per: Union[Unset, int]=50, page: Union[Unset, int]=1, query: Union[Unset, str]=UNSET) -> Optional[GetEmployeesResponse200]:
         """получение актуального списка всех сотрудников компании
 
@@ -1908,7 +1442,9 @@ class Pachca:
         Returns:
             GetEmployeesResponse200
         """
-        return (await self.asyncio_detailed_getEmployees(per=per, page=page, query=query)).parsed
+        kwargs = self._get_kwargs_getEmployees(per=per, page=page, query=query)
+        response = await self.client.get_async_httpx_client().request(**kwargs)
+        return self._build_response_getEmployees(response=response).parsed
     
     def _get_kwargs_getEmployee(self, id: int) -> dict[str, Any]:
         _kwargs: dict[str, Any] = {'method': 'get', 'url': f'/users/{id}'}
@@ -1929,26 +1465,6 @@ class Pachca:
     def _build_response_getEmployee(self, response: httpx.Response) -> Response[Union[GetEmployeeResponse200, NotFound]]:
         return Response(status_code=HTTPStatus(response.status_code), content=response.content, headers=response.headers, parsed=self._parse_response_getEmployee(response=response))
     
-    async def asyncio_detailed_getEmployee(self, id: int) -> Response[Union[GetEmployeeResponse200, NotFound]]:
-        """получение информации о сотруднике
-
-         Метод для получения информации о сотруднике.
-        Для получения сотрудника вам необходимо знать его id и указать его в URL запроса.
-
-        Args:
-            id (int):
-
-        Raises:
-            errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-            httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-        Returns:
-            Response[Union[GetEmployeeResponse200, NotFound]]
-        """
-        kwargs = self._get_kwargs_getEmployee(id=id)
-        response = await self.client.get_async_httpx_client().request(**kwargs)
-        return self._build_response_getEmployee(response=response)
-    
     async def getEmployee(self, id: int) -> Optional[Union[GetEmployeeResponse200, NotFound]]:
         """получение информации о сотруднике
 
@@ -1965,7 +1481,9 @@ class Pachca:
         Returns:
             Union[GetEmployeeResponse200, NotFound]
         """
-        return (await self.asyncio_detailed_getEmployee(id=id)).parsed
+        kwargs = self._get_kwargs_getEmployee(id=id)
+        response = await self.client.get_async_httpx_client().request(**kwargs)
+        return self._build_response_getEmployee(response=response).parsed
     
     
     

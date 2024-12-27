@@ -58,37 +58,6 @@ def _build_response_postTagsToChats(self, response: httpx.Response) -> Response[
     )
 
 
-async def asyncio_detailed_postTagsToChats(
-    self,
-    id: int,
-    body: PostTagsToChatsBody,
-) -> Response[Union[Any, list["ErrorsCode"]]]:
-    """добавление тегов в состав участников беседы или канала
-
-     Метод для добавления тегов в состав участников беседы или канала.
-
-    Args:
-        id (int):  Example: 533.
-        body (PostTagsToChatsBody):
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Response[Union[Any, list['ErrorsCode']]]
-    """
-
-    kwargs = self._get_kwargs_postTagsToChats(
-        id=id,
-        body=body,
-    )
-
-    response = await self.client.get_async_httpx_client().request(**kwargs)
-
-    return self._build_response_postTagsToChats(response=response)
-
-
 async def postTagsToChats(
     self,
     id: int,
@@ -110,9 +79,11 @@ async def postTagsToChats(
         Union[Any, list['ErrorsCode']]
     """
 
-    return (
-        await self.asyncio_detailed_postTagsToChats(
-            id=id,
-            body=body,
-        )
-    ).parsed
+    kwargs = self._get_kwargs_postTagsToChats(
+        id=id,
+        body=body,
+    )
+
+    response = await self.client.get_async_httpx_client().request(**kwargs)
+
+    return self._build_response_postTagsToChats(response=response).parsed

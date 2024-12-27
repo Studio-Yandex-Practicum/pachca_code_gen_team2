@@ -73,37 +73,6 @@ def _build_response_put_messages_id(
     )
 
 
-async def asyncio_detailed_put_messages_id(
-    self,
-    id: int,
-    body: PutMessagesIdBody,
-) -> Response[Union[PutMessagesIdResponse200, list["ErrorsCode"]]]:
-    """Редактирование сообщения
-
-     Метод для редактирования сообщения или комментария.
-
-    Args:
-        id (int):
-        body (PutMessagesIdBody):
-
-    Raises:
-        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
-        httpx.TimeoutException: If the request takes longer than Client.timeout.
-
-    Returns:
-        Response[Union[PutMessagesIdResponse200, list['ErrorsCode']]]
-    """
-
-    kwargs = self._get_kwargs_put_messages_id(
-        id=id,
-        body=body,
-    )
-
-    response = await self.client.get_async_httpx_client().request(**kwargs)
-
-    return self._build_response_put_messages_id(response=response)
-
-
 async def put_messages_id(
     self,
     id: int,
@@ -125,9 +94,11 @@ async def put_messages_id(
         Union[PutMessagesIdResponse200, list['ErrorsCode']]
     """
 
-    return (
-        await self.asyncio_detailed_put_messages_id(
-            id=id,
-            body=body,
-        )
-    ).parsed
+    kwargs = self._get_kwargs_put_messages_id(
+        id=id,
+        body=body,
+    )
+
+    response = await self.client.get_async_httpx_client().request(**kwargs)
+
+    return self._build_response_put_messages_id(response=response).parsed
