@@ -11,7 +11,7 @@ from ...types import UNSET, Response
 
 def _get_kwargs_deleteMessageReactions(
     self,
-    id: str,
+    id: int,
     code: str,
 ) -> dict[str, Any]:
     params: dict[str, Any] = {}
@@ -62,7 +62,7 @@ def _build_response_deleteMessageReactions(
 
 async def asyncio_detailed_deleteMessageReactions(
     self,
-    id: str,
+    id: int,
     code: str,
 ) -> Response[Union[Any, DeleteMessageReactionsResponse400, DeleteMessageReactionsResponse404]]:
     """Удаление реакции
@@ -71,7 +71,7 @@ async def asyncio_detailed_deleteMessageReactions(
     авторизованным пользователем.
 
     Args:
-        id (str):
+        id (int):
         code (str):
 
     Raises:
@@ -94,7 +94,7 @@ async def asyncio_detailed_deleteMessageReactions(
 
 async def deleteMessageReactions(
     self,
-    id: str,
+    id: int,
     code: str,
 ) -> Optional[Union[Any, DeleteMessageReactionsResponse400, DeleteMessageReactionsResponse404]]:
     """Удаление реакции
@@ -103,7 +103,7 @@ async def deleteMessageReactions(
     авторизованным пользователем.
 
     Args:
-        id (str):
+        id (int):
         code (str):
 
     Raises:

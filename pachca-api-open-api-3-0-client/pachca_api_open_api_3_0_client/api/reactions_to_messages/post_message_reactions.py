@@ -13,7 +13,7 @@ from ...types import Response
 
 def _get_kwargs_postMessageReactions(
     self,
-    id: str,
+    id: int,
     body: PostMessageReactionsBody,
 ) -> dict[str, Any]:
     headers: dict[str, Any] = {}
@@ -73,7 +73,7 @@ def _build_response_postMessageReactions(
 
 async def asyncio_detailed_postMessageReactions(
     self,
-    id: str,
+    id: int,
     body: PostMessageReactionsBody,
 ) -> Response[
     Union[Any, PostMessageReactionsResponse400, PostMessageReactionsResponse403, PostMessageReactionsResponse404]
@@ -85,7 +85,7 @@ async def asyncio_detailed_postMessageReactions(
     уникальных реакций. - Сообщение может иметь не более 1000 реакций.
 
     Args:
-        id (str):
+        id (int):
         body (PostMessageReactionsBody):
 
     Raises:
@@ -108,7 +108,7 @@ async def asyncio_detailed_postMessageReactions(
 
 async def postMessageReactions(
     self,
-    id: str,
+    id: int,
     body: PostMessageReactionsBody,
 ) -> Optional[
     Union[Any, PostMessageReactionsResponse400, PostMessageReactionsResponse403, PostMessageReactionsResponse404]
@@ -120,7 +120,7 @@ async def postMessageReactions(
     уникальных реакций. - Сообщение может иметь не более 1000 реакций.
 
     Args:
-        id (str):
+        id (int):
         body (PostMessageReactionsBody):
 
     Raises:
