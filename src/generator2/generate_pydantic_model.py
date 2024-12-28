@@ -34,11 +34,6 @@ def look_into_schema(schema: dict) -> None:
     required_properties = schema.get(upper_schema_name).get('required', [])
     for property in inner_schema:
         inner_body = simple_replace_ref_with_schema(inner_schema.get(property))
-        # inner_type = inner_body.get('type')
-        # if inner_type in PYTHON_TYPES:
-        #     property_type = PYTHON_TYPES[inner_type]
-        # else:
-        #     property_type = inner_type
         property_type = (
             PYTHON_TYPES.get(inner_body.get('type')) or inner_body.get('type'))
         if property_type == 'object':
