@@ -5,7 +5,7 @@ from schema_link_processor import replace_ref_with_schema, load_schema
 from yaml_loader import YAML_DICT
 
 
-def get_all_endpoints(yaml_dict: dict) -> Generator[tuple]:
+def get_all_endpoints(yaml_dict: dict):
     """Получает все эндпоинты из path документации."""
     endpoints = yaml_dict.get('paths')
     method = {}
