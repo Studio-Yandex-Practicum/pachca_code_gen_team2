@@ -6,5 +6,5 @@ PYTHON_TYPES = {
     'boolean': 'bool',
 }
 HTTP_METHODS = (
-    'get', 'post', 'put', 'update', 'patch', 'delete'
+    'get', 'post', 'put', 'update', 'patch', 'delete',
 )

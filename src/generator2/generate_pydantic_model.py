@@ -1,10 +1,11 @@
 from constants import PYTHON_TYPES
 from schema_link_processor import (
-    simple_replace_ref_with_schema, replace_ref_with_schema
+    replace_ref_with_schema, simple_replace_ref_with_schema,
 )
 
 
-def create_model(name: str, fields: list):
+def create_model(name: str, fields: list) -> str:
+    """Генерирует код модели Pydantic."""
     model_code = f'class {name}(BaseModel):\n'
     for field in fields:
         if field[2]:
@@ -18,8 +19,10 @@ def create_model(name: str, fields: list):
     return model_code
 
 
-def look_into_schema(schema: dict):
-    """Рекурсивно разбирает схему и генерирует модели pydantic для requestBody.
+def look_into_schema(schema: dict) -> None:
+    """Рекурсивно разбирает схемы.
+
+    Генерирует модели pydantic для requestBody.
     """
     list_of_properties = []
     nested_properties = []
@@ -42,8 +45,8 @@ def look_into_schema(schema: dict):
             (
                 property,
                 property_type,
-                True if property in required_properties else False
-            )
+                True if property in required_properties else False,
+            ),
         )
         if (inner_body.get('type') == 'object'
            or inner_body.get('type') == 'array'
@@ -54,18 +57,18 @@ def look_into_schema(schema: dict):
         if ('items' in inner_schema.get(nested)
            and inner_schema.get(nested).get('items').get('properties')):
             look_into_schema(replace_ref_with_schema(
-                {nested.capitalize(): inner_schema.get(nested).get('items')})
+                {nested.capitalize(): inner_schema.get(nested).get('items')}),
             )
         elif ('items' in inner_schema.get(nested)
               and inner_schema.get(nested).get('items').get('items')):
             look_into_schema(replace_ref_with_schema(
                 {
                     nested.capitalize():
-                    inner_schema.get(nested).get('items').get('items')
-                })
+                    inner_schema.get(nested).get('items').get('items'),
+                }),
             )
         else:
             look_into_schema(replace_ref_with_schema(
-                {nested.capitalize(): inner_schema.get(nested)})
+                {nested.capitalize(): inner_schema.get(nested)}),
             )
     print(create_model(upper_schema_name, list_of_properties))

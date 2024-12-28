@@ -1,11 +1,13 @@
+from typing import Generator
 from constants import HTTP_METHODS
 from generate_pydantic_model import look_into_schema
 from schema_link_processor import replace_ref_with_schema, load_schema
 from yaml_loader import YAML_DICT
 
 
-def get_all_endpoints(YAML_DICT: dict):
-    endpoints = YAML_DICT.get('paths')
+def get_all_endpoints(yaml_dict: dict) -> Generator[tuple]:
+    """Получает все эндпоинты из path документации."""
+    endpoints = yaml_dict.get('paths')
     method = {}
     for path, body in endpoints.items():
         for method_name in HTTP_METHODS:
@@ -17,13 +19,14 @@ def get_all_endpoints(YAML_DICT: dict):
         method.clear()
 
 
-def process_endpoints():
+def process_endpoints() -> tuple[list, list]:
+    """Обрабатывает эндпоинты."""
     body: dict
     for endpoint, body in get_all_endpoints(YAML_DICT):
         print(endpoint)
-        operationId = body.get('operationId')
+        operation_id = body.get('operationId')
 
-        print(operationId)
+        print(operation_id)
         parameters = body.get('parameters')
         path_parameters = []
         query_parameters = []
@@ -34,30 +37,30 @@ def process_endpoints():
                     path_parameters.append(
                         (
                             parameter.get('name'),
-                            parameter.get('schema').get('type')
-                        )
+                            parameter.get('schema').get('type'),
+                        ),
                     )
                 else:
                     query_parameters.append(
                         (
                             parameter.get('name'),
-                            parameter.get('schema').get('type')
-                        )
+                            parameter.get('schema').get('type'),
+                        ),
                     )
         print('path: ', path_parameters)
         print('query: ', query_parameters)
-        requestBody = body.get('requestBody')
-        if requestBody:
+        request_body = body.get('requestBody')
+        if request_body:
             schema = (
-                requestBody.get('content').get('application/json')
-                or requestBody.get('content').get('multipart/form-data'))
+                request_body.get('content').get('application/json')
+                or request_body.get('content').get('multipart/form-data'))
             if not schema:
                 break
             schema_has_link = schema.get('schema').get('$ref', False)
             schema = (
-                {operationId.capitalize(): load_schema(schema_has_link)}
+                {operation_id.capitalize(): load_schema(schema_has_link)}
                 if schema_has_link
-                else {operationId.capitalize(): schema.get('schema')}
+                else {operation_id.capitalize(): schema.get('schema')}
             )
             look_into_schema(replace_ref_with_schema(schema))
 
