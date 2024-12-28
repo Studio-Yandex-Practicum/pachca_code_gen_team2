@@ -10,11 +10,13 @@ def create_model(name: str, fields: list) -> str:
     for field in fields:
         if field[2]:
             model_code += (
-                f'    {field[0]}: {field[1]}\n'
+                f'    {field[0]}: {field[1]} '
+                '= Field(..., \'docstring\')\n'
             )
         else:
             model_code += (
-                f'    {field[0]}: Optional[{field[1]}]\n'
+                f'    {field[0]}: Optional[{field[1]}] '
+                '= Field(None, \'docstring\')\n'
             )
     return model_code
 
@@ -32,12 +34,18 @@ def look_into_schema(schema: dict) -> None:
     required_properties = schema.get(upper_schema_name).get('required', [])
     for property in inner_schema:
         inner_body = simple_replace_ref_with_schema(inner_schema.get(property))
+        # inner_type = inner_body.get('type')
+        # if inner_type in PYTHON_TYPES:
+        #     property_type = PYTHON_TYPES[inner_type]
+        # else:
+        #     property_type = inner_type
         property_type = (
             PYTHON_TYPES.get(inner_body.get('type')) or inner_body.get('type'))
         if property_type == 'object':
             property_type = property.capitalize()
         if property_type == 'array':
             list_type = inner_body.get("items").get("type")
+            list_type = PYTHON_TYPES.get(list_type, list_type)
             if list_type == 'object' or list_type == 'array':
                 list_type = property.capitalize()
             property_type = (f'List[{list_type}]')
