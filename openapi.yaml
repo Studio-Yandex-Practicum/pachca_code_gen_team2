@@ -130,7 +130,7 @@ paths:
             maximum: 50
         - name: page
           in: query
-          description: 	Страница выборки (по умолчанию 1)
+          description: Страница выборки (по умолчанию 1)
           required: false
           schema:
             type: integer
@@ -138,7 +138,7 @@ paths:
         - name: query
           in: query
           description: |
-            	Поисковая фраза для фильтрации результатов (поиск идет по полям first_name (имя), last_name (фамилия), email (электронная почта), phone_number (телефон) и nickname (никнейм))
+            Поисковая фраза для фильтрации результатов (поиск идет по полям first_name (имя), last_name (фамилия), email (электронная почта), phone_number (телефон) и nickname (никнейм))
           required: false
           schema:
             type: string
@@ -420,7 +420,7 @@ paths:
             maximum: 50
         - name: page
           in: query
-          description: 	Страница выборки (по умолчанию 1)
+          description: Страница выборки (по умолчанию 1)
           required: false
           schema:
             type: integer
@@ -438,7 +438,7 @@ paths:
                     items:
                       $ref: '#/components/schemas/BaseEmployee'
         '400':
-          description: 	Поле имеет недопустимое значение
+          description: Поле имеет недопустимое значение
           content:
             application/json:
               schema:
@@ -829,6 +829,7 @@ paths:
     delete:
       tags:
         - talk and channel participants
+      operationId: leaveChat
       summary: 'Выход из беседы или канала'
       description: |-
         Метод для самостоятельного выхода из беседы или канала.
@@ -1198,7 +1199,8 @@ paths:
                     code: not_found
     put:
       tags:
-        - messages
+        - message
+      operationId: editMessage
       summary: Редактирование сообщения
       description: Метод для редактирования сообщения или комментария.
       parameters:
@@ -1504,6 +1506,7 @@ paths:
     post:
       tags:
         - reminders
+      operationId: createTask
       summary: 'Метод для создания нового напоминания.'
       description: |
         При создании напоминания обязательным условием является указания типа напоминания: звонок, встреча, простое напоминание, событие или письмо. 
@@ -1758,11 +1761,11 @@ components:
     Status:
       type: object
       nullable: true
-      description: 	Статус. Возвращается как null, если статус не установлен.
+      description: Статус. Возвращается как null, если статус не установлен.
       properties:
         emoji:
           type: string
-          description: 	Emoji символ статуса
+          description: Emoji символ статуса
         title:
           type: string
           description: Текст статуса
@@ -1795,7 +1798,7 @@ components:
               nullable: true
     QueryCommonMethods:
       type: object
-      description: 	получение списка актульных полей сущности.
+      description: получение списка актульных полей сущности.
       properties:
         id:
           type: integer
