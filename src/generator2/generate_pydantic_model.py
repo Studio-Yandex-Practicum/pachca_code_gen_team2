@@ -68,5 +68,4 @@ def look_into_schema(schema: dict):
             look_into_schema(replace_ref_with_schema(
                 {nested.capitalize(): inner_schema.get(nested)})
             )
-
     print(create_model(upper_schema_name, list_of_properties))

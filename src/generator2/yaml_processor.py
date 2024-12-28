@@ -60,7 +60,9 @@ def process_endpoints():
                 else {operationId.capitalize(): schema.get('schema')}
             )
             look_into_schema(replace_ref_with_schema(schema))
+
         print('='*80)
+    return path_parameters, query_parameters
 
 
 if __name__ == '__main__':
