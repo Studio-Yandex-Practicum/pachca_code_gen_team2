@@ -1588,9 +1588,7 @@ paths:
                         type: string
                         description: Статус напоминания
                       created_at:
-                        type: string
-                        format: date-time
-                        description: Дата и время создания
+                        $ref: '#/components/schemas/Timestamp'
                       performer_ids:
                         type: array
                         items:
@@ -1744,10 +1742,7 @@ components:
               type: string
               description: Должность
             created_at:
-              type: string
-              format: date-time
-              description: |
-                Дата создания (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ
+              $ref: '#/components/schemas/Timestamp'
             time_zone:
               type: string
               description: Часовой пояс пользователя
@@ -1999,8 +1994,7 @@ components:
           type: integer
         created_at:
           title: Created At
-          type: string
-          format: date-time
+          $ref: '#/components/schemas/Timestamp'
         files:
           title: Files
           type: array
@@ -2063,8 +2057,7 @@ components:
               description: Идентификатор чата, в котором находится оригинальное сообщение
             original_created_at:
               title: Original Created At
-              type: integer
-              description: Дата и время создания оригинального сообщения (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ
+              $ref: '#/components/schemas/Timestamp'
             original_thread_id:
               title: Original Thread Id
               type: integer
@@ -2139,10 +2132,7 @@ components:
           description: Идентификатор пользователя, создавшего беседу или канал
           example: 185
         created_at:
-          type: string
-          format: date-time
-          description: Дата и время создания беседы или канала (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ
-          example: '2021-08-28T15:56:53.000Z'
+          $ref: '#/components/schemas/Timestamp'
         member_ids:
           type: array
           description: Массив идентификаторов пользователей, участников
@@ -2217,6 +2207,8 @@ components:
     Timestamp:
       type: string
       format: date-time
+      description: Дата и время (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ
+      example: '2021-08-28T15:56:53.000Z'
   securitySchemes:
     bearerAuth:
       type: http
