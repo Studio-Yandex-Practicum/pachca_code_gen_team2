@@ -1981,7 +1981,6 @@ components:
           title: User Id
           type: integer
         created_at:
-          title: Created At
           $ref: '#/components/schemas/Timestamp'
         files:
           title: Files
@@ -2040,7 +2039,6 @@ components:
               type: integer
               description: Идентификатор чата, в котором находится оригинальное сообщение
             original_created_at:
-              title: Original Created At
               $ref: '#/components/schemas/Timestamp'
             original_thread_id:
               title: Original Thread Id
