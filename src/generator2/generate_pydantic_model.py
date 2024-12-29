@@ -11,12 +11,12 @@ def create_model(name: str, fields: list) -> str:
         if field[2]:
             model_code += (
                 f'    {field[0]}: {field[1]} '
-                f'= Field(..., \'{field[3]}\')\n'
+                f'= Field(..., description=\'{field[3]}\')\n'
             )
         else:
             model_code += (
                 f'    {field[0]}: Optional[{field[1]}] '
-                f'= Field(None, \'{field[3]}\')\n'
+                f'= Field(None, description=\'{field[3]}\')\n'
             )
     return model_code
 
