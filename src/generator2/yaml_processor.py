@@ -65,6 +65,8 @@ def process_endpoints() -> tuple[list, list]:
             look_into_schema(replace_ref_with_schema(schema))
 
         print('='*80)
+        # if operation_id == 'createMessage':
+        #     exit()
     return path_parameters, query_parameters
 
 

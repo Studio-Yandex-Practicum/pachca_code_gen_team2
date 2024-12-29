@@ -47,7 +47,6 @@ def look_into_schema(schema: dict) -> None:
     for property in inner_schema:
         inner_body = simple_replace_ref_with_schema(inner_schema.get(property))
         if 'enum' in inner_body:
-            print('+'*50, property)
             enum_properties.append(
                 (property, inner_body.get('type'),  inner_body['enum']),
             )
