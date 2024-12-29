@@ -8,7 +8,7 @@ from openapi_parser.specification import Path, Schema, Server, Specification
 
 import api_methods
 
-TOKEN = 'Bearer l62qW6VgnJMMWx53QmwRbKEy84dzo2LhJl0Mst9m2W8'
+TOKEN = 'Bearer '
 
 
 async def get_client(self):
