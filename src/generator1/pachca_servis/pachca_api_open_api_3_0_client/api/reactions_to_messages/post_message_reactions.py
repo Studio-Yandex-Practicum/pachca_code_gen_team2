@@ -9,6 +9,7 @@ from ...models.post_message_reactions_response_400 import PostMessageReactionsRe
 from ...models.post_message_reactions_response_403 import PostMessageReactionsResponse403
 from ...models.post_message_reactions_response_404 import PostMessageReactionsResponse404
 from ...types import Response
+from .client_serv import HttpClient
 
 
 def _get_kwargs_postMessageReactions(
@@ -101,6 +102,11 @@ async def postMessageReactions(
         body=body,
     )
 
-    response = await self.client.get_async_httpx_client().request(**kwargs)
+    # response = await self.client.get_async_httpx_client().request(
+    #    **kwargs
+    # )
+    response = await HttpClient.request(
+        method=kwargs["method"], url=kwargs["url"], **kwargs
+    )  # Используйте статичный метод
 
     return self._build_response_postMessageReactions(response=response).parsed

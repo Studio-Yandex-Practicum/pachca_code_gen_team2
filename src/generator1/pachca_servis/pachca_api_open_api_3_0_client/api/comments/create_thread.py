@@ -8,6 +8,7 @@ from ...models.bad_request import BadRequest
 from ...models.create_thread_response_200 import CreateThreadResponse200
 from ...models.not_found import NotFound
 from ...types import Response
+from .client_serv import HttpClient
 
 
 def _get_kwargs_createThread(
@@ -78,6 +79,11 @@ async def createThread(
         id=id,
     )
 
-    response = await self.client.get_async_httpx_client().request(**kwargs)
+    # response = await self.client.get_async_httpx_client().request(
+    #    **kwargs
+    # )
+    response = await HttpClient.request(
+        method=kwargs["method"], url=kwargs["url"], **kwargs
+    )  # Используйте статичный метод
 
     return self._build_response_createThread(response=response).parsed

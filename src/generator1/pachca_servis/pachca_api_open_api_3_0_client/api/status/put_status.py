@@ -8,6 +8,7 @@ from ...models.bad_request import BadRequest
 from ...models.put_status_response_201 import PutStatusResponse201
 from ...models.query_status import QueryStatus
 from ...types import Response
+from .client_serv import HttpClient
 
 
 def _get_kwargs_putStatus(
@@ -77,6 +78,11 @@ async def putStatus(
         body=body,
     )
 
-    response = await self.client.get_async_httpx_client().request(**kwargs)
+    # response = await self.client.get_async_httpx_client().request(
+    #    **kwargs
+    # )
+    response = await HttpClient.request(
+        method=kwargs["method"], url=kwargs["url"], **kwargs
+    )  # Используйте статичный метод
 
     return self._build_response_putStatus(response=response).parsed

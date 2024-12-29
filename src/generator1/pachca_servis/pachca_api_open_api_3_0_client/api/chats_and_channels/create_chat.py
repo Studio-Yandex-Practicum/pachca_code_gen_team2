@@ -10,6 +10,7 @@ from ...models.create_chat_response_400 import CreateChatResponse400
 from ...models.create_chat_response_404 import CreateChatResponse404
 from ...models.create_chat_response_422 import CreateChatResponse422
 from ...types import Response
+from .client_serv import HttpClient
 
 
 def _get_kwargs_createChat(
@@ -92,6 +93,11 @@ async def createChat(
         body=body,
     )
 
-    response = await self.client.get_async_httpx_client().request(**kwargs)
+    # response = await self.client.get_async_httpx_client().request(
+    #    **kwargs
+    # )
+    response = await HttpClient.request(
+        method=kwargs["method"], url=kwargs["url"], **kwargs
+    )  # Используйте статичный метод
 
     return self._build_response_createChat(response=response).parsed

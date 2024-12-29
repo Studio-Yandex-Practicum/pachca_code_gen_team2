@@ -8,6 +8,7 @@ from ...models.create_task_body import CreateTaskBody
 from ...models.create_task_response_201 import CreateTaskResponse201
 from ...models.create_task_response_400 import CreateTaskResponse400
 from ...types import Response
+from .client_serv import HttpClient
 
 
 def _get_kwargs_createTask(
@@ -86,6 +87,11 @@ async def createTask(
         body=body,
     )
 
-    response = await self.client.get_async_httpx_client().request(**kwargs)
+    # response = await self.client.get_async_httpx_client().request(
+    #    **kwargs
+    # )
+    response = await HttpClient.request(
+        method=kwargs["method"], url=kwargs["url"], **kwargs
+    )  # Используйте статичный метод
 
     return self._build_response_createTask(response=response).parsed

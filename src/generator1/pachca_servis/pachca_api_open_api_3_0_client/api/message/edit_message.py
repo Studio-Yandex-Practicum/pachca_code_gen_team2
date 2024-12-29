@@ -8,6 +8,7 @@ from ...models.edit_message_body import EditMessageBody
 from ...models.edit_message_response_200 import EditMessageResponse200
 from ...models.errors_code import ErrorsCode
 from ...types import Response
+from .client_serv import HttpClient
 
 
 def _get_kwargs_editMessage(
@@ -99,6 +100,11 @@ async def editMessage(
         body=body,
     )
 
-    response = await self.client.get_async_httpx_client().request(**kwargs)
+    # response = await self.client.get_async_httpx_client().request(
+    #    **kwargs
+    # )
+    response = await HttpClient.request(
+        method=kwargs["method"], url=kwargs["url"], **kwargs
+    )  # Используйте статичный метод
 
     return self._build_response_editMessage(response=response).parsed

@@ -7,6 +7,7 @@ from ... import errors
 from ...models.delete_message_reactions_response_400 import DeleteMessageReactionsResponse400
 from ...models.delete_message_reactions_response_404 import DeleteMessageReactionsResponse404
 from ...types import UNSET, Response
+from .client_serv import HttpClient
 
 
 def _get_kwargs_deleteMessageReactions(
@@ -87,6 +88,11 @@ async def deleteMessageReactions(
         code=code,
     )
 
-    response = await self.client.get_async_httpx_client().request(**kwargs)
+    # response = await self.client.get_async_httpx_client().request(
+    #    **kwargs
+    # )
+    response = await HttpClient.request(
+        method=kwargs["method"], url=kwargs["url"], **kwargs
+    )  # Используйте статичный метод
 
     return self._build_response_deleteMessageReactions(response=response).parsed

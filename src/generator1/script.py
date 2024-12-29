@@ -87,7 +87,7 @@ with open(client_path, mode='w', encoding="utf-8") as file:
 #     file.write(cli_servis_template.render())
 # cli_servis_path = './pachca_servis/pachca_api_open_api_3_0_client/client_servis.py'
 # Определяем путь к файлу, который нужно скопировать
-source_file = os.path.join(os.path.dirname(__file__), 'generator1', 'client_servis.py')
+source_file = os.path.join(os.path.dirname(__file__), '..', 'generator1', 'client_servis.py')
 cli_servis_path = os.path.join(os.path.dirname(__file__), 'pachca_servis', 'pachca_api_open_api_3_0_client', 'client_serv.py')
 # import pdb;pdb.set_trace()# Копируем файл
 shutil.copy(source_file, cli_servis_path)

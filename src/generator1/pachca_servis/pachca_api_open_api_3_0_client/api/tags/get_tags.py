@@ -7,6 +7,7 @@ from ... import errors
 from ...models.get_tags_response_200 import GetTagsResponse200
 from ...models.get_tags_response_400 import GetTagsResponse400
 from ...types import UNSET, Response, Unset
+from .client_serv import HttpClient
 
 
 def _get_kwargs_getTags(
@@ -81,6 +82,11 @@ async def getTags(
         page=page,
     )
 
-    response = await self.client.get_async_httpx_client().request(**kwargs)
+    # response = await self.client.get_async_httpx_client().request(
+    #    **kwargs
+    # )
+    response = await HttpClient.request(
+        method=kwargs["method"], url=kwargs["url"], **kwargs
+    )  # Используйте статичный метод
 
     return self._build_response_getTags(response=response).parsed

@@ -9,6 +9,7 @@ from ...models.create_message_body import CreateMessageBody
 from ...models.create_message_response_201 import CreateMessageResponse201
 from ...models.error import Error
 from ...types import Response
+from .client_serv import HttpClient
 
 
 def _get_kwargs_createMessage(
@@ -103,6 +104,11 @@ async def createMessage(
         body=body,
     )
 
-    response = await self.client.get_async_httpx_client().request(**kwargs)
+    # response = await self.client.get_async_httpx_client().request(
+    #    **kwargs
+    # )
+    response = await HttpClient.request(
+        method=kwargs["method"], url=kwargs["url"], **kwargs
+    )  # Используйте статичный метод
 
     return self._build_response_createMessage(response=response).parsed

@@ -7,6 +7,7 @@ from ... import errors
 from ...models.errors_code import ErrorsCode
 from ...models.post_members_to_chats_body import PostMembersToChatsBody
 from ...types import Response
+from .client_serv import HttpClient
 
 
 def _get_kwargs_postMembersToChats(
@@ -84,6 +85,11 @@ async def postMembersToChats(
         body=body,
     )
 
-    response = await self.client.get_async_httpx_client().request(**kwargs)
+    # response = await self.client.get_async_httpx_client().request(
+    #    **kwargs
+    # )
+    response = await HttpClient.request(
+        method=kwargs["method"], url=kwargs["url"], **kwargs
+    )  # Используйте статичный метод
 
     return self._build_response_postMembersToChats(response=response).parsed

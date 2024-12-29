@@ -12,6 +12,7 @@ from ...models.get_chats_response_404 import GetChatsResponse404
 from ...models.get_chats_response_422 import GetChatsResponse422
 from ...models.get_chats_sortid import GetChatsSortid
 from ...types import UNSET, Response, Unset
+from .client_serv import HttpClient
 
 
 def _get_kwargs_getChats(
@@ -137,6 +138,11 @@ async def getChats(
         last_message_at_before=last_message_at_before,
     )
 
-    response = await self.client.get_async_httpx_client().request(**kwargs)
+    # response = await self.client.get_async_httpx_client().request(
+    #    **kwargs
+    # )
+    response = await HttpClient.request(
+        method=kwargs["method"], url=kwargs["url"], **kwargs
+    )  # Используйте статичный метод
 
     return self._build_response_getChats(response=response).parsed

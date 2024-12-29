@@ -6,6 +6,7 @@ import httpx
 from ... import errors
 from ...models.get_employees_response_200 import GetEmployeesResponse200
 from ...types import UNSET, Response, Unset
+from .client_serv import HttpClient
 
 
 def _get_kwargs_getEmployees(
@@ -82,6 +83,11 @@ async def getEmployees(
         query=query,
     )
 
-    response = await self.client.get_async_httpx_client().request(**kwargs)
+    # response = await self.client.get_async_httpx_client().request(
+    #    **kwargs
+    # )
+    response = await HttpClient.request(
+        method=kwargs["method"], url=kwargs["url"], **kwargs
+    )  # Используйте статичный метод
 
     return self._build_response_getEmployees(response=response).parsed

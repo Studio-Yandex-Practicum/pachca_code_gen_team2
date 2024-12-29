@@ -7,6 +7,7 @@ from ... import errors
 from ...models.get_employee_response_200 import GetEmployeeResponse200
 from ...models.not_found import NotFound
 from ...types import Response
+from .client_serv import HttpClient
 
 
 def _get_kwargs_getEmployee(
@@ -69,6 +70,11 @@ async def getEmployee(
         id=id,
     )
 
-    response = await self.client.get_async_httpx_client().request(**kwargs)
+    # response = await self.client.get_async_httpx_client().request(
+    #    **kwargs
+    # )
+    response = await HttpClient.request(
+        method=kwargs["method"], url=kwargs["url"], **kwargs
+    )  # Используйте статичный метод
 
     return self._build_response_getEmployee(response=response).parsed

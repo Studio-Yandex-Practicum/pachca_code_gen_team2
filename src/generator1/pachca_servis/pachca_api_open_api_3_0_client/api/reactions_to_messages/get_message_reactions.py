@@ -9,6 +9,7 @@ from ...models.get_message_reactions_body import GetMessageReactionsBody
 from ...models.get_message_reactions_response_200 import GetMessageReactionsResponse200
 from ...models.not_found import NotFound
 from ...types import Response
+from .client_serv import HttpClient
 
 
 def _get_kwargs_getMessageReactions(
@@ -91,6 +92,11 @@ async def getMessageReactions(
         body=body,
     )
 
-    response = await self.client.get_async_httpx_client().request(**kwargs)
+    # response = await self.client.get_async_httpx_client().request(
+    #    **kwargs
+    # )
+    response = await HttpClient.request(
+        method=kwargs["method"], url=kwargs["url"], **kwargs
+    )  # Используйте статичный метод
 
     return self._build_response_getMessageReactions(response=response).parsed

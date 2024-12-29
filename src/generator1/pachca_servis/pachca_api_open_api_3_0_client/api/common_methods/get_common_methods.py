@@ -7,6 +7,7 @@ from ... import errors
 from ...models.bad_request import BadRequest
 from ...models.get_common_methods_response_200 import GetCommonMethodsResponse200
 from ...types import UNSET, Response
+from .client_serv import HttpClient
 
 
 def _get_kwargs_getCommonMethods(
@@ -80,6 +81,11 @@ async def getCommonMethods(
         entity_type=entity_type,
     )
 
-    response = await self.client.get_async_httpx_client().request(**kwargs)
+    # response = await self.client.get_async_httpx_client().request(
+    #    **kwargs
+    # )
+    response = await HttpClient.request(
+        method=kwargs["method"], url=kwargs["url"], **kwargs
+    )  # Используйте статичный метод
 
     return self._build_response_getCommonMethods(response=response).parsed

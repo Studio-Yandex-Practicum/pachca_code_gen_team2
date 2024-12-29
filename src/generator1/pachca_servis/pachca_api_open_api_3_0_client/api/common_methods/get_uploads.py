@@ -6,6 +6,7 @@ import httpx
 from ... import errors
 from ...models.file_response import FileResponse
 from ...types import Response
+from .client_serv import HttpClient
 
 
 def _get_kwargs_getUploads(
@@ -56,6 +57,11 @@ async def getUploads(
 
     kwargs = self._get_kwargs_getUploads()
 
-    response = await self.client.get_async_httpx_client().request(**kwargs)
+    # response = await self.client.get_async_httpx_client().request(
+    #    **kwargs
+    # )
+    response = await HttpClient.request(
+        method=kwargs["method"], url=kwargs["url"], **kwargs
+    )  # Используйте статичный метод
 
     return self._build_response_getUploads(response=response).parsed

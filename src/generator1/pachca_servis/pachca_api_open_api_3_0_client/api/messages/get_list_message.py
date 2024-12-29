@@ -8,6 +8,7 @@ from ...models.bad_request import BadRequest
 from ...models.get_list_message_response_200 import GetListMessageResponse200
 from ...models.not_found import NotFound
 from ...types import UNSET, Response, Unset
+from .client_serv import HttpClient
 
 
 def _get_kwargs_getListMessage(
@@ -101,6 +102,11 @@ async def getListMessage(
         page=page,
     )
 
-    response = await self.client.get_async_httpx_client().request(**kwargs)
+    # response = await self.client.get_async_httpx_client().request(
+    #    **kwargs
+    # )
+    response = await HttpClient.request(
+        method=kwargs["method"], url=kwargs["url"], **kwargs
+    )  # Используйте статичный метод
 
     return self._build_response_getListMessage(response=response).parsed
