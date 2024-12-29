@@ -3,7 +3,7 @@
 Инструкция:
 ...
 
-# Генерация моделей pydantic для requestBosy эндпоинтов
+# Генерация моделей pydantic для requestBody эндпоинтов
 
 Метод process_endpoints в yaml_processor.py позволяет создать модели pydantic для каждого эндпоинта
 Метод возвращает кортеж из двух список - path query параметров эндпоинта
