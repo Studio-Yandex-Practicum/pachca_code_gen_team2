@@ -1525,8 +1525,6 @@ paths:
                   type: object
                   required:
                     - kind
-                    - content
-                    - due_at
                   properties:
                     kind:
                       type: string
@@ -2097,8 +2095,7 @@ components:
           description: |
             Идентификатор пользователя, оставившего реакцию.
         created_at:
-          type: string
-          format: date-time
+          $ref: '#/components/schemas/Timestamp'
           description: |
             Дата и время добавления реакции (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ.
         code:
@@ -2218,6 +2215,9 @@ components:
         users_count:
           description: Количество сотрудников, которые имеют этот тег
           type: integer
+    Timestamp:
+      type: string
+      format: date-time
   securitySchemes:
     bearerAuth:
       type: http
