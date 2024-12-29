@@ -48,10 +48,13 @@ paths:
       parameters:
         - name: entity_type
           in: query
-          description: Тип сущности - участник (User) или напоминание (Task).
+          description: Тип сущности
           required: true
           schema:
             type: string
+            enum:
+              - User
+              - Task
       responses:
         '200':
           description: Успешный запрос
@@ -65,22 +68,33 @@ paths:
                     items:
                       $ref: '#/components/schemas/QueryCommonMethods'
         '400':
-          description: BadRequest
+          description: Запрашиваемый ресурс не существует
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BadRequest'
+                type: object
+                properties:
+                  errors:
+                    $ref: '#/components/schemas/Errors'
               examples:
-                BLANK:
-                  summary: blank
+                blank:
                   description: Поле не может быть пустым
                   value:
-                    detail: BLANK
-                INCLUSION:
-                  summary: inclusion
+                    errors:
+                      - key: string
+                        value: string
+                        message: message
+                        code: blank
+                        payload: {}
+                inclusion:
                   description: Поле имеет непредусмотренное значение
                   value:
-                    detail: INCLUSION
+                    errors:
+                      - key: string
+                        value: string
+                        message: message
+                        code: inclusion
+                        payload: {}
   /uploads:
     post:
       tags:
@@ -117,12 +131,12 @@ paths:
         - employees
       summary: получение актуального списка всех сотрудников компании
       description: |
-        Fetch a paginated list of employees with optional filtering by query.
+        Метод для получения актуального списка сотрудников вашей компании.
       operationId: getEmployees
       parameters:
         - name: per
           in: query
-          description: Количество возвращаемых сущностей за один запрос (по умолчанию 50, максимум
+          description: Количество возвращаемых сущностей за один запрос (по умолчанию 50, максимум 50)
           required: false
           schema:
             type: integer
@@ -138,8 +152,7 @@ paths:
         - name: query
           in: query
           description: |
-            Поисковая фраза для фильтрации результатов (поиск идет по полям first_name (имя), last_name (фамилия),
-            email (электронная почта), phone_number (телефон) и nickname (никнейм))
+            Поисковая фраза для фильтрации результатов (поиск идет по полям first_name (имя), last_name (фамилия), email (электронная почта), phone_number (телефон) и nickname (никнейм))
           required: false
           schema:
             type: string
@@ -181,19 +194,32 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/Employee'
-        '404':
-          description: Сотрудник не найден
+        '400':
+          description: Не удалось найти
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NotFound'
+                type: object
+                properties:
+                  errors:
+                    $ref: '#/components/schemas/Errors'
+              examples:
+                not_found:
+                  description: Поле не может быть пустым
+                  value:
+                    errors:
+                      - key: string
+                        value: string
+                        message: message
+                        code: not_found
+                        payload: {}
   /profile/status:
     get:
       tags:
         - status
       summary: получение информации о своем статусе
       description: |
-        Параметры запроса отсутствуют
+        Метод для получения информации о своем статусе. Параметры запроса отсутствуют.
       operationId: getStatus
       responses:
         '200':
@@ -210,14 +236,17 @@ paths:
         - status
       summary: новый статус
       description: |
-        Создание нового статуса.
+        Метод для установки себе нового статуса.
       operationId: putStatus
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/QueryStatus'
+              type: object
+              properties:
+                status:
+                  $ref: '#/components/schemas/Status'
       responses:
         '201':
           description: Объект создан
@@ -229,42 +258,61 @@ paths:
                   data:
                     $ref: '#/components/schemas/Status'
         '400':
-          description: BadRequest
+          description: Запрашиваемый ресурс не существует
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BadRequest'
+                type: object
+                properties:
+                  errors:
+                    $ref: '#/components/schemas/Errors'
               examples:
-                BLANK:
-                  summary: blank
+                blank:
                   description: Обязательное поле (не может быть пустым)
                   value:
-                    detail: BLANK
-                TOO_LONG:
-                  summary: too_long
+                    errors:
+                      - key: string
+                        value: string
+                        message: message
+                        code: blank
+                        payload: {}
+                too_long:
                   description: Слишком длинное значение (пояснения вы получите в поле message)
                   value:
-                    detail: TOO_LONG
-                INVALID:
-                  summary: invalid
+                    errors:
+                      - key: string
+                        value: string
+                        message: message
+                        code: too_long
+                        payload: {}
+                invalid:
                   description: Поле не соответствует правилам (пояснения вы получите в поле message)
                   value:
-                    detail: INVALID
-                WRONG_EMOJI:
-                  summary: wrong_emoji
+                    errors:
+                      - key: string
+                        value: string
+                        message: message
+                        code: invalid
+                        payload: {}
+                wrong_emoji:
                   description: Emoji статуса не может содержать значения отличные от Emoji символа
                   value:
-                    detail: WRONG_EMOJI
+                    errors:
+                      - key: string
+                        value: string
+                        message: message
+                        code: wrong_emoji
+                        payload: {}
     delete:
       tags:
         - status
       summary: удаление своего статуса
       description: |
-        Параметры запроса отсутствуют
+        Метод для удаления своего статуса. Параметры запроса отсутствуют.
       operationId: delStatus
       responses:
         '204':
-          description: Объект успешно удален, тело ответа отсутствует
+          description: При безошибочном выполнении запроса тело ответа отсутствует
           content: {}
   /group_tags/{id}:
     get:
@@ -1452,33 +1500,32 @@ paths:
     get:
       tags:
         - reactions to messages
-      summary: 'Получение актуального списка реакций.'
-      description: |
-        Этот метод позволяет получить список всех реакций, оставленных пользователями на указанное сообщение.
       operationId: getMessageReactions
+      summary: получение актуального списка реакций
+      description: |
+        Метод для получения актуального списка реакций на сообщение.
       parameters:
         - name: id
           in: path
+          description: Уникальный идентификатор сообщения
           required: true
-          description: Уникальный идентификатор сообщения, список реакций на которое нужно получить.
           schema:
             type: integer
-      requestBody:
-        required: false
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                per:
-                  type: integer
-                  description: Количество возвращаемых сущностей за один запрос (по умолчанию 50, максимум 50).
-                  default: 50
-                  maximum: 50
-                page:
-                  type: integer
-                  description: Номер страницы выборки (по умолчанию 1).
-                  default: 1
+        - name: per
+          in: query
+          description: Количество возвращаемых сущностей за один запрос (по умолчанию 50, максимум 50)
+          required: false
+          schema:
+            type: integer
+            default: 50
+            maximum: 50
+        - name: page
+          in: query
+          description: Страница выборки (по умолчанию 1)
+          required: false
+          schema:
+            type: integer
+            default: 1
       responses:
         '200':
           description: Список реакций успешно получен.
@@ -1694,48 +1741,52 @@ components:
           description: |
             Тип: пользователь (false) или бот (true)
       description: Базовый класс сотрудника.
+    Response:
+      type: object
+      properties:
+        Content-Disposition:
+          type: string
+          description: Используемый заголовок
+          default: attachment
+        acl:
+          type: string
+          description: Уровень безопасности
+          default: private
+        policy:
+          type: string
+          description: Уникальный policy для загрузки файла
+        x-amz-credential:
+          type: string
+          description: x-amz-credential для загрузки файла
+        x-amz-algorithm:
+          type: string
+          description: Используемый алгоритм
+          default: AWS4-HMAC-SHA256
+        x-amz-date:
+          type: string
+          description: Уникальный x-amz-date для загрузки файла
+        x-amz-signature:
+          type: string
+          description: Уникальная подпись для загрузки файла
+        key:
+          type: string
+          description: Уникальный ключ для загрузки файла
     FileResponse:
-      type: object
-      properties:
-        Content-Disposition:
-          type: string
-        acl:
-          type: string
-        policy:
-          type: string
-        x-amz-credential:
-          type: string
-        x-amz-algorithm:
-          type: string
-        x-amz-date:
-          type: string
-        x-amz-signature:
-          type: string
-        key:
-          type: string
-        direct_url:
-          type: string
+      allOf:
+        - $ref: '#/components/schemas/Response'
+        - type: object
+          properties:
+            direct_url:
+              type: string
+              description: Адрес для загрузки файла
     DirectResponse:
-      type: object
-      properties:
-        Content-Disposition:
-          type: string
-        acl:
-          type: string
-        policy:
-          type: string
-        x-amz-credential:
-          type: string
-        x-amz-algorithm:
-          type: string
-        x-amz-date:
-          type: string
-        x-amz-signature:
-          type: string
-        key:
-          type: string
-        file:
-          type: string
+      allOf:
+        - $ref: '#/components/schemas/Response'
+        - type: object
+          properties:
+            file:
+              type: string
+              description: Адрес для загрузки файла
     Employee:
       allOf:
         - $ref: '#/components/schemas/BaseEmployee'
@@ -1776,27 +1827,6 @@ components:
             nullable: true
             description: |
               Срок жизни статуса (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ. Возвращается как null, если срок не установлен.
-    QueryStatus:
-      type: object
-      properties:
-        status:
-          type: object
-          description: Собранный объект параметров нового статуса
-          required:
-            - emoji
-            - title
-          properties:
-            emoji:
-              type: string
-              description: Emoji символ статуса
-            title:
-              type: string
-              description: Текст статуса
-            expires_at:
-              type: string
-              format: date-time
-              description: Срок действия статуса (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ
-              nullable: true
     QueryCommonMethods:
       type: object
       description: получение списка актульных полей сущности.
@@ -1831,18 +1861,23 @@ components:
           key:
             title: key
             type: string
+            description: Ключ параметра, в котором произошла ошибка
           value:
             title: value
             type: string
+            description: Значение ключа, которое вызвало ошибку
           message:
             title: message
             type: string
+            description: Ошибка текстом, который вы можете вывести пользователю
           code:
             title: code
             type: string
+            description: Внутренний код ошибки (коды ошибок представлены в описании каждого метода)
           payload:
             title: payload
             type: object
+            description: Объект, который предоставляет любую дополнительную информацию (возможные дополнения представлены в описании каждого метода)
     Buttons:
       title: Message Buttons
       type: array
@@ -1916,8 +1951,9 @@ components:
                 title: Size
                 type: integer
         buttons:
+          allOf:
+            - $ref: '#/components/schemas/Buttons'
           title: buttons
-          $ref: '#/components/schemas/Buttons'
         parent_message_id:
           title: Parent Massage Id
           type: integer
@@ -2033,7 +2069,8 @@ components:
                 description: Размер файла в байтах, отображаемый пользователю
         buttons:
           title: buttons
-          $ref: '#/components/schemas/Buttons'
+          allOf:
+            - $ref: '#/components/schemas/Buttons'
         thread:
           title: Thread
           type: object
