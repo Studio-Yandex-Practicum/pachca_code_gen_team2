@@ -1899,11 +1899,7 @@ components:
                 title: Name
                 type: string
               file_type:
-                title: File Type
-                type: string
-                enum:
-                  - 'file'
-                  - 'image'
+                $ref: '#/components/schemas/FileType'
               size:
                 title: Size
                 type: integer
@@ -1941,10 +1937,7 @@ components:
               type: string
               description: Название файла, которое вы хотите отображать пользователю (рекомендуется писать вместе с расширением)
             file_type:
-              type: string
-              enum:
-                - 'file'
-                - 'image'
+              $ref: '#/components/schemas/FileType'
             size:
               type: integer
               default: 1234
@@ -2013,11 +2006,7 @@ components:
                 type: string
                 description: Название файла, которое вы хотите отображать пользователю (рекомендуется писать вместе с расширением)
               file_type:
-                title: File Type
-                type: string
-                enum:
-                  - 'file'
-                  - 'image'
+                $ref: '#/components/schemas/FileType'
               url:
                 title: Url
                 type: string
