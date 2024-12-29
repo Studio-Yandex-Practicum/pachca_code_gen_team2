@@ -1,5 +1,7 @@
 import ast
 import os
+import yaml
+import subprocess
 
 from jinja2 import Environment, FileSystemLoader
 
@@ -42,19 +44,50 @@ def get_all_api_functions_and_imports(api_dir):
     return all_functions, all_imports
 
 
+def create_modified_openapi_yaml(input_path, output_path):
+    with open(input_path, "r", encoding="utf-8") as file:
+        openapi_data = yaml.safe_load(file)
+    base_url = openapi_data.get("servers", [{}])[0].get("url")
+    openapi_data["x-base-url"] = base_url
+
+    with open(output_path, "w", encoding="utf-8") as file:
+        yaml.dump(openapi_data, file)
+
+    return base_url
+
+
+def generate_client(openapi_path, templates_path):
+    command = [
+        "openapi-python-client",
+        "generate",
+        "--path", openapi_path,
+        "--custom-template-path", templates_path,
+        "--overwrite"
+    ]
+    subprocess.run(command, check=True)
+
+
+def process_generated_client(api_dir, client_template_path, client_output_path, base_url):
+    endpoints, imports = get_all_api_functions_and_imports(api_dir)
+
+    env = Environment(loader=FileSystemLoader('templates'))
+    client_template = env.get_template(client_template_path)
+
+    with open(client_output_path, mode='w', encoding="utf-8") as file:
+        # Объединяем импорты в одну строку
+        unique_imports = list(set(imports))  # Убираем дубликаты
+        file.write("\n".join(unique_imports) + "\n\n")  # Записываем импорты в файл
+        file.write(client_template.render(endpoints=endpoints, base_url=base_url))
+
+
+openapi_input_path = "openapi.yaml"
+openapi_modified_path = "openapi_modified.yaml"
+templates_path = "./templates"
 api_dir = "./pachca-api-open-api-3-0-client/pachca_api_open_api_3_0_client/api"
-endpoints, imports = get_all_api_functions_and_imports(api_dir)
+client_template_name = "client.py.jinja"
+client_output_path = "./pachca-api-open-api-3-0-client/pachca_api_open_api_3_0_client/client.py"
 
-env = Environment(
-    loader=FileSystemLoader('templates')
-)
-
-client_template = env.get_template('client.py.jinja')
-
-client_path = './pachca-api-open-api-3-0-client/pachca_api_open_api_3_0_client/client.py'
-
-with open(client_path, mode='w', encoding="utf-8") as file:
-    # Объединяем импорты в одну строку
-    unique_imports = list(set(imports))  # Убираем дубликаты
-    file.write("\n".join(unique_imports) + "\n\n")  # Записываем импорты в файл
-    file.write(client_template.render(endpoints=endpoints))
+# Выполнение шагов
+base_url = create_modified_openapi_yaml(openapi_input_path, openapi_modified_path)
+generate_client(openapi_modified_path, templates_path)
+process_generated_client(api_dir, client_template_name, client_output_path, base_url)
