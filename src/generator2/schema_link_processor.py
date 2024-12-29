@@ -8,7 +8,6 @@ def load_schema(path_to_schema: str) -> dict:
 
 
 def replace_ref_with_schema(schema: dict) -> dict:
-    # print(schema, '++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
     """Заменяет ссылку на схему самой схемой."""
     schema_name = next(iter(schema.keys()))
     if 'allOf' in schema[schema_name]:
@@ -30,8 +29,6 @@ def replace_ref_with_schema(schema: dict) -> dict:
                 schema[schema_name] = temp
             else:
                 schema[schema_name] = {'properties': temp}
-            # schema[schema_name] = {'propertiess': schema[schema_name]}
-        # print(schema, '---------------------------------------------------------------')
         return schema
     if 'properties' in schema.get(schema_name):
         current_schema = schema.get(schema_name).get('properties')
@@ -41,8 +38,6 @@ def replace_ref_with_schema(schema: dict) -> dict:
         if '$ref' in current_schema.get(property):
             current_schema[property] = load_schema(
                 current_schema.get(property).get('$ref'))
-
-    # print(schema, '---------------------------------------------------------------')    
     return schema
 
 
