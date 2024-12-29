@@ -269,7 +269,7 @@ class Pachca:
 
     def __init__(self, token):
         self.client = AuthenticatedClient(token=token)
-
+        self.base_url = '{{ base_url }}'
     {% if endpoints %}
     {% for endpoint in endpoints %}
     {{ endpoint | indent(4, first=Fasle) }}
