@@ -11,12 +11,12 @@ def create_model(name: str, fields: list) -> str:
         if field[2]:
             model_code += (
                 f'    {field[0]}: {field[1]} '
-                '= Field(..., \'docstring\')\n'
+                f'= Field(..., \'{field[3]}\')\n'
             )
         else:
             model_code += (
                 f'    {field[0]}: Optional[{field[1]}] '
-                '= Field(None, \'docstring\')\n'
+                f'= Field(None, \'{field[3]}\')\n'
             )
     return model_code
 
@@ -34,6 +34,7 @@ def look_into_schema(schema: dict) -> None:
     required_properties = schema.get(upper_schema_name).get('required', [])
     for property in inner_schema:
         inner_body = simple_replace_ref_with_schema(inner_schema.get(property))
+        description = inner_body.get('description', 'No docstring provided')
         property_type = (
             PYTHON_TYPES.get(inner_body.get('type')) or inner_body.get('type'))
         if property_type == 'object':
@@ -49,6 +50,7 @@ def look_into_schema(schema: dict) -> None:
                 property,
                 property_type,
                 True if property in required_properties else False,
+                description,
             ),
         )
         if (inner_body.get('type') == 'object'
