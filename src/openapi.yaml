@@ -1463,22 +1463,21 @@ paths:
           description: Уникальный идентификатор сообщения, список реакций на которое нужно получить.
           schema:
             type: integer
-      requestBody:
-        required: false
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                per:
-                  type: integer
-                  description: Количество возвращаемых сущностей за один запрос (по умолчанию 50, максимум 50).
-                  default: 50
-                  maximum: 50
-                page:
-                  type: integer
-                  description: Номер страницы выборки (по умолчанию 1).
-                  default: 1
+        - name: per
+          in: query
+          required: false
+          description: Количество возвращаемых сущностей за один запрос (по умолчанию 50, максимум 50).
+          schema:
+            type: integer
+            default: 50
+            maximum: 50
+        - name: page
+          in: query
+          required: false
+          description: Страница выборки (по умолчанию 1).
+          schema:
+            type: integer
+            default: 1
       responses:
         '200':
           description: Список реакций успешно получен.
