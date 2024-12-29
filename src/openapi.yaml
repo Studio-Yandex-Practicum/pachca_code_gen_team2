@@ -404,14 +404,14 @@ paths:
                   errors:
                     $ref: '#/components/schemas/Errors'
               examples:
-                inclusion:
+                exclusion:
                   description: Поле имеет непредусмотренное значение
                   value:
                     errors:
                       - key: string
                         value: string
                         message: message
-                        code: inclusion
+                        code: exclusion
                         payload: {}
   /group_tags/{id}/users:
     get:
@@ -465,14 +465,14 @@ paths:
                   errors:
                     $ref: '#/components/schemas/Errors'
               examples:
-                inclusion:
+                exclusion:
                   description: Поле имеет непредусмотренное значение
                   value:
                     errors:
                       - key: string
                         value: string
                         message: message
-                        code: inclusion
+                        code: exclusion
                         payload: {}
   /chats:
     post:
