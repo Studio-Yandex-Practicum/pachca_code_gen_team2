@@ -2185,6 +2185,11 @@ components:
         users_count:
           description: Количество сотрудников, которые имеют этот тег
           type: integer
+    FileType:
+      type: string
+      enum:
+        - 'file'
+        - 'image'
     Timestamp:
       type: string
       format: date-time
