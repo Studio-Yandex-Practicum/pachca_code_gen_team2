@@ -70,7 +70,7 @@ from http import HTTPStatus
 import datetime
 
 import httpx
-from ...client_servis import AuthenticatedClient
+from src.generator1.client_servis import AuthenticatedClient
 
 class Pachca:
     """Главный класс библиотеки."""
