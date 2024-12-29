@@ -899,10 +899,7 @@ paths:
                         type: integer
                         description: Идентификатор чата сообщения.
                       updated_at:
-                        type: string
-                        format: date-time
-                        description: |
-                          Дата и время обновления треда (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ.
+                        $ref: '#/components/schemas/Timestamp'
         '404':
           description: Сообщение не найдено.
           content:
@@ -1575,9 +1572,7 @@ paths:
                         type: string
                         description: Описание
                       due_at:
-                        type: string
-                        format: date-time
-                        description: Срок выполнения (ISO-8601)
+                        $ref: '#/components/schemas/Timestamp'
                       priority:
                         type: integer
                         description: Приоритет
@@ -2146,10 +2141,7 @@ components:
           description: 'Доступ: закрытый (false) или открытый (true)'
           example: false
         last_message_at:
-          type: string
-          format: date-time
-          description: Дата и время создания последнего сообщения в беседе/канале (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ
-          example: '2021-08-28T15:58:13.000Z'
+          $ref: '#/components/schemas/Timestamp'
         meet_room_url:
           type: string
           description: Ссылка на Видеочат
