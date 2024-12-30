@@ -82,8 +82,8 @@ def look_into_schema_new(schema: dict):
         nested_obj = new_replace_ref_with_schema(inner_schema)
         if nested in nested_obj: 
             look_into_schema_new(
-            {nested.capitalize(): nested_obj[nested]}
-                )
+                {nested.capitalize(): nested_obj[nested]}
+            )
         else:
             look_into_schema_new(nested_obj)
     for enum_class in enum_properties:
@@ -105,7 +105,6 @@ def look_into_schema(schema: dict) -> None:
     required_properties = schema.get(upper_schema_name).get('required', [])
     for property in inner_schema:
         inner_body = new_replace_ref_with_schema(inner_schema.get(property))        
-        # print(property, inner_body, '777777777777777777777777777777777777777777777777777777777777777777')
         if 'enum' in inner_body:
             enum_properties.append(
                 (property, inner_body.get('type'),  inner_body['enum']),
@@ -117,7 +116,6 @@ def look_into_schema(schema: dict) -> None:
             property_type = f'enum_{property}'
         if property_type == 'object':
             property_type = property.capitalize()
-        # print(inner_body, '33333333333333333333333333333333333333333333333333333333333333')
         if property_type == 'array':
             list_type = inner_body.get("items").get("type")
             list_type = PYTHON_TYPES.get(list_type, list_type)
@@ -132,7 +130,6 @@ def look_into_schema(schema: dict) -> None:
                 description,
             ),
         )
-        # print(property, inner_body, '=========================================================')
         if (inner_body.get('type') == 'object'
            or inner_body.get('type') == 'array'
            and inner_body.get('items', {}).get('properties')
