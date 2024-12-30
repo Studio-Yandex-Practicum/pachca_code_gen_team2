@@ -1660,7 +1660,7 @@ paths:
               type: object
               properties:
                 task:
-                  $ref: '#/components/schemas/BaseTask'
+                  $ref: '#/components/schemas/Task'
       responses:
         '201':
           description: Напоминание успешно создано
