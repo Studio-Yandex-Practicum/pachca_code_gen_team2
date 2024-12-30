@@ -54,6 +54,8 @@ def look_into_schema_new(schema: dict):
         description = inner_body.get('description', 'No docstring provided')
         property_type = (
             PYTHON_TYPES.get(inner_body.get('type')) or inner_body.get('type'))
+        if property_type is None:
+            property_type = [item.get('type') for item in inner_body.get('allOf') if '$ref' not in item][0]
         if 'enum' in inner_body:
             property_type = f'enum_{property}'
         if property_type == 'object':
