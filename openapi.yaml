@@ -433,8 +433,8 @@ paths:
       operationId: createChat
       summary: Новая беседа или канал
       description: |
-        Метод для создания новой беседы или нового канала.
-        При создании беседы или канала вы автоматически становитесь участником.\
+        Создание новой беседы или нового канала.
+        При создании беседы или канала вы автоматически становитесь участником.
       requestBody:
         required: true
         content:
@@ -615,7 +615,7 @@ paths:
                 type: object
                 properties:
                   errors:
-                    $ref: '#/components/schemas/ErrorsCode'
+                    $ref: '#/components/schemas/Errors'
               examples:
                 too_long:
                   description: Слишком длинное значение (пояснения вы получите в поле message)
