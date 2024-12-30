@@ -9,12 +9,17 @@ def unite_schemas(schemas: list[dict], schema2: dict):
         schema2['required'] = list(set(required_proprties))
         if schema2['type'] == 'object':
             schema2['properties'] = (
-                schema2.get('properties', {}) | schema.get('properties', {})
+                schema.get('properties', {}) | schema2.get('properties', {})
             )
         if schema2['type'] == 'array':
-            schema2['items'] = (
-                schema2.get('items', {}) | schema.get('items', {})
-            )
+            if 'items' in schema2 and schema2['items'].get('properties'):
+                schema2['items']['properties'] = (
+                    schema.get('items').get('properties') | schema2.get('items').get('properties')
+                )
+            else:
+                schema2['items'] = (
+                    schema.get('items', {}) | schema2.get('items', {})
+                )
     return schema2
 
 
