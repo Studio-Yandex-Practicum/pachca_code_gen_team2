@@ -17,11 +17,6 @@ class AuthenticatedClient:
     """
 
     raise_on_unexpected_status: bool = field(default=False, kw_only=True)
-    _base_url: str = field(
-        default="{{ base_url }}",
-        kw_only=True, 
-        alias="base_url"
-    )
     _cookies: dict[str, str] = field(factory=dict, kw_only=True, alias="cookies")
     _headers: dict[str, str] = field(factory=dict, kw_only=True, alias="headers")
     _timeout: Optional[httpx.Timeout] = field(default=None, kw_only=True, alias="timeout")
@@ -32,6 +27,7 @@ class AuthenticatedClient:
     _async_client: Optional[httpx.AsyncClient] = field(default=None, init=False)
 
     token: str
+    base_url: str
     prefix: str = "Bearer"
     auth_header_name: str = "Authorization"
 
@@ -72,7 +68,7 @@ class AuthenticatedClient:
         if self._client is None:
             self._headers[self.auth_header_name] = f"{self.prefix} {self.token}" if self.prefix else self.token
             self._client = httpx.Client(
-                base_url=self._base_url,
+                base_url=self.base_url,
                 cookies=self._cookies,
                 headers=self._headers,
                 timeout=self._timeout,
@@ -104,7 +100,7 @@ class AuthenticatedClient:
         if self._async_client is None:
             self._headers[self.auth_header_name] = f"{self.prefix} {self.token}" if self.prefix else self.token
             self._async_client = httpx.AsyncClient(
-                base_url=self._base_url,
+                base_url=self.base_url,
                 cookies=self._cookies,
                 headers=self._headers,
                 timeout=self._timeout,
@@ -127,8 +123,12 @@ class AuthenticatedClient:
 class Pachca:
     """Главный класс библиотеки."""
 
-    def __init__(self, token):
-        self.client = AuthenticatedClient(token=token)
+    def __init__(self, token, base_url='{{ base_url }}'):
+        self.client = AuthenticatedClient(
+            token=token,
+            base_url=base_url
+        )
+
     {% if endpoints %}
     {% for endpoint in endpoints %}
     {{ endpoint | indent(4, first=Fasle) }}
