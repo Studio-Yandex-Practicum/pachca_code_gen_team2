@@ -358,8 +358,8 @@ class AuthenticatedClient:
 class Pachca:
     """Главный класс библиотеки."""
 
-    def __init__(self, token):
-        self.client = AuthenticatedClient(token=token)
+    def __init__(self, base_url, token):
+        self.client = AuthenticatedClient(base_url=base_url, token=token)
 
     
     
@@ -410,7 +410,11 @@ class Pachca:
             Union[CreateChatResponse201, CreateChatResponse400, CreateChatResponse404, CreateChatResponse422]
          """
         kwargs = self._get_kwargs_createChat(body=body)
-        response = await HttpClient.request(method=kwargs['method'], url=kwargs['url'], **kwargs)
+        base_url = self.client._base_url  # Получаем базовый URL из клиента
+        full_url = f"{base_url}{kwargs['url']}"  # Формируем полный URL
+        kwargs['url'] = full_url  # Обновляем URL в kwargs
+        response = await HttpClient.request(**kwargs)
+        # response = await HttpClient.request(method=kwargs['method'], url=kwargs['url'], **kwargs)
         return self._build_response_createChat(response=response).parsed
     
     def _get_kwargs_getChat(self, id: int) -> dict[str, Any]:
@@ -735,7 +739,14 @@ class Pachca:
             GetEmployeesResponse200
         """
         kwargs = self._get_kwargs_getEmployees(per=per, page=page, query=query)
-        response = await HttpClient.request(method=kwargs['method'], url=kwargs['url'], **kwargs)
+    # Добавляем базовый URL к запросу
+        base_url = self.client._base_url  # Получаем базовый URL из клиента
+        full_url = f"{base_url}{kwargs['url']}"  # Формируем полный URL
+        kwargs['url'] = full_url  # Обновляем URL в kwargs
+        import pdb;pdb.set_trace()
+        response = await HttpClient.request(**kwargs)
+
+        # response = await HttpClient.request(method=kwargs['method'], url=kwargs['url'], **kwargs)
         return self._build_response_getEmployees(response=response).parsed
     
     def _get_kwargs_editMessage(self, id: int, body: EditMessageBody) -> dict[str, Any]:

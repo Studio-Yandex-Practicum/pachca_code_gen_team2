@@ -10,6 +10,7 @@ chat_body = CreateChatBody(chat=query_chat)
 
 pachca = Pachca(
     token='x4EhHyzYY2aA38GJb6AnKQXcY716LnEHCoxD1dUEyCI',
+    base_url = 'https://api.pachca.com/api/shared/v1'
 )
 
 
