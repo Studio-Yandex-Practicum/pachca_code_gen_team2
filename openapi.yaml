@@ -281,6 +281,7 @@ paths:
             required: true
             schema:
               type: integer
+              example: 533
       responses:
         '200':
           description: Запрос отработал как положено, без ошибок
@@ -380,6 +381,7 @@ paths:
           required: true
           schema:
             type: integer
+            example: 533
         - name: per
           in: query
           description: Количество возвращаемых сущностей за один запрос (по умолчанию 25, максимум 50)
@@ -689,9 +691,10 @@ paths:
           required: true
           schema:
             type: integer
+            example: 533
       responses:
         '200':
-          description: Успешный запрос
+          description: Запрос отработал как положено, без ошибок
           content:
             application/json:
               schema:
