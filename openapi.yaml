@@ -316,27 +316,28 @@ paths:
         - tags
       summary: Список тегов сотрудников
       description: |
-        Метод для получения актуального списка тегов сотрудников.
+        Получение актуального списка тегов сотрудников.
+        Названия тегов являются уникальными в компании.
       operationId: getTags
       parameters:
         - name: per
           in: query
-          description: Количество возвращаемых сущностей за один запрос (по умолчанию 50, максимум 50)
           required: false
+          description: Количество возвращаемых сущностей за один запрос (по умолчанию 50, максимум 50)
           schema:
             type: integer
             default: 50
             maximum: 50
         - name: page
           in: query
-          description:   Страница выборки (по умолчанию 1)
           required: false
+          description: Страница выборки (по умолчанию 1)
           schema:
             type: integer
             default: 1
       responses:
         '200':
-          description: Успешный запрос
+          description: Запрос отработал как положено, без ошибок
           content:
             application/json:
               schema:
@@ -346,43 +347,25 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Tag'
-        "400":
-          description: Ошибка валидации запроса.
+        '400':
+          description: Неприемлемый запрос (часто из-за отсутствия обязательного параметра)
           content:
             application/json:
               schema:
                 type: object
                 properties:
                   errors:
-                    type: array
-                    description: Список ошибок в запросе.
-                    items:
-                      type: object
-                      properties:
-                        key:
-                          type: string
-                          description: Ключ параметра, в котором произошла ошибка.
-                        value:
-                          type: string
-                          description: Значение ключа, вызвавшее ошибку.
-                        message:
-                          type: string
-                          description: Текстовое описание ошибки.
-                        code:
-                          type: string
-                          description: Внутренний код ошибки.
-                        payload:
-                          type: object
-                          description: Дополнительная информация об ошибке.
+                    $ref: '#/components/schemas/Errors'
               examples:
                 exclusion:
-                  summary: Недопустимое значение количество возвращаемых сущностей за один запрос 
+                  description: Поле имеет недопустимое значение
                   value:
                     errors:
-                      - key: "per"
-                        value: "51"
-                        message: "Поле имеет недопустимое значение"
-                        code: "exclusion"
+                      - key: name
+                        value: name
+                        message: message
+                        code: exclusion
+                        payload: {}
   /group_tags/{id}/users:
     get:
       tags:
