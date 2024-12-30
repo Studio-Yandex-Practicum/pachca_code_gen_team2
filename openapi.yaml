@@ -946,35 +946,57 @@ paths:
       tags:
         - talk and channel participants
       operationId: leaveChat
-      summary: 'Выход из беседы или канала'
-      description: |-
-        Метод для самостоятельного выхода из беседы или канала.
+      summary: Выход из беседы или канала
+      description: Cамостоятельный выход из беседы или канала. 
       parameters:
         - name: id
           in: path
           required: true
-          description: 'Уникальный идентификатор беседы или канала.'
+          description: Уникальный идентификатор беседы или канала.
           schema:
             type: integer
+            example: 533
       responses:
         '200':
-          description: 'Успешно отписан. Тело ответа отсутствует'
+          description: Запрос отработал как положено, без ошибок
         '400':
-          description: 'Нельзя покинуть персональный чат'
+          description: Неприемлемый запрос (часто из-за отсутствия обязательного параметра)
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ErrorsCode'
+                type: object
+                properties:
+                  errors:
+                    $ref: '#/components/schemas/Errors'
+              examples:
+                personal_chat:
+                  description: Нельзя покинуть персональный чат 
+                  value:
+                    errors:
+                      - key: string
+                        value: string
+                        message: message
+                        code: personal_chat
+                        payload: {}
         '404':
-          description: 'Не удалось найти'
+          description: Запрашиваемый ресурс не существует
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ErrorsCode'
+                type: object
+                properties:
+                  errors:
+                    $ref: '#/components/schemas/Errors'
+              examples:
+                not_found:
+                  description: Не удалось найти
+                  value:
+                    errors:
+                      - key: string
+                        value: string
+                        message: message
+                        code: not_found
+                        payload: {}
   /messages/{id}/thread:
     post:
       tags:
