@@ -835,10 +835,9 @@ paths:
     post:
       tags:
          - talk and channel participants
-      summary: добавление тегов в состав участников беседы или канала
-      description: |
-        Метод для добавления тегов в состав участников беседы или канала.
-      operationId: postTagsToChats
+      summary: Добавление тегов
+      description: Добавление тегов в состав участников беседы или канала.
+      operationId: addChatTags
       parameters:
         - name: id
           in: path
@@ -846,7 +845,6 @@ paths:
           required: true
           schema:
             type: integer
-            format: int64
             example: 533
       requestBody:
         description: Массив идентификаторов тегов, которые станут участниками
@@ -862,19 +860,87 @@ paths:
                   minItems: 1
                   items:
                     type: integer
-                    format: int64
-                  example: [86, 18]
+                  example:
+                    - 86
+                    - 18
       responses:
         '201':
-          description: Тег(и) добавлен(ы)
+          description: Запрос отработал успешно, сущность создана
         '400':
-          description: BadRequest
+          description: Неприемлемый запрос (часто из-за отсутствия обязательного параметра)
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ErrorsCode'
+                type: object
+                properties:
+                  errors:
+                    $ref: '#/components/schemas/Errors'
+              examples:
+                blank:
+                  description: Обязательное поле (не может быть пустым)
+                  value:
+                    errors:
+                      - key: name
+                        value: ''
+                        message: message
+                        code: blank
+                        payload: {}
+                too_long:
+                  description: Слишком длинное значение (пояснения вы получите в поле message)
+                  value:
+                    errors:
+                      - key: name
+                        value: long_name
+                        message: message
+                        code: too_long
+                        payload: {}
+                invalid:
+                  description: Поле не соответствует правилам (пояснения вы получите в поле message)
+                  value:
+                    errors:
+                      - key: name
+                        value: 1234
+                        message: message
+                        code: invalid
+                        payload: {}
+        '404':
+          description: Запрашиваемый ресурс не существует
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    $ref: '#/components/schemas/Errors'
+              examples:
+                not_found:
+                  description: Не удалось найти
+                  value:
+                    errors:
+                      - key: string
+                        value: string
+                        message: message
+                        code: not_found
+                        payload: {}
+        '422':
+          description: С запросом все хорошо, но правила сервиса не позволяют его обработать (например, при попытке создания контакта с уже существующим номером телефона в базе)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    $ref: '#/components/schemas/Errors'
+              examples:
+                invalid:
+                  description: Поле имеет неверный формат (идентификатор поля вы получите в поле payload)
+                  value:
+                    errors:
+                      - key: name
+                        value: name
+                        message: message
+                        code: invalid
+                        payload: {}
   /chats/{id}/leave:
     delete:
       tags:
