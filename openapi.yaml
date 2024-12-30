@@ -271,7 +271,8 @@ paths:
         - tags
       summary: Информация о теге
       description: |
-        Параметры запроса отсутствуют
+        Получение информации о теге. Названия тегов являются уникальными в компании.
+        Для получения тега вам необходимо знать его id и указать его в URL запроса.
       operationId: getTag
       parameters:
           - name: id
@@ -282,7 +283,7 @@ paths:
               type: integer
       responses:
         '200':
-          description: Успешный запрос
+          description: Запрос отработал как положено, без ошибок
           content:
             application/json:
               schema:
@@ -290,38 +291,25 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/Tag'
-        "404":
-          description: Тег не найден.
+        '404':
+          description: Запрашиваемый ресурс не существует
           content:
             application/json:
               schema:
                 type: object
                 properties:
                   errors:
-                    type: array
-                    description: Список ошибок.
-                    items:
-                      type: object
-                      properties:
-                        key:
-                          type: string
-                        value:
-                          type: string
-                        message:
-                          type: string
-                        code:
-                          type: string
-                        payload:
-                          type: object
+                    $ref: '#/components/schemas/Errors'
               examples:
                 not_found:
-                  summary: Тег не найден.
+                  description: Не удалось найти
                   value:
                     errors:
-                      - key: "id"
-                        value: "100500"
-                        message: "Не удалось найти тег"
-                        code: "not_found"
+                      - key: string
+                        value: string
+                        message: message
+                        code: not_found
+                        payload: {}
   /group_tags:
     get:
       tags:
@@ -2206,17 +2194,20 @@ components:
           example: false
     Tag:
       type: object
-      description: Для получения тега вам необходимо знать его id и указать его в URL запроса.
+      description: Тег
       properties:
         id:
           type: integer
           description: Идентификатор тега
+          example: 9111
         name:
           type: string
-          description:   Название тега
+          description: Название тега
+          example: Design
         users_count:
-          description: Количество сотрудников, которые имеют этот тег
           type: integer
+          description: Количество сотрудников, которые имеют этот тег
+          example: 6
   securitySchemes:
     bearerAuth:
       type: http
