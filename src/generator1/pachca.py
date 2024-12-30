@@ -17,7 +17,6 @@ pachca = Pachca(
 
 async def main() -> None:
     """ Функция теста эндпоинтов """
-
     task1 = asyncio.create_task(pachca.createChat(body=chat_body))
     task2 = asyncio.create_task(pachca.getEmployees())
 
