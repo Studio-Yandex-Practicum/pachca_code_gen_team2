@@ -1,7 +1,6 @@
-from typing import Generator
 from constants import HTTP_METHODS
-from generate_pydantic_model import look_into_schema
-from schema_link_processor import replace_ref_with_schema, load_schema
+from generate_pydantic_model import look_into_schema_new
+from schema_link_processor import load_schema
 from yaml_loader import YAML_DICT
 
 
@@ -62,11 +61,9 @@ def process_endpoints() -> tuple[list, list]:
                 if schema_has_link
                 else {operation_id.capitalize(): schema.get('schema')}
             )
-            look_into_schema(replace_ref_with_schema(schema))
+            look_into_schema_new(schema)
 
         print('='*80)
-        # if operation_id == 'createMessage':
-        #     exit()
     return path_parameters, query_parameters
 
 
