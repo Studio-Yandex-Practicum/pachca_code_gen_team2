@@ -6,7 +6,6 @@ import httpx
 from ...client import AuthenticatedClient, Client
 from ...types import Response, UNSET
 from ... import errors
-from .client_serv import HttpClient
 
 {% for relative in endpoint.relative_imports | sort %}
 {{ relative }}
@@ -113,7 +112,12 @@ async def {{ endpoint.name }}(self,
     # response = await self.client.get_async_httpx_client().request(
     #    **kwargs
     #)
-    response = await HttpClient.request(method=kwargs['method'], url=kwargs['url'], **kwargs)  # Используйте статичный метод
+    base_url = self.client._base_url  # Получаем базовый URL из клиента
+    kwargs['url'] = f"{base_url}{kwargs['url']}"  # Формируем полный URL
+    response = await HttpClient.send_request(
+        token=self.client.token,
+        **kwargs
+    )
 
     return self._build_response_{{ endpoint.name }}(
         response=response).parsed

@@ -77,6 +77,7 @@ with open(client_path, mode='w', encoding="utf-8") as file:
         file.write(types_imports_str + "\n\n")
     if other_imports:
         file.write("\n".join(other_imports) + "\n\n")
+    file.write("from .client_serv import HttpClient" + "\n\n")
     # file.write("from .static_client import StaticClient\n\n")
     file.write(client_template.render(endpoints=endpoints))
 
