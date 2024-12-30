@@ -370,10 +370,9 @@ paths:
     get:
       tags:
         - tags
-      operationId: getTagsEmployees
-      summary: получение актуального списка сотрудников тега
-      description: |
-        Метод для получения актуального списка сотрудников тега.
+      operationId: getTagEmployees
+      summary: Список сотрудников тега
+      description: Получение актуального списка сотрудников тега.
       parameters:
         - name: id
           in: path
@@ -383,7 +382,7 @@ paths:
             type: integer
         - name: per
           in: query
-          description: Количество возвращаемых сущностей за один запрос (по умолчанию 50, максимум
+          description: Количество возвращаемых сущностей за один запрос (по умолчанию 25, максимум 50)
           required: false
           schema:
             type: integer
@@ -398,7 +397,7 @@ paths:
             default: 1
       responses:
         '200':
-          description: Успешный запрос
+          description: Запрос отработал как положено, без ошибок
           content:
             application/json:
               schema:
@@ -409,11 +408,24 @@ paths:
                     items:
                       $ref: '#/components/schemas/BaseEmployee'
         '400':
-          description: Поле имеет недопустимое значение
+          description: Неприемлемый запрос (часто из-за отсутствия обязательного параметра)
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BadRequest'
+                type: object
+                properties:
+                  errors:
+                    $ref: '#/components/schemas/Errors'
+              examples:
+                exclusion:
+                  description: Поле имеет недопустимое значение
+                  value:
+                    errors:
+                      - key: name
+                        value: name
+                        message: message
+                        code: exclusion
+                        payload: {}
   /chats:
     post:
       tags:
@@ -1601,46 +1613,63 @@ components:
   schemas:
     BaseEmployee:
       type: object
+      description: Базовый класс сотрудника.
       properties:
         id:
           type: integer
-          example: 1
           description: Идентификатор пользователя
+          example: 12
         first_name:
           type: string
           description: Имя
+          example: Олег
         last_name:
           type: string
           description: Фамилия
+          example: Петров
         nickname:
           type: string
           description: Имя пользователя
+          example: olegpetrov
         email:
           type: string
           description: Электронная почта
+          example: olegp@example.com
         phone_number:
           type: string
           description: Телефон
+          example: ''
         department:
           type: string
-          description: Департамент
+          description: Подразделение
+          example: Продукт
         role:
           type: string
-          description: |
-            Уровень доступа: admin (администратор), user (сотрудник), multi_guest (мульти-гость)
+          description: 'Уровень доступа: admin (администратор), user (сотрудник), multi_guest (мульти-гость)'
+          enum:
+            - admin
+            - user
+            - multi_guest
+          example: admin
         suspended:
           type: boolean
-          description: |
-            Деактивация пользователя. При значении true пользователь является деактивированным.
+          description: Деактивация пользователя. При значении true пользователь является деактивированным.
+          example: false
         invite_status:
           type: string
-          description: |
-              Статус приглашения: confirmed (принято), sent (отправлено)
+          description: 'Статус приглашения: confirmed (принято), sent (отправлено)'
+          enum:
+            - confirmed
+            - sent
+          example: confirmed
         list_tags:
           type: array
           items:
             type: string
           description: Массив тегов, привязанных к сотруднику
+          example:
+            - Product
+            - Design
         custom_properties:
           type: array
           description: Дополнительные поля сотрудника
@@ -1656,14 +1685,23 @@ components:
               data_type:
                 type: string
                 description: Тип поля (string, number, date или link)
+                enum:
+                  - string
+                  - number
+                  - date
+                  - link
               value:
                 type: string
                 description: Значение
+          example:
+            id: 1678
+            name: Город
+            data_type: string
+            value: Санкт-Петербург
         bot:
           type: boolean
-          description: |
-            Тип: пользователь (false) или бот (true)
-      description: Базовый класс сотрудника.
+          description: 'Тип: пользователь (false) или бот (true)'
+          example: true
     FileResponse:
       type: object
       properties:
