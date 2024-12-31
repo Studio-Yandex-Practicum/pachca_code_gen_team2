@@ -1406,12 +1406,7 @@ paths:
           description: Уникальный идентификатор сообщения.
           schema:
             type: integer
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CodeReaction'
+        - $ref: '#/components/parameters/reactionParameter'
       responses:
         "204":
           description: При безошибочном выполнении запроса тело ответа отсутствует
@@ -1468,12 +1463,8 @@ paths:
           required: true
           schema:
             type: integer
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PerPage'
+        - $ref: '#/components/parameters/chatParameter'
+        - $ref: '#/components/parameters/perParameter50'
       responses:
         '200':
           description: Список реакций успешно получен.
@@ -1684,20 +1675,14 @@ components:
       schema:
         type: string
         format: date-time
+    reactionParameter:
+      name: code
+      in: query
+      description: Emoji в строковом формате для добавления реакции.
+      schema:
+        type: string
+        example: "👍"
   schemas:
-    PerPage:
-      title: Per Page
-      type: object
-      properties:
-        per:
-          description: Количество возвращаемых сущностей за один запрос (по умолчанию 50, максимум 50)
-          type: integer
-          default: 50
-          maximum: 50
-        page:
-          description: Страница выборки (по умолчанию 1)
-          type: integer
-          default: 1
     MembersChat:
       title: Members Chat
       required:
