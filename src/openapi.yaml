@@ -41,7 +41,7 @@ paths:
     get:
       tags:
         - common methods
-      summary: Список дополнительных полей
+      summary: получение списка актульных полей сущности
       description: |
         Метод для получения актуального списка дополнительных полей участников и напоминаний в вашей компании. Тело запроса отсутствует, параметры передаются в URL (например, /custom_properties?entity_type=User)
       operationId: getCommonMethods
@@ -66,7 +66,7 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/QueryCommonMethods'
+                      $ref: '#/components/schemas/CommonMethods'
         '400':
           description: Пояснения ошибки
           content:
@@ -1395,7 +1395,7 @@ paths:
       tags:
         - reactions to messages
       operationId: deleteMessageReactions
-      summary: Удаление реакции
+      summary: удаление реакции
       description: >
         Метод для удаления реакции на сообщение. 
         Удалить можно только те реакции, которые были поставлены авторизованным пользователем.
@@ -1686,6 +1686,7 @@ components:
         format: date-time
   schemas:
     PerPage:
+      title: Per Page
       type: object
       properties:
         per:
@@ -1697,7 +1698,8 @@ components:
           description: Страница выборки (по умолчанию 1)
           type: integer
           default: 1
-    MembersChat: 
+    MembersChat:
+      title: Members Chat
       required:
         - member_ids
       type: object
@@ -1714,6 +1716,7 @@ components:
           type: boolean
           description: Не создавать в чате системное сообщение о добавлении участника
     GroupTag:
+      title: Group Tag
       required:
         - group_tag_ids
       type: object
@@ -1726,7 +1729,8 @@ components:
             format: int64
           example: [86, 18]
           description: Массив идентификаторов тегов, которые станут участниками
-    CodeReaction:      
+    CodeReaction:  
+      title: Code Reaction
       type: object
       properties:
         code:
@@ -1736,6 +1740,7 @@ components:
       required:
         - code
     BaseEmployee:
+      title: Base Employee
       type: object
       properties:
         id:
@@ -1823,7 +1828,8 @@ components:
               nullable: true
               description: Ссылка на скачивание аватарки
           description: Расширенный класс сотрудника.
-    Response:
+    BaseResponse:
+      title: Base Response
       type: object
       properties:
         Content-Disposition:
@@ -1854,16 +1860,18 @@ components:
           type: string
           description: Уникальный ключ для загрузки файла
     FileResponse:
+      title: File Response
       allOf:
-        - $ref: '#/components/schemas/Response'
+        - $ref: '#/components/schemas/BaseResponse'
         - type: object
           properties:
             direct_url:
               type: string
               description: Адрес для загрузки файла
     DirectResponse:
+      title: Direct Response
       allOf:
-        - $ref: '#/components/schemas/Response'
+        - $ref: '#/components/schemas/BaseResponse'
         - type: object
           properties:
             file:
@@ -1886,7 +1894,8 @@ components:
             nullable: true
             description: |
               Срок жизни статуса (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ. Возвращается как null, если срок не установлен.
-    QueryCommonMethods:
+    CommonMethods:
+      title: Common Methods
       type: object
       description: получение списка актульных полей сущности.
       properties:
@@ -1903,7 +1912,6 @@ components:
           example: number
           description: тип поля (string, number, date или link)
     Errors:
-      title: Errors
       type: array
       items:
         title: Error
@@ -1956,7 +1964,7 @@ components:
               type: string
               maxLength: 255
     BaseThread:
-      title: Thread
+      title: Base Thread
       type: object
       nullable: true
       properties:
@@ -1983,7 +1991,7 @@ components:
               description: |
                 Дата и время обновления треда (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ.
     BaseFiles:
-      title: Files
+      title: Base Files
       type: array
       items:
         type: object
@@ -2008,6 +2016,7 @@ components:
               - 'file'
               - 'image'
     CreateEditFiles:
+      title: Create&Edit Files
       allOf:
         - $ref: '#/components/schemas/BaseFiles'
         - type: array
@@ -2032,7 +2041,8 @@ components:
                 title: Url
                 type: string
                 description: 	Прямая временная ссылка на скачивание файла
-    PreBaseMessages:
+    BeforeBaseMessages:
+      title: Before Base Messages
       type: object
       description: Для получения сообщения вам необходимо знать его id и указать его в URL запроса.
       required:
@@ -2047,8 +2057,9 @@ components:
             - $ref: '#/components/schemas/Buttons'
           title: buttons
     EditMessages:
+      title: Edit Messages
       allOf:
-        - $ref: '#/components/schemas/PreBaseMessages'
+        - $ref: '#/components/schemas/BeforeBaseMessages'
         - type: object
           description: Для получения сообщения вам необходимо знать его id и указать его в URL запроса.
           required:
@@ -2059,8 +2070,9 @@ components:
                 - $ref: '#/components/schemas/CreateEditFiles'
               title: files
     BaseMessages:
+      title: Base Messages
       allOf:
-        - $ref: '#/components/schemas/PreBaseMessages'
+        - $ref: '#/components/schemas/BeforeBaseMessages'
         - type: object
           required:
             - entity_id
@@ -2083,6 +2095,7 @@ components:
               default: null
               description: Идентификатор сообщения, к которому написан ответ. Возвращается как null, если сообщение не является ответом.
     CreateMessage:
+      title: Create Messages
       allOf:
         - $ref: '#/components/schemas/BaseMessages'
         - type: object
@@ -2178,6 +2191,7 @@ components:
           description: |
             Emoji символ реакции.
     BaseChat:
+      title: Base Chat
       type: object
       description: Собранный объект параметров создаваемой беседы или канала
       required:
@@ -2250,6 +2264,7 @@ components:
           description: Количество сотрудников, которые имеют этот тег
           type: integer
     BaseCustomProperties:
+      title: Base Custom Properties
       type: array
       items:
         type: object
@@ -2261,6 +2276,7 @@ components:
             type: string
             description: Значение поля
     CustomProperties:
+      title: Custom Properties
       allOf:
         - $ref: '#/components/schemas/BaseCustomProperties'
         - type: array
@@ -2274,6 +2290,7 @@ components:
                 type: string
                 description: Тип поля (string, number, date или link)
     BaseTask:
+      title: Base Task
       type: object
       required:
         - kind
