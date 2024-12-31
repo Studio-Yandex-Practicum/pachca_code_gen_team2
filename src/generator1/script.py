@@ -17,8 +17,6 @@ def extract_functions_and_imports_from_file(file_path) -> None:
             functions.append(ast.unparse(node))
         elif isinstance(node, ast.ImportFrom):
             module = node.module if node.module else '.'
-            # if module.startswith('.'):
-            #     module = module[1:]  # Убираем точку в начале
             for alias in node.names:
                 if module == 'typing':
                     imports.append(f"from typing import {alias.name}")
@@ -26,6 +24,8 @@ def extract_functions_and_imports_from_file(file_path) -> None:
                     imports.append(f"from .models import {alias.name}")
                 elif module == 'types':
                     imports.append(f"from .types import {alias.name}")
+                elif module == 'client_serv':
+                    imports.append(f"from .client_serv import {alias.name}")
                 else:
                     imports.append(f"from {module} import {alias.name}")
 
@@ -77,18 +77,9 @@ with open(client_path, mode='w', encoding="utf-8") as file:
         file.write(types_imports_str + "\n\n")
     if other_imports:
         file.write("\n".join(other_imports) + "\n\n")
-    file.write("from .client_serv import HttpClient" + "\n\n")
-    # file.write("from .static_client import StaticClient\n\n")
     file.write(client_template.render(endpoints=endpoints))
 
-# cli_servis_template = env.get_template('client_servis.py.jinja')
 cli_servis_path = './pachca-api-open-api-3-0-client/pachca_api_open_api_3_0_client/client_serv.py'
-
-# with open(cli_servis_path, mode='w', encoding="utf-8") as file:
-#     file.write(cli_servis_template.render())
-# cli_servis_path = './pachca_servis/pachca_api_open_api_3_0_client/client_servis.py'
 # Определяем путь к файлу, который нужно скопировать
 source_file = os.path.join(os.path.dirname(__file__), '..', 'generator1', 'client_servis.py')
-# cli_servis_path = os.path.join(os.path.dirname(__file__), 'pachca_servis', 'pachca_api_open_api_3_0_client', 'client_serv.py')
-# import pdb;pdb.set_trace()# Копируем файл
 shutil.copy(source_file, cli_servis_path)
