@@ -1767,6 +1767,10 @@ components:
           description: Департамент
         role:
           type: string
+          enum:
+            - admin
+            - user
+            - multi_guest
           description: |
             Уровень доступа: admin (администратор), user (сотрудник), multi_guest (мульти-гость)
         suspended:
@@ -1775,6 +1779,9 @@ components:
             Деактивация пользователя. При значении true пользователь является деактивированным.
         invite_status:
           type: string
+          enum:
+            - confirmed
+            - sent
           description: |
               Статус приглашения: confirmed (принято), sent (отправлено)
         list_tags:
@@ -1796,6 +1803,11 @@ components:
                 description: Название поля
               data_type:
                 type: string
+                enum:
+                  - string
+                  - number
+                  - date
+                  - link
                 description: Тип поля (string, number, date или link)
               value:
                 type: string
@@ -1909,8 +1921,13 @@ components:
           description: Идентификатор поля
         data_type:
           type: string
+          enum:
+            - string
+            - number
+            - date
+            - link
           example: number
-          description: тип поля (string, number, date или link)
+          description: тип поля
     Errors:
       type: array
       items:
@@ -2288,6 +2305,11 @@ components:
                 description: Название поля
               data_type:
                 type: string
+                enum:
+                  - string
+                  - number
+                  - date
+                  - link
                 description: Тип поля (string, number, date или link)
     BaseTask:
       title: Base Task
