@@ -13,6 +13,11 @@ def unite_schemas(schemas: list[dict], schema2: dict):
             )
         if schema2['type'] == 'array':
             if 'items' in schema2 and schema2['items'].get('properties'):
+                required_proprties = schema2['items'].get('required', [])
+                required_proprties.extend(schema['items'].get('required', []))
+                schema2['required'] = list(set(required_proprties))
+                print(schemas)
+                print(schema2)
                 schema2['items']['properties'] = (
                     schema.get('items').get('properties') | schema2.get('items').get('properties')
                 )
