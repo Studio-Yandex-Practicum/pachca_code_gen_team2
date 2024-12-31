@@ -1463,8 +1463,8 @@ paths:
           required: true
           schema:
             type: integer
-        - $ref: '#/components/parameters/chatParameter'
         - $ref: '#/components/parameters/perParameter50'
+        - $ref: '#/components/parameters/pageParameter'
       responses:
         '200':
           description: Список реакций успешно получен.
