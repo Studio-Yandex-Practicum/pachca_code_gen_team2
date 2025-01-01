@@ -1,5 +1,7 @@
-import httpx
 from typing import Any
+
+import httpx
+
 
 class HttpClient:
     @staticmethod

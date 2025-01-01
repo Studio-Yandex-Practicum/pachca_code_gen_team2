@@ -87,8 +87,8 @@ with open(client_path, mode='w', encoding="utf-8") as file:
     if other_imports:
         file.write("\n".join(other_imports) + "\n\n")
     file.write(client_template.render(endpoints=endpoints, base_url=base_url))
-    
-'''Копирование client_servis.py'''    
+
+# Копирование client_servis.py
 cli_servis_path = './pachca-api-open-api-3-0-client/pachca_api_open_api_3_0_client/client_serv.py'
 # Определяем путь к файлу, который нужно скопировать
 source_file = os.path.join(os.path.dirname(__file__), '..', 'generator1', 'client_servis.py')
