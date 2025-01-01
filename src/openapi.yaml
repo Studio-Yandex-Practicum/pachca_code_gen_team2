@@ -340,7 +340,7 @@ paths:
                     $ref: '#/components/schemas/Errors'
               examples:
                 not_found:
-                  description: 	Не удалось найти
+                  description:  Не удалось найти
                   value:
                     errors:
                       - key: string
@@ -2028,7 +2028,7 @@ components:
               size:
                 title: Size
                 type: integer
-                description:	Размер файла в байтах, отображаемый пользователю
+                description:  Размер файла в байтах, отображаемый пользователю
     Files:
       allOf:
         - $ref: '#/components/schemas/BaseFiles'
@@ -2042,7 +2042,7 @@ components:
               url:
                 title: Url
                 type: string
-                description: 	Прямая временная ссылка на скачивание файла
+                description:  Прямая временная ссылка на скачивание файла
     BeforeBaseMessages:
       title: Before Base Messages
       type: object
