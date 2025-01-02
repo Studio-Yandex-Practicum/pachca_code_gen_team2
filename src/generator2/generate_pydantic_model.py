@@ -65,6 +65,8 @@ def look_into_schema_new(schema: dict):
             list_type = PYTHON_TYPES.get(list_type, list_type)
             if list_type == 'object' or list_type == 'array':
                 list_type = property.capitalize()
+            if inner_body.get("items").get("items"):
+                list_type = f'List[{list_type}]'
             property_type = (f'List[{list_type}]')
         list_of_properties.append(
             (
@@ -82,7 +84,7 @@ def look_into_schema_new(schema: dict):
             nested_properties.append(property)
     for nested in nested_properties:
         nested_obj = new_replace_ref_with_schema(inner_schema)
-        if nested in nested_obj: 
+        if nested in nested_obj:
             look_into_schema_new(
                 {nested.capitalize(): nested_obj[nested]}
             )
