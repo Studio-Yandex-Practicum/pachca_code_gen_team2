@@ -5,7 +5,7 @@ import importlib
 from request_methods_gen import get_obj_openapi_spec
 
 
-TOKEN = 'Bearer -jJB_ARcOBS-c_3q1vu066uU6-bCEkMz23RCu9GEBJ8'
+TOKEN = 'Bearer '
 
 
 class RequestMethodsCollector(type):
