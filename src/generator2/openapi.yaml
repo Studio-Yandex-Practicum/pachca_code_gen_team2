@@ -452,7 +452,7 @@ paths:
       summary: Новая беседа или канал
       description: |
         Метод для создания новой беседы или нового канала.
-        При создании беседы или канала вы автоматически становитесь участником.\
+        При создании беседы или канала вы автоматически становитесь участником.
       requestBody:
         required: true
         content:
@@ -1716,6 +1716,7 @@ components:
         direct_url:
           type: string
     DirectResponse:
+      title: DirectResponse
       type: object
       properties:
         Content-Disposition:
