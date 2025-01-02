@@ -31,6 +31,8 @@ def process_endpoints() -> tuple[list, list]:
         query_parameters = []
         if parameters:
             for parameter in parameters:
+                if '$ref' in parameter:
+                    parameter = load_schema(parameter['$ref'], is_parameter=1)
                 required = parameter.get('required', False)
                 if required:
                     path_parameters.append(

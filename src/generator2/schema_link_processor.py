@@ -16,8 +16,6 @@ def unite_schemas(schemas: list[dict], schema2: dict):
                 required_proprties = schema2['items'].get('required', [])
                 required_proprties.extend(schema['items'].get('required', []))
                 schema2['required'] = list(set(required_proprties))
-                print(schemas)
-                print(schema2)
                 schema2['items']['properties'] = (
                     schema.get('items').get('properties') | schema2.get('items').get('properties')
                 )
@@ -28,9 +26,11 @@ def unite_schemas(schemas: list[dict], schema2: dict):
     return schema2
 
 
-def load_schema(path_to_schema: str) -> dict:
+def load_schema(path_to_schema: str, is_parameter: bool = False) -> dict:
     """Возвращает схему из ссылки."""
     schema_name = path_to_schema.split('/')[-1]
+    if is_parameter:
+        return YAML_DICT.get('components').get('parameters').get(schema_name)
     return YAML_DICT.get('components').get('schemas').get(schema_name)
 
 
@@ -59,7 +59,6 @@ def replace_ref_with_schema(schema: dict) -> dict:
     final_result = {}
     if 'allOf' == schema_name:
         all_inherits = [ingerit for ingerit in schema[schema_name] if '$ref' in ingerit]
-        # print(all_inherits)
         temp = {}
         for inherit in all_inherits:
             temp |= load_schema(inherit['$ref'])
@@ -111,8 +110,6 @@ def simple_replace_ref_with_schema(schema: dict) -> dict:
     elif 'items' in schema:
         key = 'items'
     elif 'allOf' in schema:
-        # print(schema['allOf'][0]['$ref'])
-        # print(load_schema(schema['allOf'][0]['$ref']), '=========================')
         return load_schema(schema['allOf'][0]['$ref'])
     else:
         return schema
