@@ -9,16 +9,24 @@ from schema_link_processor import (
 def create_model(name: str, fields: list) -> str:
     """Генерирует код модели Pydantic."""
     model_code = f'class {name}(BaseModel):\n'
+    alias = ''
     for field in fields:
+        field_name = field[0]
+        if '-' in field[0]:
+            alias = f', alilas=\'{field[0]}\''
+            field_name = field_name.replace('-', '_')
+        else:
+            alias = ''
+
         if field[2]:
             model_code += (
-                f'    {field[0]}: {field[1]} '
-                f'= Field(..., description=\'{field[3]}\')\n'
+                f'    {field_name}: {field[1]} '
+                f'= Field(..., description=\'{field[3]}\'{alias})\n'
             )
         else:
             model_code += (
-                f'    {field[0]}: Optional[{field[1]}] '
-                f'= Field(None, description=\'{field[3]}\')\n'
+                f'    {field_name}: Optional[{field[1]}] '
+                f'= Field(None, description=\'{field[3]}\'{alias})\n'
             )
     return model_code
 
@@ -84,7 +92,7 @@ def look_into_schema_new(schema: dict):
                 property,
                 property_type,
                 True if property in required_properties else False,
-                description,
+                description.replace('\n', ''),
             ),
         )
         if ('allOf' in inner_body
