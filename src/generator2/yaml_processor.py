@@ -13,16 +13,16 @@ def get_all_endpoints(yaml_dict: dict):
             method_body = body.get(method_name)
             if method_body:
                 method[method_name] = method_body
-        for body in method.values():
-            yield path, body
+        for name, body in method.items():
+            yield path, name, body
         method.clear()
 
 
 def process_endpoints() -> tuple[list, list]:
     """Обрабатывает эндпоинты."""
     body: dict
-    for endpoint, body in get_all_endpoints(YAML_DICT):
-        print(endpoint)
+    for endpoint, method, body in get_all_endpoints(YAML_DICT):
+        print(endpoint, method)
         operation_id = body.get('operationId')
 
         print(operation_id)
@@ -56,7 +56,7 @@ def process_endpoints() -> tuple[list, list]:
                 request_body.get('content').get('application/json')
                 or request_body.get('content').get('multipart/form-data'))
             if not schema:
-                break
+                continue
             schema_has_link = schema.get('schema').get('$ref', False)
             schema = (
                 {operation_id.capitalize(): load_schema(schema_has_link)}
@@ -64,8 +64,34 @@ def process_endpoints() -> tuple[list, list]:
                 else {operation_id.capitalize(): schema.get('schema')}
             )
             look_into_schema_new(schema)
-
+        print('\nRequestBodyEnd+++++++++++++++++++++++++++++++++++++++++++++\nResponses start\n')
+        try:
+            responses = body.get('responses', False)
+            if responses:
+                for code, response in responses.items():
+                    if 'content' not in response:
+                        continue
+                    schema = (
+                        response.get('content').get('application/json')
+                        or response.get('content').get('multipart/form-data'))
+                    if not schema:
+                        continue
+                    schema_has_link = schema.get('schema').get('$ref', False)
+                    model_name = (
+                        f'Response{operation_id.capitalize()}'
+                        f'{method.capitalize()}{code}')
+                    schema = (
+                        {model_name: load_schema(schema_has_link)}
+                        if schema_has_link
+                        else {model_name: schema.get('schema')}
+                    )
+                    look_into_schema_new(schema)
+        except Exception as e:
+            print(f'Unable to create responses for {operation_id, method, code}!!!')
+            print(e)
         print('='*80)
+        if operation_id == 'editMessage':
+            break
     return path_parameters, query_parameters
 
 
