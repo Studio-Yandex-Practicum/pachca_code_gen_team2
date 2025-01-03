@@ -1,5 +1,6 @@
 from constants import ENUM_TYPES, PYTHON_TYPES
 from schema_link_processor import (
+    load_schema,
     new_replace_ref_with_schema,
 )
 
@@ -41,7 +42,7 @@ def look_into_schema_new(schema: dict):
     upper_schema_name = list(schema.keys())[0]
     inner_schema = (
         schema.get(upper_schema_name).get('properties')
-        or schema.get(upper_schema_name).get('items',{}).get('properties')
+        or schema.get(upper_schema_name).get('items', {}).get('properties')
         or schema.get(upper_schema_name).get('items',{}).get('items', {}).get('properties'))
     required_properties = schema.get(upper_schema_name).get('required', [])
     for property in inner_schema:
@@ -51,11 +52,18 @@ def look_into_schema_new(schema: dict):
                 (property, inner_body.get('type'),  inner_body['enum']),
             )
         inner_schema[property] = inner_body
+        
+        if inner_body.get('items', {}).get('$ref'):
+            inner_schema[property] = load_schema(inner_body.get('items', {}).get('$ref'))
         description = inner_body.get('description', 'No docstring provided')
         property_type = (
             PYTHON_TYPES.get(inner_body.get('type')) or inner_body.get('type'))
         if property_type is None:
-            property_type = [item.get('type') for item in inner_body.get('allOf') if '$ref' not in item][0]
+            property_type = (
+                [item.get('type') for item
+                 in inner_body.get('allOf')
+                 if '$ref' not in item][0]
+            )
         if 'enum' in inner_body:
             property_type = f'enum_{property}'
         if property_type == 'object':
@@ -63,6 +71,8 @@ def look_into_schema_new(schema: dict):
         if property_type == 'array':
             list_type = inner_body.get("items").get("type")
             list_type = PYTHON_TYPES.get(list_type, list_type)
+            if list_type is None:
+                list_type = next(iter(inner_schema.keys())).capitalize()
             if list_type == 'object' or list_type == 'array':
                 list_type = property.capitalize()
             if inner_body.get("items").get("items"):
@@ -78,10 +88,13 @@ def look_into_schema_new(schema: dict):
         )
         if ('allOf' in inner_body
            or inner_body.get('type') == 'object'
+           and inner_body.get('properties')
            or inner_body.get('type') == 'array'
            and inner_body.get('items', {}).get('properties')
+           or inner_body.get('items', {}).get('$ref')
            or inner_body.get('items', {}).get('items')):
             nested_properties.append(property)
+
     for nested in nested_properties:
         nested_obj = new_replace_ref_with_schema(inner_schema)
         if nested in nested_obj:
