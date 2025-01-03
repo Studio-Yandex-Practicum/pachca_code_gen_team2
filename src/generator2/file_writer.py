@@ -4,6 +4,9 @@ import os.path
 import pathlib
 
 
+# presented_code = set()
+
+
 def mkdir_p(path):
     try:
         os.makedirs(path)
@@ -24,6 +27,9 @@ def write_to_file(file_name: str, text_to_write: str):
         __file__).parent.resolve() / f'models/{file_name}.py'
     ) as f:
         f.write(text_to_write)
+        # if text_to_write not in presented_code:
+        #     f.write(text_to_write)
+        #     presented_code.add(text_to_write)
 
 
 if __name__ == '__main__':

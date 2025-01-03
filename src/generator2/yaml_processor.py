@@ -1,3 +1,4 @@
+import sys
 from constants import HTTP_METHODS
 from file_writer import write_to_file
 from generate_pydantic_model import look_into_schema_new
@@ -25,19 +26,11 @@ def process_endpoints() -> tuple[list, list]:
     Проходит по каждому эндпоинту в openapi файле и генерирует модели для
     каждой схемы в requestBody и resopnse.
     """
-    write_to_file(
-        'all_models',
-        (
-            'from enum import Enum\n'
-            'from typing import List, Optional\n'
-            'from pydantic import BaseModel, Field\n\n\n'
-        )
-    )
+    
     body: dict
     for endpoint, method, body in get_all_endpoints(YAML_DICT):
         print(endpoint, method)
         operation_id = body.get('operationId')
-
         print(operation_id)
         parameters = body.get('parameters')
         path_parameters = []
@@ -65,6 +58,15 @@ def process_endpoints() -> tuple[list, list]:
         print('query: ', query_parameters)
         request_body = body.get('requestBody')
         if request_body:
+            write_to_file(
+                f'models_reqBod_{operation_id}',
+                (
+                    'from enum import Enum, IntEnum'
+                    f'{"" if sys.version_info[1] < 11 else ", StrEnum"}\n'
+                    'from typing import Dict, Optional, List\n'
+                    'from pydantic import Field, BaseModel\n\n\n'
+                )
+            )
             schema = (
                 request_body.get('content').get('application/json')
                 or request_body.get('content').get('multipart/form-data'))
@@ -76,12 +78,21 @@ def process_endpoints() -> tuple[list, list]:
                 if schema_has_link
                 else {operation_id.capitalize(): schema.get('schema')}
             )
-            look_into_schema_new(schema)
+            look_into_schema_new(schema, 'models_reqBod_' + operation_id)
         print('\nRequestBodyEnd+++++++++++++++++++++++++++++++++++++++++++++\nResponses start\n')
         try:
             responses = body.get('responses', False)
             if responses:
                 for code, response in responses.items():
+                    write_to_file(
+                        f'models_response_{operation_id}{method}{code}',
+                        (
+                            'from enum import Enum, IntEnum'
+                            f'{"" if sys.version_info[1] < 11 else ", StrEnum"}\n'
+                            'from typing import Dict, Optional, List\n'
+                            'from pydantic import Field, BaseModel\n\n\n'
+                        )
+                    )
                     if 'content' not in response:
                         continue
                     schema = (
@@ -98,7 +109,10 @@ def process_endpoints() -> tuple[list, list]:
                         if schema_has_link
                         else {model_name: schema.get('schema')}
                     )
-                    look_into_schema_new(schema)
+                    look_into_schema_new(
+                        schema,
+                        f'models_response_{operation_id}{method}{code}'
+                    )
         except Exception as e:
             print(f'Unable to create responses for {operation_id, method, code}!!!')
             print(e)
