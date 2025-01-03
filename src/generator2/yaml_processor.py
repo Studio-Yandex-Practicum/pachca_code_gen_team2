@@ -1,4 +1,5 @@
 from constants import HTTP_METHODS
+from file_writer import write_to_file
 from generate_pydantic_model import look_into_schema_new
 from schema_link_processor import load_schema
 from yaml_loader import YAML_DICT
@@ -19,7 +20,19 @@ def get_all_endpoints(yaml_dict: dict):
 
 
 def process_endpoints() -> tuple[list, list]:
-    """Обрабатывает эндпоинты."""
+    """Обрабатывает эндпоинты.
+
+    Проходит по каждому эндпоинту в openapi файле и генерирует модели для
+    каждой схемы в requestBody и resopnse.
+    """
+    write_to_file(
+        'all_models',
+        (
+            'from enum import Enum\n'
+            'from typing import List, Optional\n'
+            'from pydantic import BaseModel, Field\n\n\n'
+        )
+    )
     body: dict
     for endpoint, method, body in get_all_endpoints(YAML_DICT):
         print(endpoint, method)
@@ -90,8 +103,6 @@ def process_endpoints() -> tuple[list, list]:
             print(f'Unable to create responses for {operation_id, method, code}!!!')
             print(e)
         print('='*80)
-        if operation_id == 'editMessage':
-            break
     return path_parameters, query_parameters
 
 

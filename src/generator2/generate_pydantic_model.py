@@ -1,4 +1,5 @@
 from constants import ENUM_TYPES, PYTHON_TYPES
+from file_writer import write_to_file
 from schema_link_processor import (
     load_schema,
     new_replace_ref_with_schema,
@@ -103,9 +104,14 @@ def look_into_schema_new(schema: dict):
             )
         else:
             look_into_schema_new(nested_obj)
+    # for enum_class in enum_properties:
+    #     print(create_enum(*enum_class))
+    # print(create_model(upper_schema_name, list_of_properties))
+    result_code = ''
     for enum_class in enum_properties:
-        print(create_enum(*enum_class))
-    print(create_model(upper_schema_name, list_of_properties))
+        result_code += create_enum(*enum_class) + '\n\n'
+    result_code += create_model(upper_schema_name, list_of_properties) + '\n\n'
+    write_to_file('all_models', result_code)
 
 
 def look_into_schema(schema: dict) -> None:
@@ -170,6 +176,12 @@ def look_into_schema(schema: dict) -> None:
             look_into_schema(new_replace_ref_with_schema(
                 {nested.capitalize(): inner_schema.get(nested)}),
             )
-    for enum_class in enum_properties:
-        print(create_enum(*enum_class))
-    print(create_model(upper_schema_name, list_of_properties))
+
+    # for enum_class in enum_properties:
+    #     print(create_enum(*enum_class))
+    # print(create_model(upper_schema_name, list_of_properties))
+    # result_code = ''
+    # for enum_class in enum_properties:
+    #     result_code += create_enum(*enum_class)
+    # result_code += create_model(upper_schema_name, list_of_properties)
+    # write_to_file('all_models', result_code)
