@@ -1,7 +1,7 @@
 import datetime
 
 import ssl
-from typing import Any, Union, Optional
+from typing import Any, Union, Optional, cast
 
 from attrs import define, field, evolve
 import httpx
@@ -9,8 +9,6 @@ import httpx
 from .client_serv import HttpClient
 
 {% from "macros/client_macros.py.jinja" import httpx_args_docstring %}
-
-
 @define
 class AuthenticatedClient:
     """A Client which has been authenticated for use on secured endpoints
