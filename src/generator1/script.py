@@ -29,6 +29,8 @@ def extract_functions_and_imports_from_file(file_path) -> None:
                     imports.append(f"from .types import {alias.name}")
                 elif module == "client_serv":
                     imports.append(f"from .client_serv import {alias.name}")
+                elif module == 'parse_res':
+                    imports.append(f"from .parse_res import {alias.name}")
                 else:
                     imports.append(f"from {module} import {alias.name}")
 
@@ -54,6 +56,7 @@ def get_base_url_from_yaml(openapi_yaml):
     with open(openapi_yaml, "r", encoding="utf-8") as file:
         data = yaml.safe_load(file)
     return data["servers"][0]["url"]
+
 
 
 api_dir = "./pachca-api-open-api-3-0-client/pachca_api_open_api_3_0_client/api"
@@ -124,12 +127,44 @@ with open(client_path, mode="w", encoding="utf-8") as file:
         file.write("\n".join(other_imports) + "\n\n")
     file.write(client_template.render(endpoints=endpoints, base_url=base_url))
 
-# Копирование client_servis.py
+
+
+with open(client_path, mode='w', encoding="utf-8") as file:
+    unique_imports = list(set(imports))
+    models_imports = sorted([model for model in unique_imports if model.startswith('from .models')])
+    typing_imports = sorted([model for model in unique_imports if model.startswith('from typing import')])
+    types_imports = sorted([model for model in unique_imports if model.startswith('from .types import')])
+    other_imports = sorted(list(
+        set(unique_imports) - set(typing_imports) - set(types_imports) - set(models_imports)))
+    if models_imports:
+        models_imports_str = "from .models import (\n    " + ",\n    ".join(
+            [model.split('from .models import ')[-1] for model in models_imports]) + "\n)"
+        file.write(models_imports_str + "\n\n")
+    if typing_imports:
+        typing_imports_str = "from typing import (\n    " + ",\n    ".join(
+            [model.split('from typing import ')[-1] for model in typing_imports]) + "\n)"
+        file.write(typing_imports_str + "\n\n")
+    if types_imports:
+        types_imports_str = "from .types import (\n    " + ",\n    ".join(
+            [model.split('from .types import ')[-1] for model in types_imports]) + "\n)"
+        file.write(types_imports_str + "\n\n")
+    if other_imports:
+        file.write("\n".join(other_imports) + "\n\n")
+    file.write(client_template.render(endpoints=endpoints, base_url=base_url))
+
 cli_servis_path = "./pachca-api-open-api-3-0-client/" \
                   "pachca_api_open_api_3_0_client/" \
                   "client_serv.py"
 # Определяем путь к файлу, который нужно скопировать
 source_file = os.path.join(
     os.path.dirname(__file__), "..", "generator1", "client_servis.py"
-)
 shutil.copy(source_file, cli_servis_path)
+
+parse_res_path = './pachca-api-open-api-3-0-client/pachca_api_open_api_3_0_client/parse_res.py'
+source_file = os.path.join(os.path.dirname(__file__), '..', 'generator1', 'parse_response.py')
+shutil.copy(source_file, parse_res_path)
+
+error_pars_path = './pachca-api-open-api-3-0-client/pachca_api_open_api_3_0_client/error_pars.py'
+source_file = os.path.join(os.path.dirname(__file__), '..', 'generator1', 'error_pars.py')
+shutil.copy(source_file, error_pars_path)
+
