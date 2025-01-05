@@ -1968,14 +1968,13 @@ components:
     BaseThread:
       title: Base Thread
       type: object
-      nullable: true
       properties:
         id:
-          title: Id
           type: integer
+          description: Идентификатор поля
         chat_id:
-          title: Chat Id
           type: integer
+          description: Идентификатор поля чата
     Thread:
       allOf:
         - $ref: '#/components/schemas/BaseThread'
@@ -1994,55 +1993,50 @@ components:
                 Дата и время обновления треда (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ.
     BaseFiles:
       title: Base Files
+      type: object
+      required:
+        - key
+        - name
+        - file_type
+      properties:
+        key:
+          type: string
+          description: Путь к файлу, полученный в результате загрузки файла (каждый файл в каждом сообщении должен иметь свой уникальный key, не допускается использование одного и того же key в разных сообщениях)
+        name:
+          type: string
+          description: Название файла, которое вы хотите отображать пользователю (рекомендуется писать вместе с расширением)
+        file_type:
+          type: string
+          enum:
+            - file
+            - image
+    CreateEditFiles:
       type: array
       items:
-        type: object
-        required:
-          - key
-          - name
-          - file_type
-          - size
-        properties:
-          key:
-            title: Key
-            type: string
-            description: Путь к файлу, полученный в результате загрузки файла (каждый файл в каждом сообщении должен иметь свой уникальный key, не допускается использование одного и того же key в разных сообщениях)
-          name:
-            title: Name
-            type: string
-            description: Название файла, которое вы хотите отображать пользователю (рекомендуется писать вместе с расширением)
-          file_type:
-            title: File Type
-            type: string
-            enum:
-              - 'file'
-              - 'image'
-    CreateEditFiles:
-      title: Create&Edit Files
-      allOf:
+        allOf:
         - $ref: '#/components/schemas/BaseFiles'
-        - type: array
-          items:
-            type: object
-            properties:
-              size:
-                title: Size
-                type: integer
-                description:  Размер файла в байтах, отображаемый пользователю
+        - type: object
+          title: Create&Edit Files
+          required: 
+            - size
+          properties:
+            size:
+              type: integer
+              description:  Размер файла в байтах, отображаемый пользователю
     Files:
-      allOf:
+      type: array
+      items:
+        allOf:
         - $ref: '#/components/schemas/BaseFiles'
-        - type: array
-          items:
-            type: object
-            properties:
-              id:
-                title: Id
-                type: integer
-              url:
-                title: Url
-                type: string
-                description:  Прямая временная ссылка на скачивание файла
+        - type: object
+          title: Files
+          properties:
+            id:
+              type: integer
+              description: Идентификатор поля
+            url:
+              type: string
+              description:  Прямая временная ссылка на скачивание файла
     BeforeBaseMessages:
       title: Before Base Messages
       type: object
@@ -2083,10 +2077,10 @@ components:
               title: Entity Type
               type: string
               enum:
-                - 'discussion'
-                - 'user'
-                - 'thread'
-              default: 'discussion'
+                - discussion
+                - user
+                - thread
+              default: discussion
             entity_id:
               title: Entity Id
               type: integer
@@ -2267,23 +2261,22 @@ components:
           type: integer
     BaseCustomProperties:
       title: Base Custom Properties
+      description: Задаваемые дополнительные поля
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Идентификатор поля
+        value:
+          type: string
+          description: Значение поля
+    CustomProperties:
       type: array
       items:
-        type: object
-        properties:
-          id:
-            type: integer
-            description: Идентификатор поля
-          value:
-            type: string
-            description: Значение поля
-    CustomProperties:
-      title: Custom Properties
-      allOf:
-        - $ref: '#/components/schemas/BaseCustomProperties'
-        - type: array
-          items:
-            type: object
+        allOf:
+          - $ref: '#/components/schemas/BaseCustomProperties'
+          - type: object
+            title: Custom Properties
             properties:
               name:
                 type: string
@@ -2333,8 +2326,10 @@ components:
             type: integer
           description: Массив идентификаторов пользователей
         custom_properties:
-          allOf:
-            - $ref: '#/components/schemas/BaseCustomProperties'
+          type: array
+          items:
+            allOf:
+              - $ref: '#/components/schemas/BaseCustomProperties'
     Task:
       allOf:
         - $ref: '#/components/schemas/BaseTask'
