@@ -32,7 +32,6 @@ def extract_functions_and_imports_from_file(file_path) -> None:
 
     return functions, imports
 
-
 def get_all_api_functions_and_imports(api_dir):
     all_functions = []
     all_imports = []
