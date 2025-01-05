@@ -1,6 +1,7 @@
 import ast
 import os
 import shutil
+import subprocess
 
 import yaml
 from jinja2 import Environment, FileSystemLoader
@@ -15,7 +16,8 @@ def extract_functions_and_imports_from_file(file_path) -> None:
 
     for node in ast.walk(tree):
         if isinstance(node, ast.AsyncFunctionDef) or isinstance(
-            node, ast.FunctionDef
+            node,
+            ast.FunctionDef,
         ):
             functions.append(ast.unparse(node))
         elif isinstance(node, ast.ImportFrom):
@@ -43,7 +45,7 @@ def get_all_api_functions_and_imports(api_dir):
             if file.endswith(".py"):
                 file_path = os.path.join(root, file)
                 functions, imports = extract_functions_and_imports_from_file(
-                    file_path
+                    file_path,
                 )
                 all_functions.extend(functions)
                 all_imports.extend(imports)
@@ -77,24 +79,24 @@ with open(client_path, mode="w", encoding="utf-8") as file:
         [model for model in unique_imports if model.startswith("from .models")]
     )
     typing_imports = [
-            model
-            for model in unique_imports
-            if model.startswith("from typing import")
-        ]
+        model
+        for model in unique_imports
+        if model.startswith("from typing import")
+    ]
     types_imports = sorted(
         [
             model
             for model in unique_imports
             if model.startswith("from .types import")
-        ]
+        ],
     )
     other_imports = sorted(
         list(
             set(unique_imports)
             - set(typing_imports)
             - set(types_imports)
-            - set(models_imports)
-        )
+            - set(models_imports),
+        ),
     )
     if models_imports:
         models_imports_str = (
@@ -103,7 +105,7 @@ with open(client_path, mode="w", encoding="utf-8") as file:
                 [
                     model.split("from .models import ")[-1]
                     for model in models_imports
-                ]
+                ],
             )
             + "\n)"
         )
@@ -115,7 +117,7 @@ with open(client_path, mode="w", encoding="utf-8") as file:
                 [
                     model.split("from .types import ")[-1]
                     for model in types_imports
-                ]
+                ],
             )
             + "\n)"
         )
@@ -125,11 +127,37 @@ with open(client_path, mode="w", encoding="utf-8") as file:
     file.write(client_template.render(endpoints=endpoints, base_url=base_url))
 
 # Копирование client_servis.py
-cli_servis_path = "./pachca-api-open-api-3-0-client/" \
-                  "pachca_api_open_api_3_0_client/" \
-                  "client_serv.py"
+cli_servis_path = (
+    "./pachca-api-open-api-3-0-client/"
+    "pachca_api_open_api_3_0_client/"
+    "client_serv.py"
+)
 # Определяем путь к файлу, который нужно скопировать
 source_file = os.path.join(
-    os.path.dirname(__file__), "..", "generator1", "client_servis.py"
+    os.path.dirname(__file__),
+    "..",
+    "generator1",
+    "client_servis.py",
 )
 shutil.copy(source_file, cli_servis_path)
+
+try:
+    subprocess.run(
+        [
+            "black",
+            "./pachca-api-open-api-3-0-client/pachca_api_open_api_3_0_client/"
+            "**/*.py",
+            "--line-length",
+            "79",
+        ],
+        check=True,
+    )
+    subprocess.run(
+        [
+            "isort",
+            "./pachca-api-open-api-3-0-client/pachca_api_open_api_3_0_client/"
+            "*.py",
+        ]
+    )
+except subprocess.CalledProcessError as e:
+    print("Автолинтер не сработал!", e)
