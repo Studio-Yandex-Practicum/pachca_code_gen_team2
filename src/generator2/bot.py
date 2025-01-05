@@ -1,11 +1,8 @@
-import inspect
-import httpx
 import importlib
+import inspect
 
+import httpx
 from request_methods_gen import get_obj_openapi_spec
-
-
-TOKEN = 'Bearer '
 
 
 class RequestMethodsCollector(type):
@@ -18,12 +15,12 @@ class RequestMethodsCollector(type):
             dct[name_method] = method
 
         return super(
-            RequestMethodsCollector, cls
+            RequestMethodsCollector, cls,
         ).__new__(cls, name, bases, dct)
 
     @staticmethod
     def collect_methods(module) -> dict[str, object]:
-        """Собирает генерируемые функции из модуля request_methods.py"""
+        """Собирает сгенерированные функции из модуля request_methods.py"""
         dict_func = {}
 
         for name, obj in inspect.getmembers(module):
@@ -33,7 +30,7 @@ class RequestMethodsCollector(type):
         if not dict_func:
             raise ValueError(
                 f"В модуле {module.__name__} "
-                "отсутствуют сгенерированные функции"
+                "отсутствуют сгенерированные функции",
             )
 
         return dict_func
@@ -54,6 +51,16 @@ class PachcaBot(metaclass=RequestMethodsCollector):
     def format_url(
         self,
         url_template: str,
-        path_param: dict[str, int] = None
+        path_param: dict[str, int] = None,
     ):
         return url_template.format(**path_param)
+
+    def filter_query_params(self, **kwargs):
+        if 'sort' in kwargs or 'sort_field' in kwargs:
+            sort = kwargs.pop('sort')
+            sort_field = kwargs['sort_field']
+            kwargs[f'sort[{sort_field}]'] = sort
+
+        return {
+            str(key): value for key, value in kwargs.items() if value is not None
+        }
