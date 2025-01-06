@@ -156,7 +156,7 @@ try:
         [
             "isort",
             "./pachca-api-open-api-3-0-client/pachca_api_open_api_3_0_client/"
-            "*.py",
+            "client.py",
         ]
     )
 except subprocess.CalledProcessError as e:
