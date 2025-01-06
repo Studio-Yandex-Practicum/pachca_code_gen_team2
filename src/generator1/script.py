@@ -72,66 +72,53 @@ client_path = (
     "./pachca-api-open-api-3-0-client/pachca_api_open_api_3_0_client/client.py"
 )
 
-with open(client_path, mode="w", encoding="utf-8") as file:
+with open(client_path, mode='w', encoding="utf-8") as file:
     unique_imports = list(set(imports))
     models_imports = sorted(
-        [model for model in unique_imports if model.startswith("from .models")]
+        [model for model in unique_imports if model.startswith(
+            'from .models',
+        )],
     )
-    typing_imports = [
-        model
-        for model in unique_imports
-        if model.startswith("from typing import")
-    ]
+    typing_imports = sorted(
+        [model for model in unique_imports if model.startswith(
+            'from typing import',
+        )],
+    )
     types_imports = sorted(
-        [
-            model
-            for model in unique_imports
-            if model.startswith("from .types import")
-        ],
+        [model for model in unique_imports if model.startswith(
+            'from .types import',
+        )],
     )
     other_imports = sorted(
         list(
-            set(unique_imports)
-            - set(typing_imports)
-            - set(types_imports)
-            - set(models_imports),
-        ),
-    )
+            set(unique_imports) - set(typing_imports)
+            - set(types_imports) - set(models_imports),
+        ))
     if models_imports:
-        models_imports_str = (
-            "from .models import (\n    "
-            + ",\n    ".join(
-                [
-                    model.split("from .models import ")[-1]
-                    for model in models_imports
-                ],
-            )
-            + "\n)"
-        )
+        models_imports_str = "from .models import (\n    " + ",\n    ".join(
+            [model.split('from .models import ')[-1] for model in models_imports]
+        ) + "\n)"
         file.write(models_imports_str + "\n\n")
+    if typing_imports:
+        typing_imports_str = "from typing import (\n    " + ",\n    ".join(
+            [model.split('from typing import ')[-1] for model in typing_imports]
+        ) + "\n)"
+        file.write(typing_imports_str + "\n\n")
     if types_imports:
-        types_imports_str = (
-            "from .types import (\n    "
-            + ",\n    ".join(
-                [
-                    model.split("from .types import ")[-1]
-                    for model in types_imports
-                ],
-            )
-            + "\n)"
-        )
+        types_imports_str = "from .types import (\n    " + ",\n    ".join(
+            [model.split('from .types import ')[-1] for model in types_imports]
+        ) + "\n)"
         file.write(types_imports_str + "\n\n")
     if other_imports:
         file.write("\n".join(other_imports) + "\n\n")
     file.write(client_template.render(endpoints=endpoints, base_url=base_url))
 
-# Копирование client_servis.py
 cli_servis_path = (
     "./pachca-api-open-api-3-0-client/"
     "pachca_api_open_api_3_0_client/"
     "client_serv.py"
 )
-# Определяем путь к файлу, который нужно скопировать
+
 source_file = os.path.join(
     os.path.dirname(__file__),
     "..",
@@ -156,7 +143,7 @@ try:
             "isort",
             "./pachca-api-open-api-3-0-client/pachca_api_open_api_3_0_client/"
             "client.py",
-        ]
+        ],
     )
 except subprocess.CalledProcessError as e:
     print("Автолинтер не сработал!", e)
