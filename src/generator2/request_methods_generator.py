@@ -302,7 +302,7 @@ def process_parameters(parameters: list[Parameter]) -> tuple[dict, dict]:
     return param_path, param_query
 
 
-def template_generation(paths: Path) -> tuple[list[str]]:
+def template_generation(paths: list[Path]) -> tuple[list[str]]:
     """Собирает параметры запроса всех paths спецификации
     передает их в функицю get_template_methods
     Возвращает кортеж состоящий из:
