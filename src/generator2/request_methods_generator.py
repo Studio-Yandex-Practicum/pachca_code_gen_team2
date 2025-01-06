@@ -148,7 +148,7 @@ async def {name_func}({function_params}){response_annotation}:
     async with client:
         {format_url}{filter_params_code}
         {request_handling}{response_handling}
-    return None
+        return None
 """
 
 
