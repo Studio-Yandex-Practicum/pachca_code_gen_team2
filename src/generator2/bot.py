@@ -2,8 +2,9 @@ import importlib
 import inspect
 
 import httpx
-from request_methods_gen import get_obj_openapi_spec
+from generator2.request_methods_generator import get_obj_openapi_spec
 
+from constants import PARAM_NAME_SORT, PARAM_NAME_SORT_FIELD
 
 class RequestMethodsCollector(type):
 
@@ -36,7 +37,7 @@ class RequestMethodsCollector(type):
         return dict_func
 
 
-class PachcaBot(metaclass=RequestMethodsCollector):
+class Bot(metaclass=RequestMethodsCollector):
     base_url = get_obj_openapi_spec().servers[0].url
 
     def __init__(self, token):
@@ -56,11 +57,12 @@ class PachcaBot(metaclass=RequestMethodsCollector):
         return url_template.format(**path_param)
 
     def filter_query_params(self, **kwargs):
-        if 'sort' in kwargs or 'sort_field' in kwargs:
-            sort = kwargs.pop('sort')
-            sort_field = kwargs['sort_field']
+        if PARAM_NAME_SORT in kwargs or PARAM_NAME_SORT_FIELD in kwargs:
+            sort = kwargs.pop(PARAM_NAME_SORT)
+            sort_field = kwargs.pop(PARAM_NAME_SORT_FIELD)
             kwargs[f'sort[{sort_field}]'] = sort
 
         return {
-            str(key): value for key, value in kwargs.items() if value is not None
+            str(key): value
+            for key, value in kwargs.items() if value is not None
         }
