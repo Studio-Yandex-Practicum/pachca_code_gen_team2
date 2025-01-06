@@ -193,12 +193,12 @@ def import_string_generation(
         method: str = None
 ) -> str:
     """Возвращает шаблон строки импорта"""
-    if prefix == 'models_response_':
+    if prefix == PREFIX_RESPONSE:
         return (
             f'from models.{prefix}{operation_id}'
             f'{method}{code} import {schema}'
         )
-    if prefix == 'models_reqBod_':
+    if prefix == PREFIX_REQUEST:
         return f'from models.{prefix}{operation_id} import {schema}'
 
 
