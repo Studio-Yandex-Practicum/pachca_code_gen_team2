@@ -370,7 +370,7 @@ def get_obj_openapi_spec(
 def generation_methods_request(
     templates: list,
     import_templates: list,
-    file='src/generator2/request_methods.py',
+    file='./request_methods.py',
 ):
     with open(
         file, 'w', encoding='utf-8',
