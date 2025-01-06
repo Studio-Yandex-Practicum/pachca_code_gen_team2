@@ -3,11 +3,10 @@ from typing import Any, Optional, Union, cast
 
 import httpx
 
-from ...client import AuthenticatedClient, Client
 from ...types import Response, UNSET
 from ... import errors
+from .client_serv import AuthenticatedClient
 
-from .client_serv import HttpClient
 {% for relative in endpoint.relative_imports | sort %}
 {{ relative }}
 {% endfor %}
@@ -110,14 +109,10 @@ async def {{ endpoint.name }}(self,
         {{ kwargs(endpoint, include_client=False) }}
     )
 
-    base_url = self.client.base_url  # Получаем базовый URL из клиента
-    kwargs['url'] = f"{base_url}{kwargs['url']}"  # Формируем полный URL
-    response = await HttpClient.send_request(
-        token=self.client.token,
+    response = await self.client.get_async_httpx_client().request(
         **kwargs
     )
 
     return self._build_response_{{ endpoint.name }}(
         response=response).parsed
 {% endif %}
-
