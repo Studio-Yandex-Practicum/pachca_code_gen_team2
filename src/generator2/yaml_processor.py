@@ -79,11 +79,18 @@ def process_endpoints() -> tuple[list, list]:
                 else {operation_id.capitalize(): schema.get('schema')}
             )
             look_into_schema_new(schema, 'models_reqBod_' + operation_id)
-        print('\nRequestBodyEnd+++++++++++++++++++++++++++++++++++++++++++++\nResponses start\n')
+        # print('\nRequestBodyEnd+++++++++++++++++++++++++++++++++++++++++++++\nResponses start\n')
         try:
             responses = body.get('responses', False)
             if responses:
                 for code, response in responses.items():
+                    if 'content' not in response:
+                        continue
+                    schema = (
+                        response.get('content').get('application/json')
+                        or response.get('content').get('multipart/form-data'))
+                    if not schema:
+                        continue
                     write_to_file(
                         f'models_response_{operation_id}{method}{code}',
                         (
@@ -93,13 +100,6 @@ def process_endpoints() -> tuple[list, list]:
                             'from pydantic import Field, BaseModel\n\n\n'
                         )
                     )
-                    if 'content' not in response:
-                        continue
-                    schema = (
-                        response.get('content').get('application/json')
-                        or response.get('content').get('multipart/form-data'))
-                    if not schema:
-                        continue
                     schema_has_link = schema.get('schema').get('$ref', False)
                     model_name = (
                         f'Response{operation_id.capitalize()}'
