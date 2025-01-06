@@ -63,7 +63,7 @@ endpoints, imports = get_all_api_functions_and_imports(api_dir)
 base_url = get_base_url_from_yaml(openapi_yaml)
 
 env = Environment(
-    loader=FileSystemLoader("templates"),
+    loader=FileSystemLoader('templates'),
 )
 
 client_template = env.get_template("client.py.jinja")
