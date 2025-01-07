@@ -7,7 +7,7 @@ if __name__ == '__main__':
 
     print(id(Bot))
     print(Bot)
-    pachca = Bot(token='35KekGygDNiFwtPpqUe44CaEZ_EVL17ycYRJrMnvHOs')
+    pachca = Bot(token='Bearer 35KekGygDNiFwtPpqUe44CaEZ_EVL17ycYRJrMnvHOs')
 
     print(pachca.token)
     print(hasattr(pachca, 'get_common_methods'))
@@ -19,11 +19,11 @@ if __name__ == '__main__':
     ))
     #print(message_test.model_dump())
     async def run_pachca():
-        #print(await pachca.get_employee(id=514505))
-        #print(await pachca.get_employees())
-        #print(await pachca.get_tags())
-        #print(await pachca.get_tags_employees(id=27470))
-        #print(await pachca.get_chats(per=2))
+        print(await pachca.get_employee(id=514505))
+        print(await pachca.get_employees())
+        print(await pachca.get_tags())
+        print(await pachca.get_tags_employees(id=27470))
+        print(await pachca.get_chats(per=2))
         message = await pachca.create_message(data=message_test)
         print(message)
         #print(await pachca.get_common_methods()) #Возвращает ошибку, нужно прописать обработку если (parameters.query и parameters.required)
