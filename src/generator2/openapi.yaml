@@ -545,7 +545,7 @@ paths:
       
         Тело запроса отсутствует, параметры передаются в URL (например, /chats?per=2&sort[id]=desc)
       parameters:
-        - $ref: '#/components/parameters/sortParameter' ###############################################
+        - $ref: '#/components/parameters/sortParameter'
         - $ref: '#/components/parameters/perParameter25'
         - $ref: '#/components/parameters/pageParameter'
         - $ref: '#/components/parameters/availabilityParameter'
