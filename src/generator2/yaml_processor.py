@@ -65,7 +65,8 @@ def process_endpoints() -> tuple[list, list]:
                     f'{"" if sys.version_info[1] < 11 else ", StrEnum"}\n'
                     'from typing import Dict, Optional, List\n'
                     'from pydantic import Field, BaseModel\n\n\n'
-                )
+                ),
+                'w'
             )
             schema = (
                 request_body.get('content').get('application/json')
@@ -98,7 +99,8 @@ def process_endpoints() -> tuple[list, list]:
                             f'{"" if sys.version_info[1] < 11 else ", StrEnum"}\n'
                             'from typing import Dict, Optional, List\n'
                             'from pydantic import Field, BaseModel\n\n\n'
-                        )
+                        ),
+                        'w'
                     )
                     schema_has_link = schema.get('schema').get('$ref', False)
                     model_name = (

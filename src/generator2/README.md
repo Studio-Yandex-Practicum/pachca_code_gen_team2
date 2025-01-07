@@ -1,10 +1,17 @@
-Генерация Клиента через прямой код Python
+Инструкция (работать в папке generator2 при активированном venv):
 
-Инструкция:
-...
+1. Установить зависимости
 
-# Генерация моделей pydantic для requestBody эндпоинтов
+pip install -r requirements.txt
 
-Метод process_endpoints в yaml_processor.py позволяет создать модели pydantic для каждого эндпоинта
-Метод возвращает кортеж из двух список - path query параметров эндпоинта
-Метод записывает (пока что в консоль) модели pydantic.
+2. Запустить генерацию схем
+
+python yaml_processor.py
+
+3. Запустить генерацию эндпоинтов
+
+python request_methods_generator.py
+
+4. Запустить скрипт-пример запроса
+
+python pachca.py

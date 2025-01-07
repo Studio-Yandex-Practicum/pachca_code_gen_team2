@@ -15,16 +15,20 @@ def mkdir_p(path):
             pass
 
 
-def safe_open_w(path):
+def safe_open_w(path, mode: str):
     ''' Open "path" for writing, creating any parent directories as needed.
     '''
     mkdir_p(os.path.dirname(path))
-    return open(path, 'a', encoding='utf-8')
+    return open(path, mode, encoding='utf-8')
 
 
-def write_to_file(file_name: str, text_to_write: str):
+def write_to_file(
+    file_name: str, text_to_write: str,
+    open_file_mode: str = 'a'
+):
     with safe_open_w(pathlib.Path(
-        __file__).parent.resolve() / f'models/{file_name}.py'
+        __file__).parent.resolve() / f'models/{file_name}.py',
+        open_file_mode
     ) as f:
         f.write(text_to_write)
         # if text_to_write not in presented_code:

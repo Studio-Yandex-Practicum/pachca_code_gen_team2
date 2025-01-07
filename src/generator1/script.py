@@ -46,7 +46,7 @@ api_dir = "./pachca-api-open-api-3-0-client/pachca_api_open_api_3_0_client/api"
 endpoints, imports = get_all_api_functions_and_imports(api_dir)
 
 env = Environment(
-    loader=FileSystemLoader('templates')
+    loader=FileSystemLoader('templates'),
 )
 
 client_template = env.get_template('client.py.jinja')
