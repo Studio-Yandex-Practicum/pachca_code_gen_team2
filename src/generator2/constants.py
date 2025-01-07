@@ -1,8 +1,8 @@
 import sys
 
-PATH_TO_YAML = './src/generator2/openapi_test.yaml'
-# PATH_TO_YAML = './src/generator2/openapi.yaml'
-SPECIFICATION_FILE_NAME = 'openapi.yaml'
+# PATH_TO_YAML = './openapi_test.yaml'
+PATH_TO_YAML = './openapi.yaml'
+SPECIFICATION_FILE_NAME = './openapi.yaml'
 
 PYTHON_TYPES = {
     'string': 'str',

@@ -2,9 +2,8 @@ import importlib
 import inspect
 
 import httpx
-from generator2.request_methods_generator import get_obj_openapi_spec
-
 from constants import PARAM_NAME_SORT, PARAM_NAME_SORT_FIELD
+from request_methods_generator import get_obj_openapi_spec
 
 
 class RequestMethodsCollector(type):
