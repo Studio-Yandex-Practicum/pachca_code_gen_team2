@@ -65,6 +65,7 @@ pachca = Pachca(
     # token='x4EhHyzYY2aA38GJb6AnKQXcY716LnEHCoxD1dUEyCI',
     # token='MnVVaQqJdjw5iRVcOoYJgZ440hTdUVArjl1idgx6iow',
     # token='qW3V2Kw7yxu1UA5OZLCdyoyKFfWA6OYr_MK2WR6PxbA',
+    # token='35KekGygDNiFwtPpqUe44CaEZ_EVL17ycYRJrMnvHOs',
 )
 
 
@@ -85,6 +86,12 @@ async def main() -> None:
        id=412338865, body=reaction_body),
     )
     task10 = asyncio.create_task(pachca.createTask(body=body_task))
+    task11 = asyncio.create_task(pachca.postMessageReactions(
+        123, body=reaction_body,
+    ))
+    task12 = asyncio.create_task(pachca.deleteMessageReactions(
+        id=123, code='😭',
+    ))
 
     print(await task1)
     print('*' * 30)
@@ -105,6 +112,10 @@ async def main() -> None:
     print(await task9)
     print('*' * 30)
     print(await task10)
+    print('*' * 30)
+    print(await task11)
+    print('*' * 30)
+    print(await task12)
 
 
 if __name__ == '__main__':
