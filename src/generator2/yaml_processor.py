@@ -63,7 +63,7 @@ def process_endpoints() -> tuple[list, list]:
                 (
                     'from enum import Enum, IntEnum'
                     f'{"" if sys.version_info[1] < 11 else ", StrEnum"}\n'
-                    'from typing import Dict, Optional, List\n'
+                    'from typing import Any, Dict, Optional, List\n'
                     'from pydantic import Field, BaseModel\n\n\n'
                 ),
                 'w'
@@ -97,7 +97,7 @@ def process_endpoints() -> tuple[list, list]:
                         (
                             'from enum import Enum, IntEnum'
                             f'{"" if sys.version_info[1] < 11 else ", StrEnum"}\n'
-                            'from typing import Dict, Optional, List\n'
+                            'from typing import Any, Dict, Optional, List\n'
                             'from pydantic import Field, BaseModel\n\n\n'
                         ),
                         'w'
