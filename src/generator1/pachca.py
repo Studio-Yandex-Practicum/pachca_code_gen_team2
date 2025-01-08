@@ -38,8 +38,8 @@ async def main() -> None:
     task3 = asyncio.create_task(pachca.deleteMessageReactions(
         id=412338865, code='😭'))
     task4 = asyncio.create_task(pachca.editMessage(
-        id=412502100, body=edit_message_body))
-    task5 = asyncio.create_task(pachca.getEmployee(12345))
+        id=123, body=edit_message_body))
+    task5 = asyncio.create_task(pachca.createThread(123))
 
     print(await task1)
     print('*' * 30)

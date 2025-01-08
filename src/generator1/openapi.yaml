@@ -69,7 +69,18 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Errors'
+                $ref: '#/components/schemas/BadRequest'
+              examples:
+                BLANK:
+                  summary: blank
+                  description: Поле не может быть пустым
+                  value:
+                    detail: BLANK
+                INCLUSION:
+                  summary: inclusion
+                  description: Поле имеет непредусмотренное значение
+                  value:
+                    detail: INCLUSION
   /uploads:
     post:
       tags:
@@ -175,7 +186,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Errors'
+                $ref: '#/components/schemas/NotFound'
   /profile/status:
     get:
       tags:
@@ -221,8 +232,29 @@ paths:
           description: BadRequest
           content:
             application/json:
-               schema:
-                $ref: '#/components/schemas/Errors'
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+              examples:
+                BLANK:
+                  summary: blank
+                  description: Обязательное поле (не может быть пустым)
+                  value:
+                    detail: BLANK
+                TOO_LONG:
+                  summary: too_long
+                  description: Слишком длинное значение (пояснения вы получите в поле message)
+                  value:
+                    detail: TOO_LONG
+                INVALID:
+                  summary: invalid
+                  description: Поле не соответствует правилам (пояснения вы получите в поле message)
+                  value:
+                    detail: INVALID
+                WRONG_EMOJI:
+                  summary: wrong_emoji
+                  description: Emoji статуса не может содержать значения отличные от Emoji символа
+                  value:
+                    detail: WRONG_EMOJI
     delete:
       tags:
         - status
@@ -264,7 +296,24 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Errors'
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    description: Список ошибок.
+                    items:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                        value:
+                          type: string
+                        message:
+                          type: string
+                        code:
+                          type: string
+                        payload:
+                          type: object
               examples:
                 not_found:
                   summary: Тег не найден.
@@ -315,7 +364,29 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Errors'
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    description: Список ошибок в запросе.
+                    items:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                          description: Ключ параметра, в котором произошла ошибка.
+                        value:
+                          type: string
+                          description: Значение ключа, вызвавшее ошибку.
+                        message:
+                          type: string
+                          description: Текстовое описание ошибки.
+                        code:
+                          type: string
+                          description: Внутренний код ошибки.
+                        payload:
+                          type: object
+                          description: Дополнительная информация об ошибке.
               examples:
                 exclusion:
                   summary: Недопустимое значение количество возвращаемых сущностей за один запрос 
@@ -372,7 +443,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Errors'
+                $ref: '#/components/schemas/BadRequest'
   /chats:
     post:
       tags:
@@ -406,7 +477,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Errors'
+                type: object
+                properties:
+                  errors:
+                    $ref: '#/components/schemas/Errors'
               examples:
                 blank:
                   description: Обязательное поле (не может быть пустым)
@@ -440,7 +514,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Errors'
+                type: object
+                properties:
+                  errors:
+                    $ref: '#/components/schemas/Errors'
               examples:
                 not_found:
                   description: Не удалось найти
@@ -456,7 +533,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Errors'
+                type: object
+                properties:
+                  errors:
+                    $ref: '#/components/schemas/Errors'
               examples:
                 invalid:
                   description: Поле имеет неверный формат (идентификатор поля вы получите в поле payload)
@@ -550,7 +630,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Errors'
+                type: object
+                properties:
+                  errors:
+                    $ref: '#/components/schemas/ErrorsCode'
               examples:
                 too_long:
                   description: Слишком длинное значение (пояснения вы получите в поле message)
@@ -575,7 +658,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Errors'
+                type: object
+                properties:
+                  errors:
+                    $ref: '#/components/schemas/Errors'
               examples:
                 not_found:
                   description: Не удалось найти
@@ -591,7 +677,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Errors'
+                type: object
+                properties:
+                  errors:
+                    $ref: '#/components/schemas/Errors'
               examples:
                 invalid:
                   description: Поле имеет неверный формат (идентификатор поля вы получите в поле payload)
@@ -633,7 +722,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Errors'
+                type: object
+                properties:
+                  errors:
+                    $ref: '#/components/schemas/Errors'
               examples:
                 not_found:
                   description: Не удалось найти
@@ -687,7 +779,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Errors'
+                type: array
+                items:
+                  $ref: '#/components/schemas/ErrorsCode'
   /chats/{id}/group_tags:
     post:
       tags:
@@ -729,7 +823,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Errors'
+                type: array
+                items:
+                  $ref: '#/components/schemas/ErrorsCode'
   /chats/{id}/leave:
     delete:
       tags:
@@ -753,13 +849,17 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Errors'
+                type: array
+                items:
+                  $ref: '#/components/schemas/ErrorsCode'
         '404':
           description: 'Не удалось найти'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Errors'
+                type: array
+                items:
+                  $ref: '#/components/schemas/ErrorsCode'
   /messages/{id}/thread:
     post:
       tags:
@@ -808,13 +908,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Errors'
+                $ref: '#/components/schemas/NotFound'
         '400':
           description: Неверный запрос.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Errors'
+                $ref: '#/components/schemas/BadRequest'
   /messages:
     post:
       tags:
@@ -890,7 +990,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Errors'
+                $ref: '#/components/schemas/BadRequest'
               examples:
                 REQUIRED FIELD BLANK:
                   summary: required fields blank
@@ -1002,7 +1102,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Errors'
+                $ref: '#/components/schemas/NotFound'
               example:
                 errors:
                   - key: chat_id
@@ -1014,7 +1114,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Errors'
+                $ref: '#/components/schemas/BadRequest'
               examples:
                 REQUIRED FIELD BLANK:
                   summary: required fields blank
@@ -1091,7 +1191,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Errors'
+                $ref: '#/components/schemas/NotFound'
               example:
                 errors:
                   - key: id
@@ -1129,19 +1229,26 @@ paths:
                 type: object
                 properties:
                   data:
-                    $ref: '#/components/schemas/Message'
+                    type: array
+                    description: Созданное сообщение
+                    items:
+                      $ref: '#/components/schemas/Message'
         '400':
           description: Нельзя покинуть персональный чат
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Errors'
+                type: array
+                items:
+                  $ref: '#/components/schemas/ErrorsCode'
         '404':
           description: 'Не удалось найти'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Errors'
+                type: array
+                items:
+                  $ref: '#/components/schemas/ErrorsCode'
   /messages/{id}/reactions:
     post:
       tags:
@@ -1182,7 +1289,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Errors'
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Описание ошибки.
               examples:
                 blank_field:
                   summary: Поле code пустое
@@ -1225,7 +1336,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Errors'
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Сообщение не найдено.
               examples:
                 not_found:
                   summary: Сообщение не существует
@@ -1261,7 +1376,29 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Errors'
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    description: Список ошибок в запросе.
+                    items:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                          description: Ключ параметра, в котором произошла ошибка.
+                        value:
+                          type: string
+                          description: Значение ключа, вызвавшее ошибку.
+                        message:
+                          type: string
+                          description: Текстовое описание ошибки.
+                        code:
+                          type: string
+                          description: Внутренний код ошибки.
+                        payload:
+                          type: object
+                          description: Дополнительная информация об ошибке.
               examples:
                 blank_field:
                   summary: Поле code пустое
@@ -1285,7 +1422,24 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Errors'
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    description: Список ошибок.
+                    items:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                        value:
+                          type: string
+                        message:
+                          type: string
+                        code:
+                          type: string
+                        payload:
+                          type: object
               examples:
                 not_found:
                   summary: Сообщение или реакция не найдены
@@ -1342,13 +1496,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Errors'
+                $ref: '#/components/schemas/NotFound'
         '400':
           description: Неверный запрос.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Errors'
+                $ref: '#/components/schemas/BadRequest'
   /tasks:
     post:
       tags:
@@ -1467,7 +1621,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Errors'
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Описание ошибки
 
 components:
   schemas:
@@ -1664,26 +1822,27 @@ components:
           example: "Страница не найдена."
           type: string
     Errors:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            key:
-              title: key
-              type: string
-            value:
-              title: value
-              type: string
-            message:
-              title: message
-              type: string
-            code:
-              title: code
-              type: string
-            payload:
-              title: payload
-              type: object
+      title: Errors
+      type: array
+      items:
+        title: Error
+        type: object
+        properties:
+          key:
+            title: key
+            type: string
+          value:
+            title: value
+            type: string
+          message:
+            title: message
+            type: string
+          code:
+            title: code
+            type: string
+          payload:
+            title: payload
+            type: object
     Buttons:
       title: Message Buttons
       type: array
