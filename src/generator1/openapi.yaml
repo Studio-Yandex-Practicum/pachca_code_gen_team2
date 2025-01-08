@@ -296,7 +296,24 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Errors'
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    description: Список ошибок.
+                    items:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                        value:
+                          type: string
+                        message:
+                          type: string
+                        code:
+                          type: string
+                        payload:
+                          type: object
               examples:
                 not_found:
                   summary: Тег не найден.
@@ -838,7 +855,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Errors'
+                type: array
+                items:
+                  $ref: '#/components/schemas/ErrorsCode'
   /messages/{id}/thread:
     post:
       tags:
@@ -887,7 +906,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Errors'
+                $ref: '#/components/schemas/NotFound'
         '400':
           description: Неверный запрос.
           content:
@@ -1081,7 +1100,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Errors'
+                $ref: '#/components/schemas/NotFound'
               example:
                 errors:
                   - key: chat_id
@@ -1170,7 +1189,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Errors'
+                $ref: '#/components/schemas/NotFound'
               example:
                 errors:
                   - key: id
@@ -1208,7 +1227,10 @@ paths:
                 type: object
                 properties:
                   data:
-                    $ref: '#/components/schemas/Message'
+                    type: array
+                    description: Созданное сообщение
+                    items:
+                      $ref: '#/components/schemas/Message'
         '400':
           description: Нельзя покинуть персональный чат
           content:
@@ -1222,7 +1244,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Errors'
+                type: array
+                items:
+                  $ref: '#/components/schemas/ErrorsCode'
   /messages/{id}/reactions:
     post:
       tags:
@@ -1310,7 +1334,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Errors'
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Сообщение не найдено.
               examples:
                 not_found:
                   summary: Сообщение не существует
@@ -1392,7 +1420,24 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Errors'
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    description: Список ошибок.
+                    items:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                        value:
+                          type: string
+                        message:
+                          type: string
+                        code:
+                          type: string
+                        payload:
+                          type: object
               examples:
                 not_found:
                   summary: Сообщение или реакция не найдены
@@ -1449,7 +1494,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Errors'
+                $ref: '#/components/schemas/NotFound'
         '400':
           description: Неверный запрос.
           content:
@@ -1775,26 +1820,27 @@ components:
           example: "Страница не найдена."
           type: string
     Errors:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            key:
-              title: key
-              type: string
-            value:
-              title: value
-              type: string
-            message:
-              title: message
-              type: string
-            code:
-              title: code
-              type: string
-            payload:
-              title: payload
-              type: object
+      title: Errors
+      type: array
+      items:
+        title: Error
+        type: object
+        properties:
+          key:
+            title: key
+            type: string
+          value:
+            title: value
+            type: string
+          message:
+            title: message
+            type: string
+          code:
+            title: code
+            type: string
+          payload:
+            title: payload
+            type: object
     Buttons:
       title: Message Buttons
       type: array

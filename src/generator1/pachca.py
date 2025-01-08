@@ -31,17 +31,21 @@ from pachca_api_open_api_3_0_client.models.post_message_reactions_body import (
 from pachca_api_open_api_3_0_client.models.query_chat import QueryChat
 
 query_chat = QueryChat(name='Testing')
-
 chat_body = CreateChatBody(chat=query_chat)
+
 members_body = PostMembersToChatsBody(member_ids=[516675])
 members_body = PostMembersToChatsBody(member_ids=[516682])
+
 create_meassage = CreateMessage(
     entity_id=17802862, content='NOT SUPER PUPER2222')
 edit_meassage = EditMessages(content='Вот так  вот!')
+
 message_body = CreateMessageBody(message=create_meassage)
 edit_message_body = EditMessageBody(message=edit_meassage)
+
 post_reactions = PostMessageReactionsBody(code='😭')
 reaction_body = GetMessageReactionsBody()
+
 create_body_task = CreateTaskBodyTask(
     kind='call',
     content='Звонок другу',
@@ -51,16 +55,15 @@ body_task = CreateTaskBody(task=create_body_task)
 
 create_meassage = CreateMessage(
     entity_id=1781540, content='NOT SUPER PUPER2222')
-
 edit_meassage = EditMessages(content='NOT and NOT SUPER PUPER')
 
 edit_message_body = EditMessageBody(message=edit_meassage)
-
 message_body = CreateMessageBody(message=create_meassage)
+
 
 pachca = Pachca(
     # token='x4EhHyzYY2aA38GJb6AnKQXcY716LnEHCoxD1dUEyCI',
-    token='MnVVaQqJdjw5iRVcOoYJgZ440hTdUVArjl1idgx6iow',
+    # token='MnVVaQqJdjw5iRVcOoYJgZ440hTdUVArjl1idgx6iow',
     # token='qW3V2Kw7yxu1UA5OZLCdyoyKFfWA6OYr_MK2WR6PxbA',
 )
 
@@ -88,6 +91,7 @@ async def main() -> None:
        id=412338865, body=reaction_body)
     )
     task12 = asyncio.create_task(pachca.createTask(body=body_task))
+ 
     print(await task1)
     print('*' * 30)
     print(await task2)
