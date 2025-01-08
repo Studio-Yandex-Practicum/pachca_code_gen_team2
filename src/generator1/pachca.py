@@ -79,19 +79,13 @@ async def main() -> None:
     task6 = asyncio.create_task(pachca.getListMessage(chat_id=17802862))
     task7 = asyncio.create_task(pachca.getMessage(id=412338865))
     task8 = asyncio.create_task(pachca.editMessage(
-       id=412338865, body=edit_message_body)
+       id=412338865, body=edit_message_body),
     )
-    task9 = asyncio.create_task(pachca.postMessageReactions(
-       id=412338865, body=post_reactions)
+    task9 = asyncio.create_task(pachca.getMessageReactions(
+       id=412338865, body=reaction_body),
     )
-    task10 = asyncio.create_task(pachca.deleteMessageReactions(
-       id=412338865, code='😭')
-    )
-    task11 = asyncio.create_task(pachca.getMessageReactions(
-       id=412338865, body=reaction_body)
-    )
-    task12 = asyncio.create_task(pachca.createTask(body=body_task))
- 
+    task10 = asyncio.create_task(pachca.createTask(body=body_task))
+
     print(await task1)
     print('*' * 30)
     print(await task2)
@@ -111,10 +105,6 @@ async def main() -> None:
     print(await task9)
     print('*' * 30)
     print(await task10)
-    print('*' * 30)
-    print(await task11)
-    print('*' * 30)
-    print(await task12)
 
 
 if __name__ == '__main__':
