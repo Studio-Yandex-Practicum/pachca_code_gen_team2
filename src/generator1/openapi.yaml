@@ -69,18 +69,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BadRequest'
-              examples:
-                BLANK:
-                  summary: blank
-                  description: Поле не может быть пустым
-                  value:
-                    detail: BLANK
-                INCLUSION:
-                  summary: inclusion
-                  description: Поле имеет непредусмотренное значение
-                  value:
-                    detail: INCLUSION
+                $ref: '#/components/schemas/Errors'
   /uploads:
     post:
       tags:
@@ -186,7 +175,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NotFound'
+                $ref: '#/components/schemas/Errors'
   /profile/status:
     get:
       tags:
@@ -232,29 +221,8 @@ paths:
           description: BadRequest
           content:
             application/json:
-              schema:
-                $ref: '#/components/schemas/BadRequest'
-              examples:
-                BLANK:
-                  summary: blank
-                  description: Обязательное поле (не может быть пустым)
-                  value:
-                    detail: BLANK
-                TOO_LONG:
-                  summary: too_long
-                  description: Слишком длинное значение (пояснения вы получите в поле message)
-                  value:
-                    detail: TOO_LONG
-                INVALID:
-                  summary: invalid
-                  description: Поле не соответствует правилам (пояснения вы получите в поле message)
-                  value:
-                    detail: INVALID
-                WRONG_EMOJI:
-                  summary: wrong_emoji
-                  description: Emoji статуса не может содержать значения отличные от Emoji символа
-                  value:
-                    detail: WRONG_EMOJI
+               schema:
+                $ref: '#/components/schemas/Errors'
     delete:
       tags:
         - status
@@ -347,29 +315,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  errors:
-                    type: array
-                    description: Список ошибок в запросе.
-                    items:
-                      type: object
-                      properties:
-                        key:
-                          type: string
-                          description: Ключ параметра, в котором произошла ошибка.
-                        value:
-                          type: string
-                          description: Значение ключа, вызвавшее ошибку.
-                        message:
-                          type: string
-                          description: Текстовое описание ошибки.
-                        code:
-                          type: string
-                          description: Внутренний код ошибки.
-                        payload:
-                          type: object
-                          description: Дополнительная информация об ошибке.
+                $ref: '#/components/schemas/Errors'
               examples:
                 exclusion:
                   summary: Недопустимое значение количество возвращаемых сущностей за один запрос 
@@ -426,7 +372,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BadRequest'
+                $ref: '#/components/schemas/Errors'
   /chats:
     post:
       tags:
@@ -460,10 +406,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  errors:
-                    $ref: '#/components/schemas/Errors'
+                $ref: '#/components/schemas/Errors'
               examples:
                 blank:
                   description: Обязательное поле (не может быть пустым)
@@ -497,10 +440,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  errors:
-                    $ref: '#/components/schemas/Errors'
+                $ref: '#/components/schemas/Errors'
               examples:
                 not_found:
                   description: Не удалось найти
@@ -516,10 +456,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  errors:
-                    $ref: '#/components/schemas/Errors'
+                $ref: '#/components/schemas/Errors'
               examples:
                 invalid:
                   description: Поле имеет неверный формат (идентификатор поля вы получите в поле payload)
@@ -613,10 +550,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  errors:
-                    $ref: '#/components/schemas/ErrorsCode'
+                $ref: '#/components/schemas/Errors'
               examples:
                 too_long:
                   description: Слишком длинное значение (пояснения вы получите в поле message)
@@ -641,10 +575,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  errors:
-                    $ref: '#/components/schemas/Errors'
+                $ref: '#/components/schemas/Errors'
               examples:
                 not_found:
                   description: Не удалось найти
@@ -660,10 +591,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  errors:
-                    $ref: '#/components/schemas/Errors'
+                $ref: '#/components/schemas/Errors'
               examples:
                 invalid:
                   description: Поле имеет неверный формат (идентификатор поля вы получите в поле payload)
@@ -705,10 +633,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  errors:
-                    $ref: '#/components/schemas/Errors'
+                $ref: '#/components/schemas/Errors'
               examples:
                 not_found:
                   description: Не удалось найти
@@ -762,9 +687,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ErrorsCode'
+                $ref: '#/components/schemas/Errors'
   /chats/{id}/group_tags:
     post:
       tags:
@@ -806,9 +729,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ErrorsCode'
+                $ref: '#/components/schemas/Errors'
   /chats/{id}/leave:
     delete:
       tags:
@@ -832,9 +753,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ErrorsCode'
+                $ref: '#/components/schemas/Errors'
         '404':
           description: 'Не удалось найти'
           content:
@@ -895,7 +814,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BadRequest'
+                $ref: '#/components/schemas/Errors'
   /messages:
     post:
       tags:
@@ -971,7 +890,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BadRequest'
+                $ref: '#/components/schemas/Errors'
               examples:
                 REQUIRED FIELD BLANK:
                   summary: required fields blank
@@ -1095,7 +1014,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BadRequest'
+                $ref: '#/components/schemas/Errors'
               examples:
                 REQUIRED FIELD BLANK:
                   summary: required fields blank
@@ -1216,9 +1135,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ErrorsCode'
+                $ref: '#/components/schemas/Errors'
         '404':
           description: 'Не удалось найти'
           content:
@@ -1265,11 +1182,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: Описание ошибки.
+                $ref: '#/components/schemas/Errors'
               examples:
                 blank_field:
                   summary: Поле code пустое
@@ -1348,29 +1261,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  errors:
-                    type: array
-                    description: Список ошибок в запросе.
-                    items:
-                      type: object
-                      properties:
-                        key:
-                          type: string
-                          description: Ключ параметра, в котором произошла ошибка.
-                        value:
-                          type: string
-                          description: Значение ключа, вызвавшее ошибку.
-                        message:
-                          type: string
-                          description: Текстовое описание ошибки.
-                        code:
-                          type: string
-                          description: Внутренний код ошибки.
-                        payload:
-                          type: object
-                          description: Дополнительная информация об ошибке.
+                $ref: '#/components/schemas/Errors'
               examples:
                 blank_field:
                   summary: Поле code пустое
@@ -1457,7 +1348,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BadRequest'
+                $ref: '#/components/schemas/Errors'
   /tasks:
     post:
       tags:
@@ -1576,11 +1467,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: Описание ошибки
+                $ref: '#/components/schemas/Errors'
 
 components:
   schemas:

@@ -39,6 +39,8 @@ async def main() -> None:
         id=412338865, code='😭'))
     task4 = asyncio.create_task(pachca.editMessage(
         id=412502100, body=edit_message_body))
+    task5 = asyncio.create_task(pachca.getEmployee(12345))
+
     print(await task1)
     print('*' * 30)
     print(await task2)
@@ -46,6 +48,8 @@ async def main() -> None:
     print(await task3)
     print('*' * 30)
     print(await task4)
+    print('*' * 30)
+    print(await task5)
 
 
 
