@@ -31,7 +31,7 @@ reaction_body = GetMessageReactionsBody()
 message_body = CreateMessageBody(message=create_meassage)
 
 pachca = Pachca(
-    token='qW3V2Kw7yxu1UA5OZLCdyoyKFfWA6OYr_MK2WR6PxbA',
+    token='35KekGygDNiFwtPpqUe44CaEZ_EVL17ycYRJrMnvHOs',
 )
 
 
