@@ -774,14 +774,12 @@ paths:
       responses:
         '201':
           description: Пользователи добавлены
-        '400':
-          description: BadRequest
+        '404':
+          description: 'Не удалось найти'
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ErrorsCode'
+                $ref: '#/components/schemas/Errors'
   /chats/{id}/group_tags:
     post:
       tags:
@@ -851,7 +849,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ErrorsCode'
+                  $ref: '#/components/schemas/Errors'
         '404':
           description: 'Не удалось найти'
           content:
@@ -876,7 +874,7 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        '201':
           description: Тред успешно создан или возвращены данные существующего треда.
           content:
             application/json:
