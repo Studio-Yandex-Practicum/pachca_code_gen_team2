@@ -1,9 +1,9 @@
-from enum import Enum, IntEnum, StrEnum
+from enum import Enum, IntEnum
 from typing import Dict, Optional, List
 from pydantic import Field, BaseModel
 
 
-class enum_data_type(StrEnum):
+class enum_data_type(str, Enum):
     string = 'string'
     number = 'number'
     date = 'date'
@@ -23,13 +23,13 @@ class User_status(BaseModel):
     expires_at: Optional[str] = Field(None, description='Срок жизни статуса (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ. Возвращается как null, если срок не установлен.')
 
 
-class enum_role(StrEnum):
+class enum_role(str, Enum):
     admin = 'admin'
     user = 'user'
     multi_guest = 'multi_guest'
 
 
-class enum_invite_status(StrEnum):
+class enum_invite_status(str, Enum):
     confirmed = 'confirmed'
     sent = 'sent'
 

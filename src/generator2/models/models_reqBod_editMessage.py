@@ -1,4 +1,4 @@
-from enum import Enum, IntEnum, StrEnum
+from enum import Enum, IntEnum
 from typing import Dict, Optional, List
 from pydantic import Field, BaseModel
 
@@ -9,7 +9,7 @@ class Buttons(BaseModel):
     data: Optional[str] = Field(None, description='No docstring provided')
 
 
-class enum_file_type(StrEnum):
+class enum_file_type(str, Enum):
     file = 'file'
     image = 'image'
 

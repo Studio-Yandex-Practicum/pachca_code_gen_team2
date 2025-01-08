@@ -1,9 +1,9 @@
-from enum import Enum, IntEnum, StrEnum
+from enum import Enum, IntEnum
 from typing import Dict, Optional, List
 from pydantic import Field, BaseModel
 
 
-class enum_data_type(StrEnum):
+class enum_data_type(str, Enum):
     string = 'string'
     number = 'number'
     date = 'date'
@@ -17,7 +17,7 @@ class Custom_properties(BaseModel):
     data_type: Optional[enum_data_type] = Field(None, description='Тип поля (string, number, date или link)')
 
 
-class enum_kind(StrEnum):
+class enum_kind(str, Enum):
     call = 'call'
     meeting = 'meeting'
     reminder = 'reminder'

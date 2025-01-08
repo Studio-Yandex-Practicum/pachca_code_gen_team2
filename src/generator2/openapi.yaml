@@ -1258,10 +1258,7 @@ paths:
                 type: object
                 properties:
                   data:
-                    type: array
-                    description: Созданное сообщение
-                    items:
-                      $ref: '#/components/schemas/Message'
+                    $ref: '#/components/schemas/Message'
         '400':
           description: Пояснения ошибки
           content:
