@@ -1198,27 +1198,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: Описание ошибки.
-              examples:
-                user_limit:
-                  summary: Превышен лимит уникальных реакций пользователя
-                  value:
-                    error: user_limit
-                    message: "Вы можете добавить не более 20 уникальных реакций."
-                unique_limit:
-                  summary: Превышен лимит уникальных реакций на сообщение
-                  value:
-                    error: unique_limit
-                    message: "Сообщение может содержать не более 30 уникальных реакций."
-                general_limit:
-                  summary: Превышен общий лимит реакций на сообщение
-                  value:
-                    error: general_limit
-                    message: "Сообщение может содержать не более 1000 реакций."
+                $ref: '#/components/schemas/Errors'
 
         "404":
           description: Сообщение не найдено.

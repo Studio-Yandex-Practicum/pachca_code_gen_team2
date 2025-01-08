@@ -12,6 +12,8 @@ from pachca_api_open_api_3_0_client.models.create_message_body import (
     CreateMessageBody)
 from pachca_api_open_api_3_0_client.models.edit_message_body import (
     EditMessageBody)
+from pachca_api_open_api_3_0_client.models.get_message_reactions_body import (
+    GetMessageReactionsBody)
 
 query_chat = QueryChat(name='Testing')
 
@@ -24,6 +26,8 @@ edit_meassage = EditMessages(content='NOT and NOT SUPER PUPER')
 
 edit_message_body = EditMessageBody(message=edit_meassage)
 
+reaction_body = GetMessageReactionsBody()
+
 message_body = CreateMessageBody(message=create_meassage)
 
 pachca = Pachca(
@@ -33,23 +37,16 @@ pachca = Pachca(
 
 async def main() -> None:
     """Функция теста эндпоинтов"""
-    task1 = asyncio.create_task(pachca.createMessage(body=message_body))
-    task2 = asyncio.create_task(pachca.getTag(2232323))
+
     task3 = asyncio.create_task(pachca.deleteMessageReactions(
         id=412338865, code='😭'))
-    task4 = asyncio.create_task(pachca.editMessage(
-        id=123, body=edit_message_body))
-    task5 = asyncio.create_task(pachca.createThread(123))
+    task6 = asyncio.create_task(
+        pachca.postMessageReactions(412338865, body=reaction_body))
 
-    print(await task1)
-    print('*' * 30)
-    print(await task2)
-    print('*' * 30)
+
     print(await task3)
     print('*' * 30)
-    print(await task4)
-    print('*' * 30)
-    print(await task5)
+    print(await task6)
 
 
 
