@@ -4,14 +4,15 @@ from pachca_api_open_api_3_0_client.client import Pachca
 from pachca_api_open_api_3_0_client.models.create_chat_body import (
     CreateChatBody,
 )
-from pachca_api_open_api_3_0_client.models.query_chat import QueryChat
-from pachca_api_open_api_3_0_client.models.edit_messages import EditMessages
-from pachca_api_open_api_3_0_client.models.create_message import (
-    CreateMessage)
+from pachca_api_open_api_3_0_client.models.create_message import CreateMessage
 from pachca_api_open_api_3_0_client.models.create_message_body import (
-    CreateMessageBody)
+    CreateMessageBody,
+)
 from pachca_api_open_api_3_0_client.models.edit_message_body import (
-    EditMessageBody)
+    EditMessageBody,
+)
+from pachca_api_open_api_3_0_client.models.edit_messages import EditMessages
+from pachca_api_open_api_3_0_client.models.query_chat import QueryChat
 
 query_chat = QueryChat(name='Testing')
 
@@ -50,7 +51,6 @@ async def main() -> None:
     print(await task4)
     print('*' * 30)
     print(await task5)
-
 
 
 if __name__ == '__main__':
