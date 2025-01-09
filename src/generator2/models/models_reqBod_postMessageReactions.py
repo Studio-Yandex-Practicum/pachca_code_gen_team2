@@ -4,6 +4,6 @@ from pydantic import Field, BaseModel
 
 
 class Postmessagereactions(BaseModel):
-    code: str = Field(..., description='Emoji в строковом формате для добавления реакции.')
-
-
+    code: str = Field(
+        ..., description="Emoji в строковом формате для добавления реакции."
+    )
