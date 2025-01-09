@@ -33,7 +33,7 @@ def process_endpoints() -> tuple[list, list]:
     
     body: dict
     for endpoint, method, body in get_all_endpoints(YAML_DICT):
-        logger.debug('Обработка: {endpoint}, {method}')
+        logger.debug(f'Обработка: {endpoint}, {method}')
         operation_id = body.get('operationId')
         parameters = body.get('parameters')
         path_parameters = []
@@ -118,7 +118,7 @@ def process_endpoints() -> tuple[list, list]:
         except Exception as e:
             logger.error(
                 'Unable to create responses for '
-                f'{operation_id, method, code}!'
+                f'{operation_id}, {method, code}!'
                 f'Error: {e}'
             )
     return path_parameters, query_parameters
