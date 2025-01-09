@@ -141,9 +141,28 @@ paths:
         Тело запроса отсутствует, параметры передаются в URL (например, /users?per=50&page=2&query=example.com)
       operationId: getEmployees
       parameters:
-        - $ref: '#/components/parameters/perParameter50'
-        - $ref: '#/components/parameters/pageParameter'
-        - $ref: '#/components/parameters/queryParameter'
+        - name: per
+          in: query
+          description: Количество возвращаемых сущностей за один запрос (по умолчанию 50, максимум 50)
+          required: false
+          schema:
+            type: integer
+            default: 50
+            maximum: 50
+        - name: page
+          in: query
+          description: Страница выборки (по умолчанию 1)
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: query
+          in: query
+          description: |
+            Поисковая фраза для фильтрации результатов (поиск идет по полям first_name (имя), last_name (фамилия), email (электронная почта), phone_number (телефон) и nickname (никнейм))
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: Успешный запрос
@@ -359,8 +378,21 @@ paths:
         Названия тегов являются уникальными в компании. Тело запроса отсутствует, параметры передаются в URL (например, /group_tags?per=10&page=2)
       operationId: getTags
       parameters:
-        - $ref: '#/components/parameters/perParameter50'
-        - $ref: '#/components/parameters/pageParameter'
+        - name: per
+          in: query
+          description: Количество возвращаемых сущностей за один запрос (по умолчанию 50, максимум 50)
+          required: false
+          schema:
+            type: integer
+            default: 50
+            maximum: 50
+        - name: page
+          in: query
+          description: Страница выборки (по умолчанию 1)
+          required: false
+          schema:
+            type: integer
+            default: 1
       responses:
         '200':
           description: Успешный запрос
@@ -409,8 +441,21 @@ paths:
           required: true
           schema:
             type: integer
-        - $ref: '#/components/parameters/perParameter25'
-        - $ref: '#/components/parameters/pageParameter'
+        - name: per
+          in: query
+          description: Количество возвращаемых сущностей за один запрос (по умолчанию 25, максимум 50)
+          required: false
+          schema:
+            type: integer
+            default: 25
+            maximum: 50
+        - name: page
+          in: query
+          description: Страница выборки (по умолчанию 1)
+          required: false
+          schema:
+            type: integer
+            default: 1
       responses:
         '200':
           description: Успешный запрос
@@ -545,12 +590,65 @@ paths:
       
         Тело запроса отсутствует, параметры передаются в URL (например, /chats?per=2&sort[id]=desc)
       parameters:
-        - $ref: '#/components/parameters/sortParameter'
-        - $ref: '#/components/parameters/perParameter25'
-        - $ref: '#/components/parameters/pageParameter'
-        - $ref: '#/components/parameters/availabilityParameter'
-        - $ref: '#/components/parameters/last_message_at_afterParameter'
-        - $ref: '#/components/parameters/last_message_at_beforeParameter'
+        - name: 'sort[id]'
+          in: query
+          required: false
+          description: |
+            Составной параметр сортировки сущностей выборки.
+            Варианты значений: по умолчанию desc (по убыванию) или asc (по возрастанию).
+            На данный момент сортировка доступна только по полю ({field}) id (идентификатор бесед и каналов).
+          schema:
+            type: string
+            enum:
+              - desc
+              - asc
+            default: desc
+        - name: per
+          in: query
+          description: Количество возвращаемых сущностей за один запрос (по умолчанию 25, максимум 50)
+          required: false
+          schema:
+            type: integer
+            default: 25
+            maximum: 50
+        - name: page
+          in: query
+          description: Страница выборки (по умолчанию 1)
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: availability
+          in: query
+          required: false
+          description: |
+            Параметр, который отвечает за доступность и выборку бесед и каналов для пользователя.
+            Варианты значений: по умолчанию is_member (беседы и каналы, где пользователь является участником)
+            или public (все открытые беседы и каналы компании, вне зависимости от участия в них пользователя).
+          schema:
+            type: string
+            enum:
+              - is_member
+              - public
+            default: is_member
+        - name: last_message_at_after
+          in: query
+          required: false
+          description: |
+            Фильтрация по времени создания последнего сообщения.
+            Будут возвращены те беседы/каналы, время последнего созданного сообщения в которых не раньше чем указанное (в формате YYYY-MM-DDThh:mm:ss.sssZ).
+          schema:
+            type: string
+            format: date-time
+        - name: last_message_at_before
+          in: query
+          required: false
+          description: |
+            Фильтрация по времени создания последнего сообщения.
+            Будут возвращены те беседы/каналы, время последнего созданного сообщения в которых не позже чем указанное (в формате YYYY-MM-DDThh:mm:ss.sssZ).
+          schema:
+            type: string
+            format: date-time
       responses:
         '200':
           description: Запрос отработал как положено, без ошибок
@@ -1062,9 +1160,28 @@ paths:
         Тело запроса отсутствует, параметры передаются в URL (например, /messages?chat_id=198&per=3)
       operationId: getListMessage
       parameters:
-        - $ref: '#/components/parameters/chatParameter'
-        - $ref: '#/components/parameters/perParameter25'
-        - $ref: '#/components/parameters/pageParameter'
+        - name: chat_id
+          in: query
+          description: Идентификатор чата (беседа, канал, диалог или чат треда)
+          required: true
+          schema:
+            title: chat_id
+            type: integer
+        - name: per
+          in: query
+          description: Количество возвращаемых сущностей за один запрос (по умолчанию 25, максимум 50)
+          required: false
+          schema:
+            type: integer
+            default: 25
+            maximum: 50
+        - name: page
+          in: query
+          description: Страница выборки (по умолчанию 1)
+          required: false
+          schema:
+            type: integer
+            default: 1
       responses:
         '200':
           description: Successful
@@ -1406,7 +1523,12 @@ paths:
           description: Уникальный идентификатор сообщения.
           schema:
             type: integer
-        - $ref: '#/components/parameters/reactionParameter'
+        - name: code
+          in: query
+          description: Emoji в строковом формате для добавления реакции.
+          schema:
+            type: string
+            example: "👍"
       responses:
         "204":
           description: При безошибочном выполнении запроса тело ответа отсутствует
@@ -1463,8 +1585,21 @@ paths:
           required: true
           schema:
             type: integer
-        - $ref: '#/components/parameters/perParameter50'
-        - $ref: '#/components/parameters/pageParameter'
+        - name: per
+          in: query
+          description: Количество возвращаемых сущностей за один запрос (по умолчанию 50, максимум 50)
+          required: false
+          schema:
+            type: integer
+            default: 50
+            maximum: 50
+        - name: page
+          in: query
+          description: Страница выборки (по умолчанию 1)
+          required: false
+          schema:
+            type: integer
+            default: 1
       responses:
         '200':
           description: Список реакций успешно получен.
@@ -1584,104 +1719,6 @@ paths:
                         code: invalid
                         payload: {}
 components:
-  parameters:
-    perParameter50:
-      name: per
-      in: query
-      description: Количество возвращаемых сущностей за один запрос (по умолчанию 50, максимум 50)
-      required: false
-      schema:
-        type: integer
-        default: 50
-        maximum: 50
-    perParameter25:
-      name: per
-      in: query
-      description: Количество возвращаемых сущностей за один запрос (по умолчанию 25, максимум 50)
-      required: false
-      schema:
-        type: integer
-        default: 25
-        maximum: 50
-    pageParameter:
-      name: page
-      in: query
-      description: Страница выборки (по умолчанию 1)
-      required: false
-      schema:
-        type: integer
-        default: 1
-    queryParameter:
-      name: query
-      in: query
-      description: |
-        Поисковая фраза для фильтрации результатов (поиск идет по полям first_name (имя), last_name (фамилия), email (электронная почта), phone_number (телефон) и nickname (никнейм))
-      required: false
-      schema:
-        type: string
-    chatParameter:
-      name: chat_id
-      in: query
-      description: Идентификатор чата (беседа, канал, диалог или чат треда)
-      required: true
-      schema:
-        title: chat_id
-        type: integer
-    sortParameter:
-      name: 'sort[id]'
-      in: query
-      required: false
-      description: |
-        Составной параметр сортировки сущностей выборки.
-        Варианты значений: по умолчанию desc (по убыванию) или asc (по возрастанию).
-        На данный момент сортировка доступна только по полю ({field}) id (идентификатор бесед и каналов).
-      schema:
-        type: string
-        enum:
-          - desc
-          - asc
-        default: desc
-    availabilityParameter:
-      name: availability
-      in: query
-      required: false
-      description: |
-        Параметр, который отвечает за доступность и выборку бесед и каналов для пользователя.
-        Варианты значений: по умолчанию is_member (беседы и каналы, где пользователь является участником)
-        или public (все открытые беседы и каналы компании, вне зависимости от участия в них пользователя).
-      schema:
-        type: string
-        enum:
-          - is_member
-          - public
-        default: is_member
-    last_message_at_afterParameter:
-      name: last_message_at_after
-      in: query
-      required: false
-      description: |
-        Фильтрация по времени создания последнего сообщения.
-        Будут возвращены те беседы/каналы, время последнего созданного сообщения в которых не раньше чем указанное (в формате YYYY-MM-DDThh:mm:ss.sssZ).
-      schema:
-        type: string
-        format: date-time
-    last_message_at_beforeParameter:
-      name: last_message_at_before
-      in: query
-      required: false
-      description: |
-        Фильтрация по времени создания последнего сообщения.
-        Будут возвращены те беседы/каналы, время последнего созданного сообщения в которых не позже чем указанное (в формате YYYY-MM-DDThh:mm:ss.sssZ).
-      schema:
-        type: string
-        format: date-time
-    reactionParameter:
-      name: code
-      in: query
-      description: Emoji в строковом формате для добавления реакции.
-      schema:
-        type: string
-        example: "👍"
   schemas:
     MembersChat:
       title: Members Chat
@@ -1968,14 +2005,13 @@ components:
     BaseThread:
       title: Base Thread
       type: object
-      nullable: true
       properties:
         id:
-          title: Id
           type: integer
+          description: Идентификатор поля
         chat_id:
-          title: Chat Id
           type: integer
+          description: Идентификатор поля чата
     Thread:
       allOf:
         - $ref: '#/components/schemas/BaseThread'
@@ -1994,55 +2030,50 @@ components:
                 Дата и время обновления треда (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ.
     BaseFiles:
       title: Base Files
+      type: object
+      required:
+        - key
+        - name
+        - file_type
+      properties:
+        key:
+          type: string
+          description: Путь к файлу, полученный в результате загрузки файла (каждый файл в каждом сообщении должен иметь свой уникальный key, не допускается использование одного и того же key в разных сообщениях)
+        name:
+          type: string
+          description: Название файла, которое вы хотите отображать пользователю (рекомендуется писать вместе с расширением)
+        file_type:
+          type: string
+          enum:
+            - file
+            - image
+    CreateEditFiles:
       type: array
       items:
-        type: object
-        required:
-          - key
-          - name
-          - file_type
-          - size
-        properties:
-          key:
-            title: Key
-            type: string
-            description: Путь к файлу, полученный в результате загрузки файла (каждый файл в каждом сообщении должен иметь свой уникальный key, не допускается использование одного и того же key в разных сообщениях)
-          name:
-            title: Name
-            type: string
-            description: Название файла, которое вы хотите отображать пользователю (рекомендуется писать вместе с расширением)
-          file_type:
-            title: File Type
-            type: string
-            enum:
-              - 'file'
-              - 'image'
-    CreateEditFiles:
-      title: Create&Edit Files
-      allOf:
+        allOf:
         - $ref: '#/components/schemas/BaseFiles'
-        - type: array
-          items:
-            type: object
-            properties:
-              size:
-                title: Size
-                type: integer
-                description:  Размер файла в байтах, отображаемый пользователю
+        - type: object
+          title: Create&Edit Files
+          required: 
+            - size
+          properties:
+            size:
+              type: integer
+              description:  Размер файла в байтах, отображаемый пользователю
     Files:
-      allOf:
+      type: array
+      items:
+        allOf:
         - $ref: '#/components/schemas/BaseFiles'
-        - type: array
-          items:
-            type: object
-            properties:
-              id:
-                title: Id
-                type: integer
-              url:
-                title: Url
-                type: string
-                description:  Прямая временная ссылка на скачивание файла
+        - type: object
+          title: Files
+          properties:
+            id:
+              type: integer
+              description: Идентификатор поля
+            url:
+              type: string
+              description:  Прямая временная ссылка на скачивание файла
     BeforeBaseMessages:
       title: Before Base Messages
       type: object
@@ -2083,10 +2114,10 @@ components:
               title: Entity Type
               type: string
               enum:
-                - 'discussion'
-                - 'user'
-                - 'thread'
-              default: 'discussion'
+                - discussion
+                - user
+                - thread
+              default: discussion
             entity_id:
               title: Entity Id
               type: integer
@@ -2267,23 +2298,22 @@ components:
           type: integer
     BaseCustomProperties:
       title: Base Custom Properties
+      description: Задаваемые дополнительные поля
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Идентификатор поля
+        value:
+          type: string
+          description: Значение поля
+    CustomProperties:
       type: array
       items:
-        type: object
-        properties:
-          id:
-            type: integer
-            description: Идентификатор поля
-          value:
-            type: string
-            description: Значение поля
-    CustomProperties:
-      title: Custom Properties
-      allOf:
-        - $ref: '#/components/schemas/BaseCustomProperties'
-        - type: array
-          items:
-            type: object
+        allOf:
+          - $ref: '#/components/schemas/BaseCustomProperties'
+          - type: object
+            title: Custom Properties
             properties:
               name:
                 type: string
@@ -2333,8 +2363,10 @@ components:
             type: integer
           description: Массив идентификаторов пользователей
         custom_properties:
-          allOf:
-            - $ref: '#/components/schemas/BaseCustomProperties'
+          type: array
+          items:
+            allOf:
+              - $ref: '#/components/schemas/BaseCustomProperties'
     Task:
       allOf:
         - $ref: '#/components/schemas/BaseTask'
