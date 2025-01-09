@@ -6,6 +6,14 @@ from schema_link_processor import (
 )
 
 
+def check_error_field(model_name: str, field_name: str, field_type: str):
+    if model_name != 'Errors':
+        return field_type
+    if field_name != 'value':
+        return field_type
+    return 'Any'
+
+
 def create_model(name: str, fields: list) -> str:
     """Генерирует код модели Pydantic."""
     model_code = f'class {name}(BaseModel):\n'
@@ -20,12 +28,14 @@ def create_model(name: str, fields: list) -> str:
 
         if field[2]:
             model_code += (
-                f'    {field_name}: {field[1]} '
+                f'    {field_name}: '
+                f'{check_error_field(name, field_name, field[1])} '
                 f'= Field(..., description=\'{field[3]}\'{alias})\n'
             )
         else:
             model_code += (
-                f'    {field_name}: Optional[{field[1]}] '
+                f'    {field_name}: '
+                f'Optional[{check_error_field(name, field_name, field[1])}] '
                 f'= Field(None, description=\'{field[3]}\'{alias})\n'
             )
     return model_code

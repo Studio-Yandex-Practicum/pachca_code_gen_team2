@@ -1,9 +1,9 @@
-from enum import Enum, IntEnum, StrEnum
-from typing import Dict, Optional, List
+from enum import Enum, IntEnum
+from typing import Any, Dict, Optional, List
 from pydantic import Field, BaseModel
 
 
-class enum_data_type(StrEnum):
+class enum_data_type(str, Enum):
     string = 'string'
     number = 'number'
     date = 'date'

@@ -1,9 +1,9 @@
-from enum import Enum, IntEnum, StrEnum
-from typing import Dict, Optional, List
+from enum import Enum, IntEnum
+from typing import Any, Dict, Optional, List
 from pydantic import Field, BaseModel
 
 
-class enum_data_type(StrEnum):
+class enum_data_type(str, Enum):
     string = 'string'
     number = 'number'
     date = 'date'
@@ -17,13 +17,13 @@ class Custom_properties(BaseModel):
     value: Optional[str] = Field(None, description='Значение')
 
 
-class enum_role(StrEnum):
+class enum_role(str, Enum):
     admin = 'admin'
     user = 'user'
     multi_guest = 'multi_guest'
 
 
-class enum_invite_status(StrEnum):
+class enum_invite_status(str, Enum):
     confirmed = 'confirmed'
     sent = 'sent'
 

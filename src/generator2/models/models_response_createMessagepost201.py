@@ -1,5 +1,5 @@
-from enum import Enum, IntEnum, StrEnum
-from typing import Dict, Optional, List
+from enum import Enum, IntEnum
+from typing import Any, Dict, Optional, List
 from pydantic import Field, BaseModel
 
 
@@ -9,7 +9,7 @@ class Buttons(BaseModel):
     data: Optional[str] = Field(None, description='No docstring provided')
 
 
-class enum_file_type(StrEnum):
+class enum_file_type(str, Enum):
     file = 'file'
     image = 'image'
 
@@ -37,7 +37,7 @@ class Forwarding(BaseModel):
     original_thread_parent_chat_id: Optional[int] = Field(None, description='Идентификатор чата сообщения, к которому был создан тред, в котором находится оригинальное сообщение. Возвращается как null, если оригинальное сообщение не является комментарием в треде.')
 
 
-class enum_entity_type(StrEnum):
+class enum_entity_type(str, Enum):
     discussion = 'discussion'
     user = 'user'
     thread = 'thread'
