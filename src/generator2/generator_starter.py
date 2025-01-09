@@ -31,8 +31,15 @@ def generate_client():
             ['black', f'{dir_path}/request_methods.py', '-l', '79'], check=True
         )
         logger.debug('Finished code formatting!')
+        subprocess.run(
+            ['ruff', 'check', f'{dir_path}/models', '--fix']
+        )
+        subprocess.run(
+            ['ruff', 'check', f'{dir_path}/request_methods.py', '--fix']
+        )
+        logger.debug('Finished code fix with ruff!')
     except Exception as ex:
-        logger.error(f'Unable to format code: {ex}')
+        logger.error(f'Unable to format or fix code: {ex}')
 
 
 if __name__ == '__main__':
