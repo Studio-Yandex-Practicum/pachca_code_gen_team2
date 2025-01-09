@@ -381,8 +381,7 @@ def generation_methods_request(
             file.write(template)
 
 
-if __name__ == "__main__":
-
+def generate():
     spec: Specification = get_obj_openapi_spec()
     paths: list[Path] = spec.paths
 
@@ -391,3 +390,7 @@ if __name__ == "__main__":
     generation_methods_request(
         templates=templates, import_templates=import_templates
     )
+
+
+if __name__ == "__main__":
+    generate()

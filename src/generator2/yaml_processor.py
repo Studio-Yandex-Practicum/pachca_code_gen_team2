@@ -2,8 +2,12 @@ import sys
 from constants import HTTP_METHODS
 from file_writer import write_to_file
 from generate_pydantic_model import look_into_schema_new
+from logger_setup import setup_logging
 from schema_link_processor import load_schema
 from yaml_loader import YAML_DICT
+
+
+logger = setup_logging('yaml_processor')
 
 
 def get_all_endpoints(yaml_dict: dict):
@@ -29,9 +33,8 @@ def process_endpoints() -> tuple[list, list]:
     
     body: dict
     for endpoint, method, body in get_all_endpoints(YAML_DICT):
-        print(endpoint, method)
+        logger.debug('Обработка: {endpoint}, {method}')
         operation_id = body.get('operationId')
-        print(operation_id)
         parameters = body.get('parameters')
         path_parameters = []
         query_parameters = []
@@ -54,8 +57,6 @@ def process_endpoints() -> tuple[list, list]:
                             parameter.get('schema').get('type'),
                         ),
                     )
-        print('path: ', path_parameters)
-        print('query: ', query_parameters)
         request_body = body.get('requestBody')
         if request_body:
             write_to_file(
@@ -80,7 +81,6 @@ def process_endpoints() -> tuple[list, list]:
                 else {operation_id.capitalize(): schema.get('schema')}
             )
             look_into_schema_new(schema, 'models_reqBod_' + operation_id)
-        # print('\nRequestBodyEnd+++++++++++++++++++++++++++++++++++++++++++++\nResponses start\n')
         try:
             responses = body.get('responses', False)
             if responses:
@@ -116,9 +116,11 @@ def process_endpoints() -> tuple[list, list]:
                         f'models_response_{operation_id}{method}{code}'
                     )
         except Exception as e:
-            print(f'Unable to create responses for {operation_id, method, code}!!!')
-            print(e)
-        print('='*80)
+            logger.error(
+                'Unable to create responses for '
+                f'{operation_id, method, code}!'
+                f'Error: {e}'
+            )
     return path_parameters, query_parameters
 
 
