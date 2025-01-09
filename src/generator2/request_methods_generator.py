@@ -9,7 +9,7 @@ from openapi_parser.specification import (
     DataType, Path, Specification, Operation, Parameter
 )
 
-from constants import (
+from services.constants import (
     SPECIFICATION_FILE_NAME, PARAM_TYPE_KEY, PARAM_DEFAULT_KEY,
     SCHEMA_SORT_ID, PARAM_NAME_SORT, PARAM_NAME_SORT_FIELD,
     PARAM_LOCATION_QUERY, PARAM_LOCATION_PATH, PREFIX_RESPONSE,

@@ -1,4 +1,7 @@
 import asyncio
+import os
+
+from dotenv import load_dotenv
 
 from bot import Bot
 from models.models_reqBod_putStatus import Putstatus
@@ -10,12 +13,13 @@ from models.models_reqBod_postTagsToChats import Posttagstochats
 from models.models_reqBod_createMessage import Createmessage, Message
 from models.models_reqBod_postMembersToChats import Postmemberstochats
 
+load_dotenv()
+
 if __name__ == '__main__':
 
     print(id(Bot))
     print(Bot)
-    # pachca = Bot(token='Bearer 35KekGygDNiFwtPpqUe44CaEZ_EVL17ycYRJrMnvHOs')
-    pachca = Bot(token='Bearer Qm5KCvyTwI5v0ZthjSQUVDxyvXEjieaCLJmMaFLYZ38')
+    pachca = Bot(token=f'Bearer {os.environ.get("TOKEN", "LOOKUP FAILED!")}')
 
     print(pachca.token)
     print(hasattr(pachca, 'get_common_methods'))
@@ -34,6 +38,7 @@ if __name__ == '__main__':
         # print(message)
         #print(await pachca.get_common_methods()) #Возвращает ошибку, нужно прописать обработку если (parameters.query и parameters.required)
 
+        # Создание беседы.
         created_chat = await pachca.create_chat(
             data=Createchat(
                 chat={
@@ -44,11 +49,16 @@ if __name__ == '__main__':
             )
         )
         print('create_chat', created_chat, '\n','*'*60)
+
+        # Получение всех бесед данного рабочего пространства (РП токена)
         all_chats = await pachca.get_chats()
         print('get_chats', all_chats, '\n','*'*60)
+
+        # Получение конкретной беседы по id
         chat = await pachca.get_chat(created_chat.data.id)
         print('get_chat', chat, '\n','*'*60)
 
+        # Подключение пользователей к беседе.
         response_post_members = await pachca.post_members_to_chats(
             id=chat.data.id,
             data=Postmemberstochats(
@@ -58,6 +68,7 @@ if __name__ == '__main__':
         )
         print('post_members_to_chats', response_post_members, '\n','*'*60)
 
+        # Создание нового сообщения в беседе.
         response_create_message = await pachca.create_message(
             data=Createmessage(
                 message={
@@ -69,21 +80,27 @@ if __name__ == '__main__':
         )
         print('create_message', response_create_message, '\n','*'*60)
 
-        #cant test without valid tags
+        # Добавление тегов чату, пока неот способа создавать теги.
         # response = await pachca.post_tags_to_chats(
         #     id=17519775,
         #     data=Posttagstochats(
         #         group_tag_ids=[1, 2, 3]
         #     )
         # )
+
+        # Получение списка тегов
         print(await pachca.get_tags())
+
+        # Получение всех сотрудников с тегом с id.
         # print(await pachca.get_tags_employees()
-        #done:
+
+        # Создание треда к конкретному сообщению с id.
         response_create_thread = await pachca.create_thread(
             id=response_create_message.data.id
         )
         print('create_thread', response_create_thread, '\n','*'*60)
-        #done
+
+        # Создание комментария в треде другого сообщения
         response_create_message_in_thread = await pachca.create_message(
             data=Createmessage(
                 message={
@@ -94,16 +111,20 @@ if __name__ == '__main__':
             )
         )
         print('create_message_in_thread', response_create_message_in_thread, '\n','*'*60)
-        # done
+
+        # Получение списка всех сообщений конкретного треда или беседы с пагинацией
         response_list_messages = await pachca.get_list_message(
             chat_id=response_create_thread.data.chat_id, per=10, page=1
         )
         print('get_list_message', response_list_messages, '\n','*'*60)
-        #done
+
+        # Получение конкретного сообщения по id
         response_get_message = await pachca.get_message(
             id=response_create_message_in_thread.data.id
         )
         print('get_message', response_get_message, '\n','*'*60)
+
+        # Редактирование конкретного сообщения по его id
         response_edit_message = await pachca.edit_message(
             id=response_create_message_in_thread.data.id,
             data=Editmessage(message={
@@ -113,6 +134,8 @@ if __name__ == '__main__':
             })
         )
         print('edit_message', response_edit_message, '\n','*'*60)
+
+        # Добавление реакции к сообщению с id
         response_add_reaction = await pachca.post_message_reactions(
             id=response_edit_message.data.id,
             data=Postmessagereactions(code='👍')
@@ -122,15 +145,21 @@ if __name__ == '__main__':
             data=Postmessagereactions(code='😱')
         )
         print('post_message_reactions', response_add_reaction, '\n','*'*60)
+
+        # Получение списка всех реакций конкретного сообщения.
         response_message_reactions = await pachca.get_message_reactions(
             id=response_edit_message.data.id,
         )
         print('get_message_reactions', response_message_reactions, '\n','*'*60)
+
+        # Удаение конкретной реакции у конкретного сообщения.
         response_delete_reaction = await pachca.delete_message_reactions(
             id=response_edit_message.data.id,
             code='😱'
         )
         print('delete_message_reactions', response_delete_reaction, '\n','*'*60)
+
+        # Создание напоминания
         response_create_task = await pachca.create_task(
             data=Createtask(
                 task={
@@ -142,21 +171,25 @@ if __name__ == '__main__':
             )
         )
         print('create_task', response_create_task, '\n','*'*60)
+
+        # Метод для того чтобы покинуть конкретный чат (беседу)
         response = await pachca.leave_chat(
             id=created_chat.data.id
         )
-
         print(response)
 
+        # Получить список всех сотрудников рабочего пространства.
         response_get_users = await pachca.get_employees()
         print('get_employees', response_get_users, '\n','*'*60)
         print(response_get_users.data[0].id)
 
+        # Получить конкретного сотрудника рабочего простанства.
         response_get_user = await pachca.get_employee(
             response_get_users.data[0].id
         )
         print('get_employee', response_get_user, '\n','*'*60)
 
+        # Добавить статус текущему пользователю, обладателю токена.
         response_put_status = await pachca.put_status(
             data=Putstatus(
                 status={
@@ -168,9 +201,11 @@ if __name__ == '__main__':
         )
         print('put_status', response_put_status, '\n','*'*60)
 
+        # Получить статус текущего пользователя, обладателя токена.
         response_get_status = await pachca.get_status()
         print('get_status', response_get_status, '\n','*'*60)
-        
+
+        # Удалить статус текущему пользователю, обладателю токена.
         response_del_status = await pachca.del_status()
         print('del_status', response_del_status, '\n','*'*60)
 

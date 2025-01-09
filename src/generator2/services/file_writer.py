@@ -26,8 +26,8 @@ def write_to_file(
     file_name: str, text_to_write: str,
     open_file_mode: str = 'a'
 ):
-    with safe_open_w(pathlib.Path(
-        __file__).parent.resolve() / f'models/{file_name}.py',
+    with safe_open_w(
+        pathlib.Path(__file__).parent.parent.resolve() / f'models/{file_name}.py',
         open_file_mode
     ) as f:
         f.write(text_to_write)

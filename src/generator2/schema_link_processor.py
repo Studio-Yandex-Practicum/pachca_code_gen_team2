@@ -1,4 +1,4 @@
-from yaml_loader import YAML_DICT
+from services.yaml_loader import YAML_DICT
 
 
 def unite_schemas(schemas: list[dict], schema2: dict):

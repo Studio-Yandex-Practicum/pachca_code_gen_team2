@@ -1,7 +1,7 @@
 import os
 import subprocess
 
-from logger_setup import setup_logging
+from services.logger_setup import setup_logging
 from request_methods_generator import generate
 from yaml_processor import process_endpoints
 
@@ -28,14 +28,32 @@ def generate_client():
             ['black', f'{dir_path}/models', '--line-length', '79'], check=True
         )
         subprocess.run(
-            ['black', f'{dir_path}/request_methods.py', '-l', '79'], check=True
+            [
+                'black',
+                f'{dir_path}/request_methods.py',
+                '--line-length',
+                '79'
+            ],
+            check=True
         )
         logger.debug('Finished code formatting!')
         subprocess.run(
-            ['ruff', 'check', f'{dir_path}/models', '--fix']
+            [
+                'ruff',
+                'check',
+                f'{dir_path}/models',
+                '--fix',
+                '--silent'
+            ]
         )
         subprocess.run(
-            ['ruff', 'check', f'{dir_path}/request_methods.py', '--fix']
+            [
+                'ruff',
+                'check',
+                f'{dir_path}/request_methods.py',
+                '--fix',
+                '--silent'
+            ]
         )
         logger.debug('Finished code fix with ruff!')
     except Exception as ex:
