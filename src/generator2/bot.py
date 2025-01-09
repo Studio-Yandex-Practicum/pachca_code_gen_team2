@@ -2,7 +2,8 @@ import importlib
 import inspect
 
 import httpx
-from constants import PARAM_NAME_SORT, PARAM_NAME_SORT_FIELD
+
+from services.constants import PARAM_NAME_SORT, PARAM_NAME_SORT_FIELD
 from request_methods_generator import get_obj_openapi_spec
 
 
