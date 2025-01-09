@@ -33,7 +33,7 @@ def process_endpoints() -> tuple[list, list]:
     
     body: dict
     for endpoint, method, body in get_all_endpoints(YAML_DICT):
-        logger.debug(f'Обработка: {endpoint}, {method}')
+        logger.debug(f'Working on: {endpoint}, {method}')
         operation_id = body.get('operationId')
         parameters = body.get('parameters')
         path_parameters = []

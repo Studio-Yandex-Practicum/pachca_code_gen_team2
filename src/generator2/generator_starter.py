@@ -12,17 +12,17 @@ def generate_client():
     try:
         process_endpoints()
     except Exception as ex:
-        logger.critical('Не удалось создать модели pydantic! '
-                        f'Возникла ошибка: {ex}')
+        logger.critical('Unable to create pydantic models! '
+                        f'Error: {ex}')
 
     try:
         generate()
     except Exception as ex:
-        logger.critical('Не удалось создать эндпоинты! '
-                        f'Возникла ошибка: {ex}')
+        logger.critical('Unable to create endpoints! '
+                        f'Error: {ex}')
 
     dir_path = os.path.dirname(os.path.realpath(__file__))
-    logger.debug(f'Рабочая директория: {dir_path}')
+    logger.debug(f'Working directory: {dir_path}')
     try:
         subprocess.run(
             ['black', f'{dir_path}/models', '--line-length', '79'], check=True
@@ -30,9 +30,9 @@ def generate_client():
         subprocess.run(
             ['black', f'{dir_path}/request_methods.py', '-l', '79'], check=True
         )
-        logger.debug('Форматирование сгенерированного кода завершено!')
+        logger.debug('Finished code formatting!')
     except Exception as ex:
-        logger.error(f'Не удалось провести форматирование кода: {ex}')
+        logger.error(f'Unable to format code: {ex}')
 
 
 if __name__ == '__main__':
