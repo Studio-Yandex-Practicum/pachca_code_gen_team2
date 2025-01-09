@@ -1,6 +1,7 @@
-from enum import Enum, IntEnum
-from typing import Any, Dict, Optional, List
-from pydantic import Field, BaseModel
+from enum import Enum
+from typing import List, Optional
+
+from pydantic import BaseModel, Field
 
 
 class enum_data_type(str, Enum):
@@ -14,7 +15,7 @@ class Custom_properties(BaseModel):
     id: Optional[int] = Field(None, description="Идентификатор поля")
     name: Optional[str] = Field(None, description="Название поля")
     data_type: Optional[enum_data_type] = Field(
-        None, description="Тип поля (string, number, date или link)"
+        None, description="Тип поля (string, number, date или link)",
     )
     value: Optional[str] = Field(None, description="Значение")
 
@@ -51,17 +52,17 @@ class Data(BaseModel):
         description="Статус приглашения: confirmed (принято), sent (отправлено)",
     )
     list_tags: Optional[List[str]] = Field(
-        None, description="Массив тегов, привязанных к сотруднику"
+        None, description="Массив тегов, привязанных к сотруднику",
     )
     custom_properties: Optional[List[Custom_properties]] = Field(
-        None, description="Дополнительные поля сотрудника"
+        None, description="Дополнительные поля сотрудника",
     )
     bot: Optional[bool] = Field(
-        None, description="Тип: пользователь (false) или бот (true)"
+        None, description="Тип: пользователь (false) или бот (true)",
     )
 
 
 class ResponseGettagsemployeesGet200(BaseModel):
     data: Optional[List[Data]] = Field(
-        None, description="No docstring provided"
+        None, description="No docstring provided",
     )

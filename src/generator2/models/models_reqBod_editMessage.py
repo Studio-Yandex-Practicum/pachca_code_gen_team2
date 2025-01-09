@@ -1,6 +1,7 @@
-from enum import Enum, IntEnum
-from typing import Any, Dict, Optional, List
-from pydantic import Field, BaseModel
+from enum import Enum
+from typing import List, Optional
+
+from pydantic import BaseModel, Field
 
 
 class Buttons(BaseModel):
@@ -25,21 +26,21 @@ class Files(BaseModel):
     )
     file_type: enum_file_type = Field(..., description="No docstring provided")
     size: int = Field(
-        ..., description="Размер файла в байтах, отображаемый пользователю"
+        ..., description="Размер файла в байтах, отображаемый пользователю",
     )
 
 
 class Message(BaseModel):
     content: str = Field(..., description="Текст сообщения")
     buttons: Optional[List[List[Buttons]]] = Field(
-        None, description="No docstring provided"
+        None, description="No docstring provided",
     )
     files: Optional[List[Files]] = Field(
-        None, description="No docstring provided"
+        None, description="No docstring provided",
     )
 
 
 class Editmessage(BaseModel):
     message: Optional[Message] = Field(
-        None, description="No docstring provided"
+        None, description="No docstring provided",
     )

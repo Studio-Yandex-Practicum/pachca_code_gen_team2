@@ -1,6 +1,6 @@
-from enum import Enum, IntEnum
-from typing import Any, Dict, Optional, List
-from pydantic import Field, BaseModel
+from typing import List, Optional
+
+from pydantic import BaseModel, Field
 
 
 class Data(BaseModel):
@@ -10,17 +10,17 @@ class Data(BaseModel):
         description="Массив идентификаторов пользователей, которые станут участниками",
     )
     group_tag_ids: Optional[List[int]] = Field(
-        None, description="Массив идентификаторов тегов, участников"
+        None, description="Массив идентификаторов тегов, участников",
     )
     channel: Optional[bool] = Field(
-        None, description="Тип: беседа (по умолчанию, false) или канал (true)"
+        None, description="Тип: беседа (по умолчанию, false) или канал (true)",
     )
     public: Optional[bool] = Field(
         None,
         description="Доступ: закрытый (по умолчанию, false) или открытый (true)",
     )
     id: Optional[int] = Field(
-        None, description="Идентификатор беседы или канала"
+        None, description="Идентификатор беседы или канала",
     )
     owner_id: Optional[int] = Field(
         None,
@@ -35,11 +35,11 @@ class Data(BaseModel):
         description="Дата и время создания последнего сообщения в беседе/канале (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ",
     )
     meet_room_url: Optional[str] = Field(
-        None, description="Ссылка на Видеочат"
+        None, description="Ссылка на Видеочат",
     )
 
 
 class ResponseGetchatsGet200(BaseModel):
     data: Optional[List[Data]] = Field(
-        None, description="No docstring provided"
+        None, description="No docstring provided",
     )

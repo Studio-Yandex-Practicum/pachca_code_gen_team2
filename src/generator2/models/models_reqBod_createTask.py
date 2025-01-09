@@ -1,6 +1,7 @@
 from enum import Enum, IntEnum
-from typing import Any, Dict, Optional, List
-from pydantic import Field, BaseModel
+from typing import List, Optional
+
+from pydantic import BaseModel, Field
 
 
 class Custom_properties(BaseModel):
@@ -26,17 +27,17 @@ class Task(BaseModel):
     kind: enum_kind = Field(..., description="Тип напоминания")
     content: str = Field(..., description="Описание напоминания")
     due_at: str = Field(
-        ..., description="Срок выполнения напоминания (ISO-8601)"
+        ..., description="Срок выполнения напоминания (ISO-8601)",
     )
     priority: Optional[enum_priority] = Field(
         None,
         description="Приоритет (1 - по умолчанию, 2 - важно, 3 - очень важно)",
     )
     performer_ids: Optional[List[int]] = Field(
-        None, description="Массив идентификаторов пользователей"
+        None, description="Массив идентификаторов пользователей",
     )
     custom_properties: Optional[List[Custom_properties]] = Field(
-        None, description="No docstring provided"
+        None, description="No docstring provided",
     )
 
 

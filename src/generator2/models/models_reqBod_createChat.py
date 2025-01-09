@@ -1,6 +1,6 @@
-from enum import Enum, IntEnum
-from typing import Any, Dict, Optional, List
-from pydantic import Field, BaseModel
+from typing import List, Optional
+
+from pydantic import BaseModel, Field
 
 
 class Chat(BaseModel):
@@ -10,10 +10,10 @@ class Chat(BaseModel):
         description="Массив идентификаторов пользователей, которые станут участниками",
     )
     group_tag_ids: Optional[List[int]] = Field(
-        None, description="Массив идентификаторов тегов, участников"
+        None, description="Массив идентификаторов тегов, участников",
     )
     channel: Optional[bool] = Field(
-        None, description="Тип: беседа (по умолчанию, false) или канал (true)"
+        None, description="Тип: беседа (по умолчанию, false) или канал (true)",
     )
     public: Optional[bool] = Field(
         None,

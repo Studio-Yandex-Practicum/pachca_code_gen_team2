@@ -1,6 +1,6 @@
-from enum import Enum, IntEnum
-from typing import Any, Dict, Optional, List
-from pydantic import Field, BaseModel
+from typing import Optional
+
+from pydantic import BaseModel, Field
 
 
 class Data(BaseModel):
@@ -11,7 +11,7 @@ class Data(BaseModel):
         description="Идентификатор сообщения, к которому был создан тред.",
     )
     message_chat_id: Optional[int] = Field(
-        None, description="Идентификатор чата сообщения."
+        None, description="Идентификатор чата сообщения.",
     )
     updated_at: Optional[str] = Field(
         None,

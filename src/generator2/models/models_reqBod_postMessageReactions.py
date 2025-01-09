@@ -1,9 +1,7 @@
-from enum import Enum, IntEnum
-from typing import Any, Dict, Optional, List
-from pydantic import Field, BaseModel
+from pydantic import BaseModel, Field
 
 
 class Postmessagereactions(BaseModel):
     code: str = Field(
-        ..., description="Emoji в строковом формате для добавления реакции."
+        ..., description="Emoji в строковом формате для добавления реакции.",
     )

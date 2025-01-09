@@ -1,13 +1,13 @@
-from enum import Enum, IntEnum
-from typing import Any, Dict, Optional, List
-from pydantic import Field, BaseModel
+from typing import Optional
+
+from pydantic import BaseModel, Field
 
 
 class Data(BaseModel):
     id: Optional[int] = Field(None, description="Идентификатор тега")
     name: Optional[str] = Field(None, description="Название тега")
     users_count: Optional[int] = Field(
-        None, description="Количество сотрудников, которые имеют этот тег"
+        None, description="Количество сотрудников, которые имеют этот тег",
     )
 
 

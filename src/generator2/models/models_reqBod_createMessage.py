@@ -1,6 +1,7 @@
-from enum import Enum, IntEnum
-from typing import Any, Dict, Optional, List
-from pydantic import Field, BaseModel
+from enum import Enum
+from typing import List, Optional
+
+from pydantic import BaseModel, Field
 
 
 class Buttons(BaseModel):
@@ -25,7 +26,7 @@ class Files(BaseModel):
     )
     file_type: enum_file_type = Field(..., description="No docstring provided")
     size: int = Field(
-        ..., description="Размер файла в байтах, отображаемый пользователю"
+        ..., description="Размер файла в байтах, отображаемый пользователю",
     )
 
 
@@ -38,10 +39,10 @@ class enum_entity_type(str, Enum):
 class Message(BaseModel):
     content: str = Field(..., description="Текст сообщения")
     buttons: Optional[List[List[Buttons]]] = Field(
-        None, description="No docstring provided"
+        None, description="No docstring provided",
     )
     entity_type: Optional[enum_entity_type] = Field(
-        None, description="No docstring provided"
+        None, description="No docstring provided",
     )
     entity_id: int = Field(..., description="No docstring provided")
     parent_message_id: Optional[int] = Field(
@@ -49,17 +50,17 @@ class Message(BaseModel):
         description="Идентификатор сообщения, к которому написан ответ. Возвращается как null, если сообщение не является ответом.",
     )
     files: Optional[List[Files]] = Field(
-        None, description="No docstring provided"
+        None, description="No docstring provided",
     )
     skip_invite_mentions: Optional[bool] = Field(
-        None, description="No docstring provided"
+        None, description="No docstring provided",
     )
     link_preview: Optional[bool] = Field(
-        None, description="No docstring provided"
+        None, description="No docstring provided",
     )
 
 
 class Createmessage(BaseModel):
     message: Optional[Message] = Field(
-        None, description="No docstring provided"
+        None, description="No docstring provided",
     )

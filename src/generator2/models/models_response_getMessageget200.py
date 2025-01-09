@@ -1,6 +1,7 @@
-from enum import Enum, IntEnum
-from typing import Any, Dict, Optional, List
-from pydantic import Field, BaseModel
+from enum import Enum
+from typing import List, Optional
+
+from pydantic import BaseModel, Field
 
 
 class Buttons(BaseModel):
@@ -26,7 +27,7 @@ class Files(BaseModel):
     file_type: enum_file_type = Field(..., description="No docstring provided")
     id: Optional[int] = Field(None, description="No docstring provided")
     url: Optional[str] = Field(
-        None, description="Прямая временная ссылка на скачивание файла"
+        None, description="Прямая временная ссылка на скачивание файла",
     )
 
 
@@ -37,7 +38,7 @@ class Thread(BaseModel):
 
 class Forwarding(BaseModel):
     original_message_id: Optional[int] = Field(
-        None, description="Идентификатор оригинального сообщения"
+        None, description="Идентификатор оригинального сообщения",
     )
     original_chat_id: Optional[int] = Field(
         None,
@@ -74,10 +75,10 @@ class enum_entity_type(str, Enum):
 class Data(BaseModel):
     content: str = Field(..., description="Текст сообщения")
     buttons: Optional[List[List[Buttons]]] = Field(
-        None, description="No docstring provided"
+        None, description="No docstring provided",
     )
     entity_type: Optional[enum_entity_type] = Field(
-        None, description="No docstring provided"
+        None, description="No docstring provided",
     )
     entity_id: int = Field(..., description="No docstring provided")
     parent_message_id: Optional[int] = Field(
@@ -88,14 +89,14 @@ class Data(BaseModel):
     chat_id: Optional[int] = Field(None, description="No docstring provided")
     user_id: Optional[int] = Field(None, description="No docstring provided")
     created_at: Optional[str] = Field(
-        None, description="No docstring provided"
+        None, description="No docstring provided",
     )
     files: Optional[List[Files]] = Field(
-        None, description="No docstring provided"
+        None, description="No docstring provided",
     )
     thread: Optional[Thread] = Field(None, description="No docstring provided")
     forwarding: Optional[Forwarding] = Field(
-        None, description="No docstring provided"
+        None, description="No docstring provided",
     )
 
 

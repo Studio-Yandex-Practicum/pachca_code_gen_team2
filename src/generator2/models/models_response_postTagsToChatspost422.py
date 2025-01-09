@@ -1,14 +1,14 @@
-from enum import Enum, IntEnum
-from typing import Any, Dict, Optional, List
-from pydantic import Field, BaseModel
+from typing import Any, Dict, List, Optional
+
+from pydantic import BaseModel, Field
 
 
 class Errors(BaseModel):
     key: Optional[str] = Field(
-        None, description="Ключ параметра, в котором произошла ошибка"
+        None, description="Ключ параметра, в котором произошла ошибка",
     )
     value: Optional[Any] = Field(
-        None, description="Значение ключа, которое вызвало ошибку"
+        None, description="Значение ключа, которое вызвало ошибку",
     )
     message: Optional[str] = Field(
         None,
@@ -26,5 +26,5 @@ class Errors(BaseModel):
 
 class ResponsePosttagstochatsPost422(BaseModel):
     errors: Optional[List[Errors]] = Field(
-        None, description="No docstring provided"
+        None, description="No docstring provided",
     )
