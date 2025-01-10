@@ -545,10 +545,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  errors:
-                    $ref: '#/components/schemas/Errors'
+                $ref: '#/components/schemas/Errors'
               examples:
                 invalid:
                   description: Поле имеет неверный формат (идентификатор поля вы получите в поле payload)
@@ -679,10 +676,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  errors:
-                    $ref: '#/components/schemas/Errors'
+                $ref: '#/components/schemas/Errors'
               examples:
                 invalid:
                   description: Поле имеет неверный формат (идентификатор поля вы получите в поле payload)
@@ -811,10 +805,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  errors:
-                    $ref: '#/components/schemas/Errors'
+                $ref: '#/components/schemas/Errors'
               examples:
                 invalid:
                   description: Поле имеет неверный формат (идентификатор поля вы получите в поле payload)
@@ -901,10 +892,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  errors:
-                    $ref: '#/components/schemas/Errors'
+                $ref: '#/components/schemas/Errors'
               examples:
                 invalid:
                   description: Поле имеет неверный формат (идентификатор поля вы получите в поле payload)
