@@ -962,7 +962,7 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        '201':
           description: Тред успешно создан или возвращены данные существующего треда.
           content:
             application/json:
@@ -2071,67 +2071,62 @@ components:
               type: boolean
               default: false    
     Message:
-      allOf:
-        - $ref: '#/components/schemas/BaseMessages'
-        - type: object
-          properties:
-            id:
-              title: Id
-              type: integer
-            chat_id:
-              title: Chat Id
-              type: integer
-            user_id:
-              title: User Id
-              type: integer
-            created_at:
-              title: Created At
-              type: string
-              format: date-time
-            files:
-              allOf:
-                - $ref: '#/components/schemas/Files'
-              title: files
-            thread:
-              allOf:
-                - $ref: '#/components/schemas/BaseThread'
-            forwarding:
-              title: Forwarding
-              type: object
-              nullable: true
-              default: null
-              properties:
-                original_message_id:
-                  title: Origin Message Id
-                  type: integer
-                  description: Идентификатор оригинального сообщения
-                original_chat_id:
-                  title: Original Chat Id
-                  type: integer
-                  description: Идентификатор чата, в котором находится оригинальное сообщение
-                author_id:
-                  title: Author Id
-                  type: integer
-                  description: Идентификатор чата, в котором находится оригинальное сообщение
-                original_created_at:
-                  title: Original Created At
-                  type: integer
-                  description: Дата и время создания оригинального сообщения (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ
-                original_thread_id:
-                  title: Original Thread Id
-                  type: integer
-                  nullable: true
-                  description: Идентификатор треда, в котором находится оригинальное сообщение. Возвращается как null, если оригинальное сообщение не является комментарием в треде.
-                original_thread_message_id:
-                  title: Original Thread Message Id
-                  type: integer
-                  nullable: true
-                  description: Идентификатор сообщения, к которому был создан тред, в котором находится оригинальное сообщение. Возвращается как null, если оригинальное сообщение не является комментарием в треде.
-                original_thread_parent_chat_id:
-                  title: Original Thread Parent Chat Id
-                  type: integer
-                  nullable: true
-                  description: Идентификатор чата сообщения, к которому был создан тред, в котором находится оригинальное сообщение. Возвращается как null, если оригинальное сообщение не является комментарием в треде.
+      type: object
+      properties:
+        entity_type:
+          title: Entity Type
+          type: string
+          enum:
+            - 'discussion'
+            - 'user'
+            - 'thread'
+          default: 'discussion'
+        entity_id:
+          title: Entity Id
+          type: integer
+        content:
+          title: Content
+          type: string
+        id:
+          title: Id
+          type: integer
+        chat_id:
+          title: Chat Id
+          type: integer
+        user_id:
+          title: User Id
+          type: integer
+        created_at:
+          title: Created At
+          type: string
+          format: date-time
+        files:
+          title: Files
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                title: Id
+                type: integer
+              key:
+                title: Key
+                type: string
+                description: Путь к файлу, полученный в результате загрузки файла (каждый файл в каждом сообщении должен иметь свой уникальный key, не допускается использование одного и того же key в разных сообщениях)
+              name:
+                title: Name
+                type: string
+                description: Название файла, которое вы хотите отображать пользователю (рекомендуется писать вместе с расширением)
+              file_type:
+                title: File Type
+                type: string
+                enum:
+                  - 'file'
+                  - 'image'
+              url:
+                title: Url
+                type: string
+                description: Размер файла в байтах, отображаемый пользователю
     Reaction:
       type: object
       properties:
