@@ -1,9 +1,9 @@
 import sys
-from constants import HTTP_METHODS
-from file_writer import write_to_file
-from generate_pydantic_model import look_into_schema_new
-from schema_link_processor import load_schema
-from yaml_loader import YAML_DICT
+from .constants import HTTP_METHODS
+from .file_writer import write_to_file
+from .generate_pydantic_model import look_into_schema_new
+from .schema_link_processor import load_schema
+from .yaml_loader import YAML_DICT
 
 
 def get_all_endpoints(yaml_dict: dict):

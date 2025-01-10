@@ -1,6 +1,6 @@
-from constants import ENUM_TYPES, PYTHON_TYPES
-from file_writer import write_to_file
-from schema_link_processor import (
+from .constants import ENUM_TYPES, PYTHON_TYPES
+from .file_writer import write_to_file
+from .schema_link_processor import (
     load_schema,
     new_replace_ref_with_schema,
 )

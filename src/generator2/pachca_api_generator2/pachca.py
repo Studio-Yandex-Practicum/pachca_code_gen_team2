@@ -1,7 +1,7 @@
 import asyncio
 
-from bot import Bot
-from models.models_reqBod_createMessage import Createmessage, Message
+from .bot import Bot
+from .models.models_reqBod_createMessage import Createmessage, Message
 
 if __name__ == '__main__':
 

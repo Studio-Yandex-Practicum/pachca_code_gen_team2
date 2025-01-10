@@ -18,16 +18,16 @@ def read_pipenv_dependencies(fname):
 
 if __name__ == '__main__':
     setup(
-        name='pachca',
+        name='pachca_generator1',
         long_description=long_description,
         long_description_content_type='text/markdown',
         version=os.getenv('PACKAGE_VERSION', '0.0.dev0'),
         package_dir={'': '../generator1/pachca-api-open-api-3-0-client'},
         packages=find_packages(
             '../generator1/pachca-api-open-api-3-0-client', include=[
-            'pachca_api_open_api_3_0_client*']
+                'pachca_api_open_api_3_0_client*']
         ),
-        description='A pachca_api package.',
+        description='A pachca_api package generator1.',
         install_requires=[
               *read_pipenv_dependencies('Pipfile.lock'),
         ]

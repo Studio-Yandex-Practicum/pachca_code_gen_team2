@@ -2,14 +2,16 @@ import importlib
 import inspect
 
 import httpx
-from constants import PARAM_NAME_SORT, PARAM_NAME_SORT_FIELD
-from request_methods_generator import get_obj_openapi_spec
+from .constants import PARAM_NAME_SORT, PARAM_NAME_SORT_FIELD
+from .request_methods_generator import get_obj_openapi_spec
 
 
 class RequestMethodsCollector(type):
 
     def __new__(cls, name, bases, dct):
-        req_methods = importlib.import_module('request_methods')
+        req_methods = importlib.import_module(
+            'pachca_api_generator2.request_methods'
+        )
         request_methods = cls.collect_methods(req_methods)
 
         for name_method, method in request_methods.items():

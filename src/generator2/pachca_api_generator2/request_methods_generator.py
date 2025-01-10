@@ -9,7 +9,7 @@ from openapi_parser.specification import (
     DataType, Path, Specification, Operation, Parameter
 )
 
-from constants import (
+from .constants import (
     SPECIFICATION_FILE_NAME, PARAM_TYPE_KEY, PARAM_DEFAULT_KEY,
     SCHEMA_SORT_ID, PARAM_NAME_SORT, PARAM_NAME_SORT_FIELD,
     PARAM_LOCATION_QUERY, PARAM_LOCATION_PATH, PREFIX_RESPONSE,
@@ -196,11 +196,11 @@ def import_string_generation(
     """Возвращает шаблон строки импорта"""
     if prefix == PREFIX_RESPONSE:
         return (
-            f'from models.{prefix}{operation_id}'
+            f'from .models.{prefix}{operation_id}'
             f'{method}{code} import {schema}'
         )
     if prefix == PREFIX_REQUEST:
-        return f'from models.{prefix}{operation_id} import {schema}'
+        return f'from .models.{prefix}{operation_id} import {schema}'
 
 
 def process_operation(operation: Operation) -> tuple[str]:
