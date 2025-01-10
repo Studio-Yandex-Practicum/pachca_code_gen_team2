@@ -1,9 +1,9 @@
 import os
 import subprocess
 
-from services.logger_setup import setup_logging
-from request_methods_generator import generate
-from yaml_processor import process_endpoints
+from .services.logger_setup import setup_logging
+from .request_methods_generator import generate
+from .yaml_processor import process_endpoints
 
 
 def generate_client():

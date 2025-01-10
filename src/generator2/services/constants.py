@@ -1,8 +1,11 @@
+from pathlib import Path
 import sys
 
 # PATH_TO_YAML = './openapi_test.yaml'
-PATH_TO_YAML = './openapi.yaml'
-SPECIFICATION_FILE_NAME = './openapi.yaml'
+PATH_TO_YAML = (
+    f'{Path(__file__).parent.parent.resolve()}/openapi.yaml')
+SPECIFICATION_FILE_NAME = (
+    f'{Path(__file__).parent.parent.resolve()}/openapi.yaml')
 
 PYTHON_TYPES = {
     'string': 'str',

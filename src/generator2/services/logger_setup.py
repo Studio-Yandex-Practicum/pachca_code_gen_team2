@@ -1,6 +1,6 @@
 import logging
 
-from services.constants import LOG_FILE_NAME
+from .constants import LOG_FILE_NAME
 
 
 def setup_logging(logger_name: str) -> logging.Logger:

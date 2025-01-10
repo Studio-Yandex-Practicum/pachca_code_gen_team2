@@ -1,11 +1,11 @@
 import sys
 
-from services.file_writer import write_to_file
-from generate_pydantic_model import look_into_schema_new
-from services.logger_setup import setup_logging
-from schema_link_processor import load_schema
-from services.yaml_loader import YAML_DICT
-from services.constants import HTTP_METHODS
+from .services.file_writer import write_to_file
+from .generate_pydantic_model import look_into_schema_new
+from .services.logger_setup import setup_logging
+from .schema_link_processor import load_schema
+from .services.yaml_loader import YAML_DICT
+from .services.constants import HTTP_METHODS
 
 
 logger = setup_logging('yaml_processor')
