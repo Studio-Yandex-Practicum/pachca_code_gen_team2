@@ -4,53 +4,45 @@ import os
 from dotenv import load_dotenv
 
 from .bot import Bot
-from .models.models_reqBod_putStatus import Putstatus
 from .models.models_reqBod_createChat import Createchat
-from .models.models_reqBod_createTask import Createtask
-from .models.models_reqBod_postMessageReactions import Postmessagereactions
-from .models.models_reqBod_editMessage import Editmessage
-from .models.models_reqBod_postTagsToChats import Posttagstochats
 from .models.models_reqBod_createMessage import Createmessage, Message
+from .models.models_reqBod_createTask import Createtask
+from .models.models_reqBod_editMessage import Editmessage
 from .models.models_reqBod_postMembersToChats import Postmemberstochats
+from .models.models_reqBod_postMessageReactions import Postmessagereactions
+from .models.models_reqBod_putStatus import Putstatus
 
 load_dotenv()
 
 if __name__ == '__main__':
-
-    print(id(Bot))
-    print(Bot)
     pachca = Bot(token=f'Bearer {os.environ.get("TOKEN", "LOOKUP FAILED!")}')
-
-    print(pachca.token)
-    print(hasattr(pachca, 'get_common_methods'))
 
     message_test = Createmessage(message=Message(
         entity_type="discussion",
         entity_id=17579010,
-        content="Вчера мы продали 756 футболок (что на 10% больше, чем в прошлое воскресенье)",
+        content=("Вчера мы продали 756 футболок "
+                 "(что на 10% больше, чем в прошлое воскресенье)"),
     ))
-    #print(message_test.model_dump())
     async def run_pachca():
-        print(await pachca.get_employee(id=515190))
-        print(await pachca.get_employees())
-        print(await pachca.get_chats(per=2))
+        print('-> get_employee', await pachca.get_employee(id=515190), sep='\n',end='\n'+ '*'*60 + '\n')
+        print('-> get_employees', await pachca.get_employees(), sep='\n',end='\n'+ '*'*60 + '\n')
+        print('-> get_chats', await pachca.get_chats(per=2), sep='\n',end='\n'+ '*'*60 + '\n')
         message = await pachca.create_message(data=message_test)
-        print(message)
-        print(await pachca.get_common_methods()) #Возвращает ошибку, нужно прописать обработку если (parameters.query и parameters.required)
-
+        print(message, sep='\n',end='\n'+ '*'*60 + '\n')
+        print(await pachca.get_common_methods(), sep='\n',end='\n'+ '*'*60 + '\n')
         # Создание беседы.
         created_chat = await pachca.create_chat(
             data=Createchat(
                 chat={
                     'name': 'Тестовая беседа 31',
                     'channel': False,
-                    'public': True
-                }
-            )
+                    'public': True,
+                },
+            ),
         )
         print('create_chat', created_chat, '\n','*'*60)
 
-        # Получение всех бесед данного рабочего пространства (РП токена)
+        # Получение всех бесед данного рабочего пространства
         all_chats = await pachca.get_chats()
         print('get_chats', all_chats, '\n','*'*60)
 
@@ -62,11 +54,15 @@ if __name__ == '__main__':
         response_post_members = await pachca.post_members_to_chats(
             id=chat.data.id,
             data=Postmemberstochats(
-                member_ids=[515190],
-                silent=False
-            )
+                member_ids=[518863],
+                silent=False,
+            ),
         )
-        print('post_members_to_chats', response_post_members, '\n','*'*60)
+        print('post_members_to_chats', response_post_members, sep='\n',end='\n'+ '*'*60 + '\n')
+
+        # Получение всех бесед данного рабочего пространства (на одну больше)
+        all_chats = await pachca.get_chats()
+        print('get_chats /', all_chats, '\n','*'*60)
 
         # Создание нового сообщения в беседе.
         response_create_message = await pachca.create_message(
@@ -74,29 +70,18 @@ if __name__ == '__main__':
                 message={
                     'content': f'Запощеное сообщение в беседу {chat.data.id}',
                     'entity_type': 'discussion',
-                    'entity_id': chat.data.id
-                }
-            )
+                    'entity_id': chat.data.id,
+                },
+            ),
         )
         print('create_message', response_create_message, '\n','*'*60)
-
-        # Добавление тегов чату, пока неот способа создавать теги.
-        # response = await pachca.post_tags_to_chats(
-        #     id=17519775,
-        #     data=Posttagstochats(
-        #         group_tag_ids=[1, 2, 3]
-        #     )
-        # )
 
         # Получение списка тегов
         print(await pachca.get_tags())
 
-        # Получение всех сотрудников с тегом с id.
-        # print(await pachca.get_tags_employees()
-
         # Создание треда к конкретному сообщению с id.
         response_create_thread = await pachca.create_thread(
-            id=response_create_message.data.id
+            id=response_create_message.data.id,
         )
         print('create_thread', response_create_thread, '\n','*'*60)
 
@@ -104,23 +89,25 @@ if __name__ == '__main__':
         response_create_message_in_thread = await pachca.create_message(
             data=Createmessage(
                 message={
-                    'content': f'Новое сообщение в тред {response_create_thread.data.id}',
+                    'content': f'Новое сообщение в тред {
+                        response_create_thread.data.id}',
                     'entity_type': 'thread',
-                    'entity_id': response_create_thread.data.id
-                }
-            )
+                    'entity_id': response_create_thread.data.id,
+                },
+            ),
         )
-        print('create_message_in_thread', response_create_message_in_thread, '\n','*'*60)
+        print('create_message_in_thread',
+              response_create_message_in_thread, '\n','*'*60)
 
         # Получение списка всех сообщений конкретного треда или беседы с пагинацией
         response_list_messages = await pachca.get_list_message(
-            chat_id=response_create_thread.data.chat_id, per=10, page=1
+            chat_id=response_create_thread.data.chat_id, per=10, page=1,
         )
         print('get_list_message', response_list_messages, '\n','*'*60)
 
         # Получение конкретного сообщения по id
         response_get_message = await pachca.get_message(
-            id=response_create_message_in_thread.data.id
+            id=response_create_message_in_thread.data.id,
         )
         print('get_message', response_get_message, '\n','*'*60)
 
@@ -130,19 +117,19 @@ if __name__ == '__main__':
             data=Editmessage(message={
                 'content': ('РЕДАКТИРОВАНИЕ СООБЩЕНИЯ '
                             f'{response_create_message_in_thread.data.id} '
-                            'ЧЕРЕЗ АПИ СОВЕРШЕНО УСПЕШНО')
-            })
+                            'ЧЕРЕЗ АПИ СОВЕРШЕНО УСПЕШНО'),
+            }),
         )
         print('edit_message', response_edit_message, '\n','*'*60)
 
         # Добавление реакции к сообщению с id
         response_add_reaction = await pachca.post_message_reactions(
             id=response_edit_message.data.id,
-            data=Postmessagereactions(code='👍')
+            data=Postmessagereactions(code='👍'),
         )
         response_add_reaction = await pachca.post_message_reactions(
             id=response_edit_message.data.id,
-            data=Postmessagereactions(code='😱')
+            data=Postmessagereactions(code='😱'),
         )
         print('post_message_reactions', response_add_reaction, '\n','*'*60)
 
@@ -155,9 +142,10 @@ if __name__ == '__main__':
         # Удаение конкретной реакции у конкретного сообщения.
         response_delete_reaction = await pachca.delete_message_reactions(
             id=response_edit_message.data.id,
-            code='😱'
+            code='😱',
         )
-        print('delete_message_reactions', response_delete_reaction, '\n','*'*60)
+        print('delete_message_reactions',
+              response_delete_reaction, '\n','*'*60)
 
         # Создание напоминания
         response_create_task = await pachca.create_task(
@@ -166,17 +154,17 @@ if __name__ == '__main__':
                     'kind': 'reminder',
                     'content': 'дата в прошлом',
                     'priority': 3,
-                    'due_at': '2025-12-24T18:00:29.000Z'
-                }
-            )
+                    'due_at': '2025-12-24T18:00:29.000Z',
+                },
+            ),
         )
         print('create_task', response_create_task, '\n','*'*60)
 
-        # Метод для того чтобы покинуть конкретный чат (беседу)
-        response = await pachca.leave_chat(
-            id=created_chat.data.id
-        )
-        print(response)
+        # # Метод для того чтобы покинуть конкретный чат (беседу)
+        # response = await pachca.leave_chat(
+        #     id=created_chat.data.id,
+        # )
+        # print(response)
 
         # Получить список всех сотрудников рабочего пространства.
         response_get_users = await pachca.get_employees()
@@ -185,7 +173,7 @@ if __name__ == '__main__':
 
         # Получить конкретного сотрудника рабочего простанства.
         response_get_user = await pachca.get_employee(
-            response_get_users.data[0].id
+            response_get_users.data[0].id,
         )
         print('get_employee', response_get_user, '\n','*'*60)
 
@@ -195,9 +183,9 @@ if __name__ == '__main__':
                 status={
                     'emoji': '😱',
                     'expires_at': '2025-12-24T17:47:25.000Z',
-                    'title': 'Статус из клиента АПИ'
-                }
-            )
+                    'title': 'Статус из клиента АПИ',
+                },
+            ),
         )
         print('put_status', response_put_status, '\n','*'*60)
 
@@ -209,10 +197,4 @@ if __name__ == '__main__':
         response_del_status = await pachca.del_status()
         print('del_status', response_del_status, '\n','*'*60)
 
-
     asyncio.run(run_pachca())
-
-    # print(type(pachca))
-    # print(pachca.__class__)
-    # print(pachca.__class__.__class__)
-    # print(pachca.__class__.__class__.__class__)

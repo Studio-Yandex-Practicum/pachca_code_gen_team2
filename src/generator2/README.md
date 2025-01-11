@@ -30,6 +30,7 @@ python -m generator2.generator_starter
 ```
 python -m generator2.generator2_full.pachca
 ```
+
 ИЛИ перейти в generator2 ```cd generator2``` и запустить модуль
 
 ```
