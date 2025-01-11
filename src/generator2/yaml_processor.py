@@ -13,6 +13,25 @@ from .services.constants import (
 logger = setup_logging('yaml_processor')
 
 
+def create_constants_for_client(yaml_dict: dict) -> str:
+    """Записывает файл констант для клиента."""
+    write_to_file(
+        'constants',
+        (
+            "# Client constants\n"
+            f"URL = '{yaml_dict['servers'][0]['url']}'\n"
+            "PARAM_NAME_SORT = 'sort'\n"
+            "PARAM_NAME_SORT_FIELD = 'sort_field'\n\n"
+            "# Logger constants\n"
+            "LOG_FILE_NAME = 'pachca_log.log'\n"
+            "MAX_FILE_SIZE = 1 * 1024 * 1024  # 1 MB\n"
+            "BACKUP_COUNT = 3\n"
+            ),
+        folder_name='',
+        open_file_mode='w'
+    )
+
+
 def get_all_endpoints(yaml_dict: dict):
     """Получает все эндпоинты из path документации."""
     endpoints = yaml_dict.get('paths')
@@ -33,16 +52,7 @@ def process_endpoints() -> tuple[list, list]:
     Проходит по каждому эндпоинту в openapi файле и генерирует модели для
     каждой схемы в requestBody и resopnse.
     """
-    write_to_file(
-        'constants',
-        (
-            f"URL = '{YAML_DICT['servers'][0]['url']}'\n"
-            "PARAM_NAME_SORT = 'sort'\n"
-            "PARAM_NAME_SORT_FIELD = 'sort_field'\n"
-            ),
-        folder_name='',
-        open_file_mode='w'
-    )
+    create_constants_for_client(YAML_DICT)
     body: dict
     for endpoint, method, body in get_all_endpoints(YAML_DICT):
         logger.debug(f'Working on: {endpoint}, {method}')
