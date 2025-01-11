@@ -67,7 +67,7 @@ from pachca_api_open_api_3_0_client.models.create_task_body import (
 )
 
 from pachca_api_open_api_3_0_client.models import (
-    CreateTaskBodyTask, QueryStatusStatus
+    CreateTaskBodyTask, QueryStatusStatus, EditMessages, EditMessageBody
 )
 
 
@@ -147,9 +147,8 @@ async def main() -> None:
         pachca.getMessage(id=message_response.data.id))
     )
     print('*' * 60)
-    '''
-    Запрос проходит успешно, но в yaml схема ответа прописана не корректно.
-    Поэтому успешный ответ приводит AttributeError.
+    
+
     # подготовка запроса на редактирование сообщения -->
     edit_meassage = EditMessages(content='NOT SUPER PUPER')
     edit_message_body = EditMessageBody(message=edit_meassage)
@@ -161,7 +160,7 @@ async def main() -> None:
         )
     )
     print('*' * 60)
-    '''
+    
 
     # подготовка запроса на добавление реакции к сообщению -->
     post_reactions = CodeReaction(code='😭')
