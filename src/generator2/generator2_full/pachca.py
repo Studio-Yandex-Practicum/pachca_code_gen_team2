@@ -164,22 +164,14 @@ if __name__ == '__main__':
         )
         logger.debug(f'create_task: {response_create_task}')
 
-        # # Метод для того чтобы покинуть конкретный чат (беседу)
-        # response = await pachca.leave_chat(
-        #     id=created_chat.data.id,
-        # )
-        # print(response)
-
-        # Получить список всех сотрудников рабочего пространства.
         response_get_users = await pachca.get_employees()
-        print('get_employees', response_get_users, '\n','*'*60)
         logger.debug(f'One user from list: {response_get_users.data[0].id}')
 
         # Получить конкретного сотрудника рабочего простанства.
         response_get_user = await pachca.get_employee(
             response_get_users.data[0].id,
         )
-        logger.debug('get_employee: {response_get_user}')
+        logger.debug(f'get_employee: {response_get_user}')
 
         # Добавить статус текущему пользователю, обладателю токена.
         response_put_status = await pachca.put_status(
@@ -200,5 +192,6 @@ if __name__ == '__main__':
         # Удалить статус текущему пользователю, обладателю токена.
         response_del_status = await pachca.del_status()
         logger.debug(f'del_status: {response_del_status}')
+        logger.debug('*' * 60)
 
     asyncio.run(run_pachca())
