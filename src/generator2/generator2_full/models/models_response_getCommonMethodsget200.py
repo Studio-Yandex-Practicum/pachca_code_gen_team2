@@ -1,10 +1,10 @@
-from enum import Enum
+from enum import StrEnum
 from typing import List, Optional
 
 from pydantic import BaseModel, Field
 
 
-class enum_data_type(str, Enum):
+class enum_data_type(StrEnum):
     string = "string"
     number = "number"
     date = "date"

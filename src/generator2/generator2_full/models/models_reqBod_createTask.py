@@ -1,4 +1,4 @@
-from enum import Enum, IntEnum
+from enum import IntEnum, StrEnum
 from typing import List, Optional
 
 from pydantic import BaseModel, Field
@@ -9,7 +9,7 @@ class Custom_properties(BaseModel):
     value: Optional[str] = Field(None, description="Значение поля")
 
 
-class enum_kind(str, Enum):
+class enum_kind(StrEnum):
     call = "call"
     meeting = "meeting"
     reminder = "reminder"

@@ -1,10 +1,10 @@
-from enum import Enum
+from enum import StrEnum
 from typing import List, Optional
 
 from pydantic import BaseModel, Field
 
 
-class enum_data_type(str, Enum):
+class enum_data_type(StrEnum):
     string = "string"
     number = "number"
     date = "date"
@@ -20,13 +20,13 @@ class Custom_properties(BaseModel):
     value: Optional[str] = Field(None, description="Значение")
 
 
-class enum_role(str, Enum):
+class enum_role(StrEnum):
     admin = "admin"
     user = "user"
     multi_guest = "multi_guest"
 
 
-class enum_invite_status(str, Enum):
+class enum_invite_status(StrEnum):
     confirmed = "confirmed"
     sent = "sent"
 

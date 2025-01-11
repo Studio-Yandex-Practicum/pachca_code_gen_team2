@@ -1,10 +1,10 @@
-from enum import Enum, IntEnum
+from enum import IntEnum, StrEnum
 from typing import List, Optional
 
 from pydantic import BaseModel, Field
 
 
-class enum_data_type(str, Enum):
+class enum_data_type(StrEnum):
     string = "string"
     number = "number"
     date = "date"
@@ -20,7 +20,7 @@ class Custom_properties(BaseModel):
     )
 
 
-class enum_kind(str, Enum):
+class enum_kind(StrEnum):
     call = "call"
     meeting = "meeting"
     reminder = "reminder"

@@ -1,4 +1,4 @@
-from enum import Enum
+from enum import StrEnum
 from typing import List, Optional
 
 from pydantic import BaseModel, Field
@@ -10,7 +10,7 @@ class Buttons(BaseModel):
     data: Optional[str] = Field(None, description="No docstring provided")
 
 
-class enum_file_type(str, Enum):
+class enum_file_type(StrEnum):
     file = "file"
     image = "image"
 
@@ -66,7 +66,7 @@ class Forwarding(BaseModel):
     )
 
 
-class enum_entity_type(str, Enum):
+class enum_entity_type(StrEnum):
     discussion = "discussion"
     user = "user"
     thread = "thread"
