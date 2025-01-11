@@ -52,9 +52,6 @@ paths:
           required: true
           schema:
             type: string
-            enum:
-              - User
-              - Task
       responses:
         '200':
           description: Успешный запрос
@@ -126,7 +123,7 @@ paths:
             schema:
               $ref: '#/components/schemas/DirectResponse'
       responses:
-        '204':
+        '201':
           description: При безошибочном выполнении запроса тело ответа отсутствует.
   /users:
     get:
@@ -247,9 +244,9 @@ paths:
               type: object
               properties:
                 status:
-                  $ref: '#/components/schemas/Status'
+                  $ref: '#/components/schemas/QueryStatus'
       responses:
-        '201':
+        '200':
           description: Объект создан
           content:
             application/json:
@@ -1379,7 +1376,7 @@ paths:
             schema:
               $ref: '#/components/schemas/CodeReaction'
       responses:
-        "204":
+        "201":
           description: Успешное выполнение запроса, тело ответа отсутствует.
         '400':
           description: Пояснения ошибки
@@ -1589,7 +1586,41 @@ paths:
               type: object
               properties:
                 task:
-                  $ref: '#/components/schemas/BaseTask'
+                  type: object
+                  required:
+                    - kind
+                    - content
+                    - due_at
+                  properties:
+                    kind:
+                      type: string
+                      description: Тип напоминания (call, meeting, reminder, event, email)
+                    content:
+                      type: string
+                      description: Описание напоминания
+                    due_at:
+                      type: string
+                      format: date-time
+                      description: Срок выполнения напоминания (ISO-8601)
+                    priority:
+                      type: integer
+                      description: Приоритет (1 - по умолчанию, 2 - важно, 3 - очень важно)
+                    performer_ids:
+                      type: array
+                      items:
+                        type: integer
+                      description: Массив идентификаторов пользователей
+                    custom_properties:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            description: Идентификатор поля
+                          value:
+                            type: string
+                            description: Значение поля
       responses:
         '201':
           description: Напоминание успешно создано
@@ -1853,6 +1884,27 @@ components:
             nullable: true
             description: |
               Срок жизни статуса (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ. Возвращается как null, если срок не установлен.
+    QueryStatus:
+      type: object
+      properties:
+        status:
+          type: object
+          description: Собранный объект параметров нового статуса
+          required:
+            - emoji
+            - title
+          properties:
+            emoji:
+              type: string
+              description: Emoji символ статуса
+            title:
+              type: string
+              description: Текст статуса
+            expires_at:
+              type: string
+              format: date-time
+              description: Срок действия статуса (ISO-8601, UTC+0) в формате YYYY-MM-DDThh:mm:ss.sssZ
+              nullable: true
     CommonMethods:
       title: Common Methods
       type: object

@@ -66,6 +66,11 @@ from pachca_api_open_api_3_0_client.models.create_task_body import (
     CreateTaskBody,
 )
 
+from pachca_api_open_api_3_0_client.models import (
+    CreateTaskBodyTask, QueryStatusStatus
+)
+
+
 '''
 from pachca_api_open_api_3_0_client.models.edit_messages import EditMessages
 from pachca_api_open_api_3_0_client.models.edit_message_body import (
@@ -185,7 +190,7 @@ async def main() -> None:
     print('*' * 60)
 
     # подготовка запроса на создание напоминания -->
-    create_body_task = CreateTaskBody(
+    create_body_task = CreateTaskBodyTask(
         kind='call',
         content='Звонок другу',
         due_at=datetime.datetime.now(),
@@ -208,7 +213,7 @@ async def main() -> None:
     print('*' * 60)
 
     # подготовка запроса на добавление статуса -->
-    query_status = PutStatusBody(
+    query_status = QueryStatusStatus(
         emoji='😭',
         title='Я не плачу это просто слезы',
         expires_at=None
