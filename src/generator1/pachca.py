@@ -226,12 +226,11 @@ async def main() -> None:
     print(await asyncio.create_task(pachca.getStatus()))
     print('*' * 60)
 
-    '''
-    В client.py отсутствует метод delStatus
+    
+
     # запрос на удаление статуса
     print(await asyncio.create_task(pachca.delStatus()))
     print('*' * 60)
-    '''
 
     # запрос на получение тегов сотрудников
     print(await asyncio.create_task(pachca.getTags()))
