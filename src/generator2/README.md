@@ -28,5 +28,10 @@ python -m generator2.generator_starter
 6. Запустить скрипт-пример запроса
 
 ```
-python -m generator2.pachca
+python -m generator2.generator2_full.pachca
+```
+ИЛИ перейти в generator2 ```cd generator2``` и запустить модуль
+
+```
+python -m generator2_full.pachca
 ```

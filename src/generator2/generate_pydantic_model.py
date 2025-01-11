@@ -65,7 +65,8 @@ def look_into_schema_new(schema: dict, file_name: str):
     inner_schema = (
         schema.get(upper_schema_name).get('properties')
         or schema.get(upper_schema_name).get('items', {}).get('properties')
-        or schema.get(upper_schema_name).get('items',{}).get('items', {}).get('properties'))
+        or schema.get(upper_schema_name).get(
+            'items',{}).get('items', {}).get('properties'))
     required_properties = schema.get(upper_schema_name).get('required', [])
     for property in inner_schema:
         inner_body = new_replace_ref_with_schema(inner_schema.get(property))

@@ -39,3 +39,5 @@ DEFAULT_VALUE_SORT_FIELD = 'id'
 TYPE_SORT_FIELD = 'str'
 
 LOG_FILE_NAME = 'client_generator.log'
+
+GENERATED_CLIENT_FOLDER = 'generator2_full'

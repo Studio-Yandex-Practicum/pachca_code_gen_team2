@@ -3,8 +3,7 @@ import inspect
 
 import httpx
 
-from .services.constants import PARAM_NAME_SORT, PARAM_NAME_SORT_FIELD
-from .request_methods_generator import get_obj_openapi_spec
+from .constants import URL, PARAM_NAME_SORT_FIELD, PARAM_NAME_SORT
 
 
 class RequestMethodsCollector(type):
@@ -39,7 +38,7 @@ class RequestMethodsCollector(type):
 
 
 class Bot(metaclass=RequestMethodsCollector):
-    base_url = get_obj_openapi_spec().servers[0].url
+    base_url = URL
 
     def __init__(self, token):
         self.token = token

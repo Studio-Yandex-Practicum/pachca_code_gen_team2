@@ -1,6 +1,7 @@
 import os
 import subprocess
 
+from .services.constants import GENERATED_CLIENT_FOLDER
 from .services.logger_setup import setup_logging
 from .request_methods_generator import generate
 from .yaml_processor import process_endpoints
@@ -21,7 +22,10 @@ def generate_client():
         logger.critical('Unable to create endpoints! '
                         f'Error: {ex}')
 
-    dir_path = os.path.dirname(os.path.realpath(__file__))
+    dir_path = (
+        os.path.dirname(os.path.realpath(__file__)) +
+        f'/{GENERATED_CLIENT_FOLDER}'
+    )
     logger.debug(f'Working directory: {dir_path}')
     try:
         subprocess.run(

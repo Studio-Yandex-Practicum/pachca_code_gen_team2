@@ -3,8 +3,7 @@ import os
 import os.path
 import pathlib
 
-
-# presented_code = set()
+from .constants import GENERATED_CLIENT_FOLDER
 
 
 def mkdir_p(path):
@@ -23,17 +22,16 @@ def safe_open_w(path, mode: str):
 
 
 def write_to_file(
-    file_name: str, text_to_write: str,
+    file_name: str, text_to_write: str, folder_name: str = 'models',
     open_file_mode: str = 'a'
 ):
+    """Записывает текст в файл."""
     with safe_open_w(
-        pathlib.Path(__file__).parent.parent.resolve() / f'models/{file_name}.py',
+        (pathlib.Path(__file__).parent.parent.resolve()
+         / GENERATED_CLIENT_FOLDER / folder_name / f'{file_name}.py'),
         open_file_mode
     ) as f:
         f.write(text_to_write)
-        # if text_to_write not in presented_code:
-        #     f.write(text_to_write)
-        #     presented_code.add(text_to_write)
 
 
 if __name__ == '__main__':

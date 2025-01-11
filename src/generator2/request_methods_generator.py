@@ -13,7 +13,8 @@ from .services.constants import (
     SPECIFICATION_FILE_NAME, PARAM_TYPE_KEY, PARAM_DEFAULT_KEY,
     SCHEMA_SORT_ID, PARAM_NAME_SORT, PARAM_NAME_SORT_FIELD,
     PARAM_LOCATION_QUERY, PARAM_LOCATION_PATH, PREFIX_RESPONSE,
-    PREFIX_REQUEST, DEFAULT_VALUE_SORT_FIELD, TYPE_SORT_FIELD
+    PREFIX_REQUEST, DEFAULT_VALUE_SORT_FIELD, TYPE_SORT_FIELD,
+    GENERATED_CLIENT_FOLDER
 )
 
 
@@ -370,7 +371,7 @@ def get_obj_openapi_spec(
 def generation_methods_request(
     templates: list,
     import_templates: list,
-    file=f'./{__package__}/request_methods.py',
+    file=f'./{__package__}/{GENERATED_CLIENT_FOLDER}/request_methods.py',
 ):
     with open(
         file, 'w', encoding='utf-8',
