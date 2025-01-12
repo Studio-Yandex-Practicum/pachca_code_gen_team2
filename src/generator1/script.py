@@ -119,13 +119,27 @@ cli_servis_path = (
     "client_serv.py"
 )
 
-source_file = os.path.join(
+logger_setup_path = (
+    "./pachca-api-open-api-3-0-client/"
+    "pachca_api_open_api_3_0_client/"
+    "logger_setup.py"
+)
+
+source_file_serv = os.path.join(
     os.path.dirname(__file__),
     "..",
     "generator1",
     "client_servis.py",
 )
-shutil.copy(source_file, cli_servis_path)
+shutil.copy(source_file_serv, cli_servis_path)
+
+source_file_log = os.path.join(
+    os.path.dirname(__file__),
+    "..",
+    "generator1",
+    "logger_setup.py",
+)
+shutil.copy(source_file_log, logger_setup_path)
 
 try:
     subprocess.run(
