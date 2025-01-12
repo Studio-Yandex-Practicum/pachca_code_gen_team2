@@ -24,27 +24,27 @@ pachca = Pachca(
 
 async def main() -> None:
     """Функция теста эндпоинтов"""
-    # task1 = asyncio.create_task(pachca.createChat(body=chat_body))
-    # task2 = asyncio.create_task(pachca.getEmployees())
+    task1 = asyncio.create_task(pachca.createChat(body=chat_body))
+    task2 = asyncio.create_task(pachca.getEmployees())
 
-    # task8 = asyncio.create_task(pachca.createChat(chat_body))
+    task8 = asyncio.create_task(pachca.createChat(chat_body))
 
-    # task2 = asyncio.create_task(pachca.getChats())
+    task2 = asyncio.create_task(pachca.getChats())
 
     # task6 = asyncio.create_task(pachca.postMembersToChats(
     #    id=999, body=members_body))
     task5 = asyncio.create_task(pachca.leaveChat(id=111))
     task7 = asyncio.create_task(pachca.createThread(id=412338865))
 
-    # print(await task1)
-    # print('*' * 30)
-    # print(await task2)
-    # print('*' * 30)
-    # print(await task5)
+    print(await task1)
+    print('*' * 30)
+    print(await task2)
+    print('*' * 30)
+    print(await task5)
     print('*' * 30)
     # print(await task6)
     print('*' * 30)
-    # print(await task8)
+    print(await task8)
     print('*' * 30)
     print(await task7)
 
