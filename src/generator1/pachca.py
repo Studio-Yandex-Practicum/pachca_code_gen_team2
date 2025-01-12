@@ -39,7 +39,10 @@ from logger_setup import setup_logging
 load_dotenv()
 pachca = Pachca(os.getenv('TOKEN'))
 
-logger = setup_logging('test_requests_logging')
+logger = setup_logging(
+    'test_requests_logging',
+    'pachca_testresults.log'
+)
 
 
 async def main() -> None:
