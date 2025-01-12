@@ -58,7 +58,7 @@ def get_base_url_from_yaml(openapi_yaml):
 
 
 api_dir = "./pachca-api-open-api-3-0-client/pachca_api_open_api_3_0_client/api"
-openapi_yaml = "openapi_new.yaml"
+openapi_yaml = "openapi.yaml"
 endpoints, imports = get_all_api_functions_and_imports(api_dir)
 base_url = get_base_url_from_yaml(openapi_yaml)
 
