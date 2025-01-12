@@ -7,7 +7,7 @@ test:
 build: clean
 
 	pip install wheel
-	## python setup_generator1.py bdist_wheel --dist-dir=../repository/
+	python setup_generator1.py bdist_wheel --dist-dir=../repository/
 	python setup_generator2.py bdist_wheel --dist-dir=../repository/
 
 clean: 
