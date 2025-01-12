@@ -3,6 +3,7 @@ from typing import Any, Optional, Union, cast
 
 import httpx
 
+import Errors.from_dict
 from ...types import Response, UNSET
 from ... import errors
 from .client_serv import AuthenticatedClient
@@ -84,10 +85,9 @@ def _parse_response_{{ endpoint.name }}(self, response: httpx.Response) -> Optio
         return None
         {% endif %}
     {% endfor %}
-    if self.client.raise_on_unexpected_status:
-        raise errors.UnexpectedStatus(response.status_code, response.content)
     else:
-        return None
+        response_error = Errors.from_dict(response.json())
+        return response_error
 
 
 def _build_response_{{ endpoint.name }}(self, response: httpx.Response) -> Response[{{ return_string }}]:
@@ -99,7 +99,6 @@ def _build_response_{{ endpoint.name }}(self, response: httpx.Response) -> Respo
     )
 
 
-{% if parsed_responses %}
 async def {{ endpoint.name }}(self,
     {{ arguments(endpoint) | indent(4) }}
 ) -> Optional[{{ return_string }}]:
@@ -115,4 +114,4 @@ async def {{ endpoint.name }}(self,
 
     return self._build_response_{{ endpoint.name }}(
         response=response).parsed
-{% endif %}
+
