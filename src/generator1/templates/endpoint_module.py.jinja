@@ -7,6 +7,7 @@ import Errors.from_dict
 from ...types import Response, UNSET
 from ... import errors
 from .client_serv import AuthenticatedClient
+from .logger_setup import setup_logging
 
 {% for relative in endpoint.relative_imports | sort %}
 {{ relative }}
@@ -66,11 +67,13 @@ def _get_kwargs_{{ endpoint.name }}(self,
 {% if endpoint.header_parameters or endpoint.bodies | length > 0 %}
     _kwargs["headers"] = headers
 {% endif %}
+    self.logger.debug("Создание параметров {{ endpoint.name }}.")
     return _kwargs
 
 
 def _parse_response_{{ endpoint.name }}(self, response: httpx.Response) -> Optional[{{ return_string }}]:
     {% for response in endpoint.responses %}
+    self.logger.info(f"Получен ответ с кодом: {response.status_code} для {{ endpoint.name }}")
     if response.status_code == {{ response.status_code.value }}:
         {% if parsed_responses %}{% import "property_templates/" + response.prop.template as prop_template %}
         {% if prop_template.construct %}
@@ -91,6 +94,7 @@ def _parse_response_{{ endpoint.name }}(self, response: httpx.Response) -> Optio
 
 
 def _build_response_{{ endpoint.name }}(self, response: httpx.Response) -> Response[{{ return_string }}]:
+    self.logger.debug("Преобразование JSON в Python для {{ endpoint.name }}.")
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -103,6 +107,7 @@ async def {{ endpoint.name }}(self,
     {{ arguments(endpoint) | indent(4) }}
 ) -> Optional[{{ return_string }}]:
     {{ docstring(endpoint, return_string, is_detailed=false) | indent(4) }}
+    self.logger.info("Начинаем создание ответа на запрос.")
 
     kwargs = self._get_kwargs_{{ endpoint.name }}(
         {{ kwargs(endpoint, include_client=False) }}

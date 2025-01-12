@@ -23,21 +23,11 @@ from pachca_api_open_api_3_0_client.models import (
     CreateTaskBodyTask, QueryStatusStatus, EditMessages, EditMessageBody
 )
 
-
-'''
-from pachca_api_open_api_3_0_client.models.edit_messages import EditMessages
-from pachca_api_open_api_3_0_client.models.edit_message_body import (
-    EditMessageBody
-)
-'''
 from pachca_api_open_api_3_0_client.models.base_chat import BaseChat
 from pachca_api_open_api_3_0_client.models.code_reaction import (
     CodeReaction,
 )
 
-# from pachca_api_open_api_3_0_client.models.get_message_reactions_body import (
-#     GetMessageReactionsBody,
-# )
 from pachca_api_open_api_3_0_client.models.put_status_body import (
     PutStatusBody,
 )
