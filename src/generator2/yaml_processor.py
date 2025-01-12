@@ -1,9 +1,35 @@
 import sys
-from constants import HTTP_METHODS
-from file_writer import write_to_file
-from generate_pydantic_model import look_into_schema_new
-from schema_link_processor import load_schema
-from yaml_loader import YAML_DICT
+
+from .services.file_writer import write_to_file
+from .generate_pydantic_model import look_into_schema_new
+from .services.logger_setup import setup_logging
+from .schema_link_processor import load_schema
+from .services.yaml_loader import YAML_DICT
+from .services.constants import (
+    HTTP_METHODS, PREFIX_RESPONSE, PREFIX_REQUEST
+)
+
+
+logger = setup_logging('yaml_processor')
+
+
+def create_constants_for_client(yaml_dict: dict) -> str:
+    """Записывает файл констант для клиента."""
+    write_to_file(
+        'constants',
+        (
+            "# Client constants\n"
+            f"URL = '{yaml_dict['servers'][0]['url']}'\n"
+            "PARAM_NAME_SORT = 'sort'\n"
+            "PARAM_NAME_SORT_FIELD = 'sort_field'\n\n"
+            "# Logger constants\n"
+            "LOG_FILE_NAME = 'pachca_log.log'\n"
+            "MAX_FILE_SIZE = 1 * 1024 * 1024  # 1 MB\n"
+            "BACKUP_COUNT = 3\n"
+            ),
+        folder_name='',
+        open_file_mode='w'
+    )
 
 
 def get_all_endpoints(yaml_dict: dict):
@@ -26,12 +52,11 @@ def process_endpoints() -> tuple[list, list]:
     Проходит по каждому эндпоинту в openapi файле и генерирует модели для
     каждой схемы в requestBody и resopnse.
     """
-    
+    create_constants_for_client(YAML_DICT)
     body: dict
     for endpoint, method, body in get_all_endpoints(YAML_DICT):
-        print(endpoint, method)
+        logger.debug(f'Working on: {endpoint}, {method}')
         operation_id = body.get('operationId')
-        print(operation_id)
         parameters = body.get('parameters')
         path_parameters = []
         query_parameters = []
@@ -54,19 +79,17 @@ def process_endpoints() -> tuple[list, list]:
                             parameter.get('schema').get('type'),
                         ),
                     )
-        print('path: ', path_parameters)
-        print('query: ', query_parameters)
         request_body = body.get('requestBody')
         if request_body:
             write_to_file(
-                f'models_reqBod_{operation_id}',
+                f'{PREFIX_REQUEST}{operation_id}',
                 (
                     'from enum import Enum, IntEnum'
                     f'{"" if sys.version_info[1] < 11 else ", StrEnum"}\n'
-                    'from typing import Dict, Optional, List\n'
+                    'from typing import Any, Dict, Optional, List\n'
                     'from pydantic import Field, BaseModel\n\n\n'
                 ),
-                'w'
+                open_file_mode='w'
             )
             schema = (
                 request_body.get('content').get('application/json')
@@ -79,8 +102,7 @@ def process_endpoints() -> tuple[list, list]:
                 if schema_has_link
                 else {operation_id.capitalize(): schema.get('schema')}
             )
-            look_into_schema_new(schema, 'models_reqBod_' + operation_id)
-        # print('\nRequestBodyEnd+++++++++++++++++++++++++++++++++++++++++++++\nResponses start\n')
+            look_into_schema_new(schema, PREFIX_REQUEST + operation_id)
         try:
             responses = body.get('responses', False)
             if responses:
@@ -93,14 +115,14 @@ def process_endpoints() -> tuple[list, list]:
                     if not schema:
                         continue
                     write_to_file(
-                        f'models_response_{operation_id}{method}{code}',
+                        f'{PREFIX_RESPONSE}{operation_id}{method}{code}',
                         (
                             'from enum import Enum, IntEnum'
                             f'{"" if sys.version_info[1] < 11 else ", StrEnum"}\n'
-                            'from typing import Dict, Optional, List\n'
+                            'from typing import Any, Dict, Optional, List\n'
                             'from pydantic import Field, BaseModel\n\n\n'
                         ),
-                        'w'
+                        open_file_mode='w'
                     )
                     schema_has_link = schema.get('schema').get('$ref', False)
                     model_name = (
@@ -113,12 +135,14 @@ def process_endpoints() -> tuple[list, list]:
                     )
                     look_into_schema_new(
                         schema,
-                        f'models_response_{operation_id}{method}{code}'
+                        f'{PREFIX_RESPONSE}{operation_id}{method}{code}'
                     )
         except Exception as e:
-            print(f'Unable to create responses for {operation_id, method, code}!!!')
-            print(e)
-        print('='*80)
+            logger.error(
+                'Unable to create responses for '
+                f'{operation_id}, {method, code}!'
+                f'Error: {e}'
+            )
     return path_parameters, query_parameters
 
 

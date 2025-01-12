@@ -1,17 +1,38 @@
 Инструкция (работать в папке generator2 при активированном venv):
 
-1. Установить зависимости
+1. Создать файл .env в директории generator2, с токеном для работы с API пачки. Пример файла:
 
+```
+TOKEN=ваштокен
+```
+
+2. Создать и активировать виртуальное окружение, установить зависимости:
+
+```
+python -m venv venv
+source venv/sctipts/activate
 pip install -r requirements.txt
+```
 
-2. Запустить генерацию схем
+3. Важно - текущая версия работает только через модули python: python -m generator2.имяфайла
 
-python yaml_processor.py
+4. Запустить единый генератор клиента:
 
-3. Запустить генерацию эндпоинтов
+```
+python -m generator2.generator_starter
+```
 
-python request_methods_generator.py
+5. Дождаться генерации кода, в результате будут получены (обновлены) модели и эндпоинты.
 
-4. Запустить скрипт-пример запроса
 
-python pachca.py
+6. Запустить скрипт-пример запроса
+
+```
+python -m generator2.generator2_full.pachca
+```
+
+ИЛИ перейти в generator2 ```cd generator2``` и запустить модуль
+
+```
+python -m generator2_full.pachca
+```
