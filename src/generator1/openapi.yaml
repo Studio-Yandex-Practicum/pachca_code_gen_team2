@@ -752,7 +752,7 @@ paths:
             schema:
               $ref: '#/components/schemas/MembersChat'
       responses:
-        '201':
+        '204':
           description: Пользователи добавлены
         '400':
           description: Пояснения ошибки
@@ -839,7 +839,7 @@ paths:
             schema:
               $ref: '#/components/schemas/GroupTag'
       responses:
-        '201':
+        '204':
           description: Тег(и) добавлен(ы)
         '400':
           description: Пояснения ошибки
