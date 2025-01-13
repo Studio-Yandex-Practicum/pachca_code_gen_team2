@@ -1,9 +1,10 @@
 import importlib
 import inspect
+from typing import Callable
 
 import httpx
 
-from .constants import URL, PARAM_NAME_SORT_FIELD, PARAM_NAME_SORT
+from .constants import PARAM_NAME_SORT, PARAM_NAME_SORT_FIELD, TOKEN_TYPE, URL
 
 
 class RequestMethodsCollector(type):
@@ -20,7 +21,7 @@ class RequestMethodsCollector(type):
         ).__new__(cls, name, bases, dct)
 
     @staticmethod
-    def collect_methods(module) -> dict[str, object]:
+    def collect_methods(module) -> dict[str, Callable]:
         """Собирает сгенерированные функции из модуля request_methods.py"""
         dict_func = {}
 
@@ -39,9 +40,10 @@ class RequestMethodsCollector(type):
 
 class Bot(metaclass=RequestMethodsCollector):
     base_url = URL
+    token_type = TOKEN_TYPE
 
     def __init__(self, token):
-        self.token = token
+        self.token = f'{self.token_type} {token}'
 
     async def get_client(self):
         return httpx.AsyncClient(
@@ -49,14 +51,14 @@ class Bot(metaclass=RequestMethodsCollector):
             headers={'Authorization': self.token},
         )
 
-    def format_url(
+    async def format_url(
         self,
         url_template: str,
         path_param: dict[str, int] = None,
     ):
         return url_template.format(**path_param)
 
-    def filter_query_params(self, **kwargs):
+    async def filter_query_params(self, **kwargs):
         if PARAM_NAME_SORT in kwargs or PARAM_NAME_SORT_FIELD in kwargs:
             sort = kwargs.pop(PARAM_NAME_SORT)
             sort_field = kwargs.pop(PARAM_NAME_SORT_FIELD)

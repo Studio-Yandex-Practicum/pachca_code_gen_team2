@@ -18,7 +18,7 @@ load_dotenv()
 logger = setup_logging('pachca_log')
 
 if __name__ == '__main__':
-    pachca = Bot(token=f'Bearer {os.environ.get("TOKEN", "LOOKUP FAILED!")}')
+    pachca = Bot(token=f'{os.environ.get("TOKEN", "LOOKUP FAILED!")}')
 
     message_test = Createmessage(message=Message(
         entity_type="discussion",
