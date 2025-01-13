@@ -27,11 +27,7 @@ if __name__ == '__main__':
                  "(что на 10% больше, чем в прошлое воскресенье)"),
     ))
     async def run_pachca():
-        # logger.debug(f'get_employee', await pachca.get_employee(id=515190), sep='\n',end='\n'+ '*'*60 + '\n')
-        # logger.debug(f'get_employees', await pachca.get_employees(), sep='\n',end='\n'+ '*'*60 + '\n')
-        # logger.debug(f'get_chats', await pachca.get_chats(per=2), sep='\n',end='\n'+ '*'*60 + '\n')
-        # message = await pachca.create_message(data=message_test)
-        # logger.debug(message, sep='\n',end='\n'+ '*'*60 + '\n')
+
         # Получение common methods
         logger.debug(f'get_common_methods: {await pachca.get_common_methods()}')
         # Создание беседы.
