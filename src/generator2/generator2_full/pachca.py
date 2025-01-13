@@ -198,6 +198,11 @@ if __name__ == '__main__':
         # Удалить статус текущему пользователю, обладателю токена.
         response_del_status = await pachca.del_status()
         logger.debug(f'del_status: {response_del_status}')
+
+        # Получения подписи и ключа для загрузки файла
+        response_get_uploads = pachca.get_uploads()
+        logger.debug(f'del_status: {response_get_uploads}')
+
         logger.debug('*' * 60)
 
     asyncio.run(run_pachca())
