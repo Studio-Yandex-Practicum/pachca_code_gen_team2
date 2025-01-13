@@ -916,7 +916,7 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        '204':
           description: При безошибочном выполнении запроса тело ответа отсутствуе
         '400':
           description: Пояснения ошибки
