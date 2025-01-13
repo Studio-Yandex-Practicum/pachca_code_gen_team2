@@ -53,5 +53,4 @@ class RequestMethods:
 
     async def filter_query_params(self):
         pass
->>>>>>> bugfix/generator2/1-2
 """

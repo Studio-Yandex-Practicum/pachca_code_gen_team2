@@ -376,14 +376,14 @@ def get_obj_openapi_spec(
 def generation_class_bot(
     templates: list,
     import_templates: list,
-    file=f'./{__package__}/{GENERATED_CLIENT_FOLDER}/bot.py',
+    file=f'./{__package__}/{GENERATED_CLIENT_FOLDER}/request_methods.py',
 ):
     with open(
         file, 'w', encoding='utf-8',
     ) as file:
-        file.write(f'{TEMPLATE_IMPORT_FOR_CLASS_BOT}')
         for module_name in import_templates:
             file.write(f'{module_name}\n')
+        file.write(f'{TEMPLATE_CLASS_REQUEST_METHODS}')
         for template in templates:
             file.write(template)
 
