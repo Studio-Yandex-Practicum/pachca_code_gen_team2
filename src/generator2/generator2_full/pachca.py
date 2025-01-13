@@ -3,7 +3,7 @@ import os
 
 from dotenv import load_dotenv
 
-from .bot import Bot
+from bot import Bot
 from .logger_setup import setup_logging
 from .models.models_reqBod_createChat import Createchat
 from .models.models_reqBod_createMessage import Createmessage, Message
@@ -12,7 +12,8 @@ from .models.models_reqBod_editMessage import Editmessage
 from .models.models_reqBod_postMembersToChats import Postmemberstochats
 from .models.models_reqBod_postMessageReactions import Postmessagereactions
 from .models.models_reqBod_putStatus import Putstatus
-
+from .models.models_reqBod_postTagsToChats import Posttagstochats
+from .models.models_response_getTagget200 import Data
 load_dotenv()
 
 logger = setup_logging('pachca_log')
@@ -193,5 +194,34 @@ if __name__ == '__main__':
         response_del_status = await pachca.del_status()
         logger.debug(f'del_status: {response_del_status}')
         logger.debug('*' * 60)
+
+        # Тест получения подписи и ключа для загрузки файла
+        response = await pachca.get_uploads()
+        logger.debug(f'get_uploads: {response}')
+
+        # Тест загрузки файла
+        response = await pachca.get_direct_url(
+            id=1,
+        )
+        logger.debug(f'get_direct_url: {response}')
+
+        # Тест получения информации о теге
+        response = await pachca.get_tag(Data.data.id)
+        logger.debug(f'get_tag: {response}')
+
+        # Тест получения списка сотрудников с определенным тегом
+        response = await pachca.get_tags_employees(
+            id=1,
+        )
+        logger.debug(f'get_employees_by_tag: {response}')
+
+        # Тест добавления тегов в чат
+        response = await pachca.post_tags_to_chats(
+            id=1,
+            data=Posttagstochats(
+                tag_ids=[1, 2, 3],
+            ),
+        )
+        logger.debug(f'post_tags_to_chats: {response}')
 
     asyncio.run(run_pachca())
