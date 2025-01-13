@@ -3,7 +3,7 @@ import subprocess
 
 from .services.constants import GENERATED_CLIENT_FOLDER
 from .services.logger_setup import setup_logging
-from .request_methods_generator import generate
+from .class_bot_generator import generate
 from .yaml_processor import process_endpoints
 
 
@@ -34,7 +34,7 @@ def generate_client():
         subprocess.run(
             [
                 'black',
-                f'{dir_path}/request_methods.py',
+                f'{dir_path}/bot.py',
                 '--line-length',
                 '79'
             ],
@@ -54,7 +54,7 @@ def generate_client():
             [
                 'ruff',
                 'check',
-                f'{dir_path}/request_methods.py',
+                f'{dir_path}/bot.py',
                 '--fix',
                 '--silent'
             ]
