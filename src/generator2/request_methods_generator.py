@@ -5,17 +5,16 @@ from typing import Union
 
 from httpx import codes
 from openapi_parser import parse
-from openapi_parser.specification import (
-    DataType, Path, Specification, Operation, Parameter
-)
+from openapi_parser.specification import (DataType, Operation, Parameter, Path,
+                                          Specification)
 
-from .services.constants import (
-    SPECIFICATION_FILE_NAME, PARAM_TYPE_KEY, PARAM_DEFAULT_KEY,
-    SCHEMA_SORT_ID, PARAM_NAME_SORT, PARAM_NAME_SORT_FIELD,
-    PARAM_LOCATION_QUERY, PARAM_LOCATION_PATH, PREFIX_RESPONSE,
-    PREFIX_REQUEST, DEFAULT_VALUE_SORT_FIELD, TYPE_SORT_FIELD,
-    GENERATED_CLIENT_FOLDER
-)
+from .services.constants import (DEFAULT_VALUE_SORT_FIELD,
+                                 GENERATED_CLIENT_FOLDER, PARAM_DEFAULT_KEY,
+                                 PARAM_LOCATION_PATH, PARAM_LOCATION_QUERY,
+                                 PARAM_NAME_SORT, PARAM_NAME_SORT_FIELD,
+                                 PARAM_TYPE_KEY, PREFIX_REQUEST,
+                                 PREFIX_RESPONSE, SCHEMA_SORT_ID,
+                                 SPECIFICATION_FILE_NAME, TYPE_SORT_FIELD)
 
 
 def format_path_params(param_path: dict[str, Union[str, dict]]) -> str:
@@ -40,7 +39,7 @@ def generate_url_template(
     """Генерирует строку с форматированным URL для функции."""
     if param_path:
         path_params = format_path_params(param_path)
-        return f"url = self.format_url('{url}', {{{path_params}}})"
+        return f"url = await self.format_url('{url}', {{{path_params}}})"
     return f"url = '{url}'"
 
 
@@ -137,7 +136,8 @@ def get_template_methods(
         f" -> {name_response_scheme}" if name_response_scheme else ""
     )
     filter_params_code = (
-        f"\n        query_params=self.filter_query_params({filter_params})"
+        f"\n        query_params = await self.filter_query_params"
+        f"({filter_params})"
         if filter_params else ""
     )
 
