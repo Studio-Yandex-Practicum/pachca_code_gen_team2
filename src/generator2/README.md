@@ -1,6 +1,6 @@
-Инструкция (работать в папке generator2 при активированном venv):
+### Инструкция (работать в папке `src` при активированном venv):
 
-1. Создать файл .env в директории generator2, с токеном для работы с API пачки. Пример файла:
+1. Создать файл .env в директории generator2, с токеном для работы с API пачки. Пример файла .env.example:
 
 ```
 TOKEN=ваштокен
@@ -29,10 +29,4 @@ python -m generator2.generator_starter
 
 ```
 python -m generator2.generator2_full.pachca
-```
-
-ИЛИ перейти в generator2 ```cd generator2``` и запустить модуль
-
-```
-python -m generator2_full.pachca
 ```

@@ -27,11 +27,7 @@ if __name__ == '__main__':
                  "(что на 10% больше, чем в прошлое воскресенье)"),
     ))
     async def run_pachca():
-        # logger.debug(f'get_employee', await pachca.get_employee(id=515190), sep='\n',end='\n'+ '*'*60 + '\n')
-        # logger.debug(f'get_employees', await pachca.get_employees(), sep='\n',end='\n'+ '*'*60 + '\n')
-        # logger.debug(f'get_chats', await pachca.get_chats(per=2), sep='\n',end='\n'+ '*'*60 + '\n')
-        # message = await pachca.create_message(data=message_test)
-        # logger.debug(message, sep='\n',end='\n'+ '*'*60 + '\n')
+
         # Получение common methods
         logger.debug(f'get_common_methods: {await pachca.get_common_methods()}')
         # Создание беседы.
@@ -164,6 +160,12 @@ if __name__ == '__main__':
         )
         logger.debug(f'create_task: {response_create_task}')
 
+        # Метод для того чтобы покинуть конкретный чат (беседу)
+        response_leave_chat = await pachca.leave_chat(
+            id=created_chat.data.id
+        )
+        logger.debug(f'leave_chat: {response_leave_chat}')
+
         response_get_users = await pachca.get_employees()
         logger.debug(f'One user from list: {response_get_users.data[0].id}')
 
@@ -192,6 +194,21 @@ if __name__ == '__main__':
         # Удалить статус текущему пользователю, обладателю токена.
         response_del_status = await pachca.del_status()
         logger.debug(f'del_status: {response_del_status}')
+
+        # Получения подписи и ключа для загрузки файла
+        response_get_uploads = await pachca.get_uploads()
+        logger.debug(f'del_status: {response_get_uploads}')
+
+        response_get_tags_employees = await pachca.get_tags_employees(
+            id=1234
+        )
+        logger.debug(f'get_tags_employees: {response_get_tags_employees}')
+
+        response_get_tag = await pachca.get_tag(
+            id=1234
+        )
+        logger.debug(f'get_tag: {response_get_tag}')
+
         logger.debug('*' * 60)
 
     asyncio.run(run_pachca())
