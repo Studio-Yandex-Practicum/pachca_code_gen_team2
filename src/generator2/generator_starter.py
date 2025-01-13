@@ -1,9 +1,9 @@
 import os
 import subprocess
 
+from .request_methods_generator import generate
 from .services.constants import GENERATED_CLIENT_FOLDER
 from .services.logger_setup import setup_logging
-from .request_methods_generator import generate
 from .yaml_processor import process_endpoints
 
 
@@ -47,7 +47,7 @@ def generate_client():
                 'check',
                 f'{dir_path}/models',
                 '--fix',
-                '--silent'
+                '--silent',
             ]
         )
         subprocess.run(
