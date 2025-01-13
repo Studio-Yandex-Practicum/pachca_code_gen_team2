@@ -5,7 +5,19 @@ import os
 from dotenv import load_dotenv
 from logger_setup import setup_logging
 from pachca_api_open_api_3_0_client.client import Pachca
+from pachca_api_open_api_3_0_client.models import (
+    CreateTaskBodyTask,
+    EditMessageBody,
+    EditMessages,
+    GroupTag,
+    MembersChat,
+    QueryStatusStatus,
+)
+from pachca_api_open_api_3_0_client.models.base_chat import BaseChat
 from pachca_api_open_api_3_0_client.models.chat import Chat
+from pachca_api_open_api_3_0_client.models.code_reaction import (
+    CodeReaction,
+)
 from pachca_api_open_api_3_0_client.models.create_chat_body import (
     CreateChatBody,
 )
@@ -18,13 +30,6 @@ from pachca_api_open_api_3_0_client.models.create_messages import (
 from pachca_api_open_api_3_0_client.models.create_task_body import (
     CreateTaskBody,
 )
-from pachca_api_open_api_3_0_client.models import (
-    CreateTaskBodyTask, QueryStatusStatus, EditMessages, EditMessageBody
-)
-from pachca_api_open_api_3_0_client.models.base_chat import BaseChat
-from pachca_api_open_api_3_0_client.models.code_reaction import (
-    CodeReaction,
-)
 from pachca_api_open_api_3_0_client.models.put_status_body import (
     PutStatusBody,
 )
@@ -36,6 +41,7 @@ logger = setup_logging(
     'test_requests_logging',
     'pachca_testresults.log'
 )
+
 
 async def main() -> None:
     """ Функция теста эндпоинтов """
@@ -86,7 +92,6 @@ async def main() -> None:
         pachca.editMessage(
             id=message_response.data.id, body=edit_message_body)
         )
-    
 
     # подготовка запроса на добавление реакции к сообщению -->
     post_reactions = CodeReaction(code='😭')
@@ -99,10 +104,14 @@ async def main() -> None:
     # подготовка запроса на получение списка реакций к сообщению -->
     # <--
     # запрос на получение списка реакций
-    getMessageReactions = await pachca.getMessageReactions(id=message_response.data.id)
+    getMessageReactions = await pachca.getMessageReactions(
+        id=message_response.data.id
+    )
 
     # запрос на удаление реакции
-    deleteMessageReactions = await pachca.deleteMessageReactions(id=message_response.data.id, code='😭')
+    deleteMessageReactions = await pachca.deleteMessageReactions(
+        id=message_response.data.id, code='😭'
+    )
 
     # подготовка запроса на создание напоминания -->
     create_body_task = CreateTaskBodyTask(
@@ -113,13 +122,25 @@ async def main() -> None:
     body_task = CreateTaskBody(task=create_body_task)
     # <--
     # запрос на создание напоминания
-    createtaskbody = await asyncio.create_task(pachca.createTask(body=body_task))
+    createtaskbody = await asyncio.create_task(
+        pachca.createTask(body=body_task)
+    )
 
     # запрос на получения списка пользователей
     users_response = await asyncio.create_task(pachca.getEmployees())
 
     # запрос на получение информации о пользователе
-    getEmployee = await asyncio.create_task(pachca.getEmployee(id=users_response.data[0].id))
+    getEmployee = await asyncio.create_task(
+        pachca.getEmployee(id=users_response.data[0].id)
+    )
+
+    # подготовка запроса на добавление участника -->
+    chats_body = MembersChat(member_ids=[users_response.data[0].id])
+    # <--
+    # запрос на добавление участника в беседу
+    postMembersToChats = await asyncio.create_task(pachca.postMembersToChats(
+        id=chat_response.data.id, body=chats_body)
+    )
 
     # подготовка запроса на добавление статуса -->
     query_status = QueryStatusStatus(
@@ -132,7 +153,7 @@ async def main() -> None:
     putStatus = await asyncio.create_task(pachca.putStatus(body=query_status))
 
     # запрос на получение информации о своем статусе
-    getStatus = await asyncio.create_task(pachca.getStatus())  
+    getStatus = await asyncio.create_task(pachca.getStatus())
 
     # запрос на удаление статуса
     delStatus = await asyncio.create_task(pachca.delStatus())
@@ -140,12 +161,37 @@ async def main() -> None:
     # запрос на получение тегов сотрудников
     getTags = await asyncio.create_task(pachca.getTags())
 
+    if len(getTags.data) > 0:
+        tag_id = getTags.data[0].id
+    else:
+        tag_id = 0
+    # запрос получение информации о теге
+    getTag = await asyncio.create_task(pachca.getTag(id=tag_id))
+
+    # запрос получение информации о теге участников
+    getTagsEmployees = await asyncio.create_task(
+        pachca.getTagsEmployees(id=tag_id)
+    )
+
+    # подготовка запроса на добавление участника -->
+    tags_body = GroupTag(group_tag_ids=[tag_id])
+    # <--
+    # запрос на добавление тегов в состав участников беседы или канала
+    postTagsToChats = await asyncio.create_task(
+        pachca.postTagsToChats(id=chat_response.data.id, body=tags_body)
+    )
+
     # запрос на получение списка актуальных полей сущности
     getCommonMethods = await asyncio.create_task(
         pachca.getCommonMethods(entity_type='User'))
 
     # запрос получения подписи и ключа для загрузки файла
     getUploads = await asyncio.create_task(pachca.getUploads())
+
+    # запрос исключение участника из беседы
+    leaveChat = await asyncio.create_task(
+        pachca.leaveChat(id=chat_response.data.id)
+    )
 
     logger.debug(await pachca.getUploads())
 
@@ -165,18 +211,23 @@ async def main() -> None:
         createtaskbody,
         users_response,
         getEmployee,
+        postMembersToChats,
         putStatus,
         getStatus,
         delStatus,
         getTags,
+        getTag,
+        getTagsEmployees,
+        postTagsToChats,
         getCommonMethods,
         getUploads,
+        leaveChat,
     ):
 
         result = task
         logger.debug(
             f"{task}: data={result} \n"
-            "**",
+            "***",
         )
     logger.debug('Tests ended '+'*'*100)
 
