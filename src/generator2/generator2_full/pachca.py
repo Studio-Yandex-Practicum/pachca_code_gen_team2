@@ -3,7 +3,7 @@ import os
 
 from dotenv import load_dotenv
 
-from bot import Bot
+from .bot import Bot
 from .logger_setup import setup_logging
 from .models.models_reqBod_createChat import Createchat
 from .models.models_reqBod_createMessage import Createmessage, Message
