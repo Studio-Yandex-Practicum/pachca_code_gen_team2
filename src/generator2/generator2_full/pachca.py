@@ -203,6 +203,16 @@ if __name__ == '__main__':
         response_get_uploads = pachca.get_uploads()
         logger.debug(f'del_status: {response_get_uploads}')
 
+        response_get_tags_employees = pachca.get_tags_employees(
+            id=1234
+        )
+        logger.debug(f'get_tags_employees: {response_get_tags_employees}')
+
+        response_get_tag = pachca.get_tag(
+            id=1234
+        )
+        logger.debug(f'get_tag: {response_get_tag}')
+
         logger.debug('*' * 60)
 
     asyncio.run(run_pachca())
