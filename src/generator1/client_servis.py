@@ -94,12 +94,12 @@ class AuthenticatedClient:
 
     async def __enter__(self) -> "AuthenticatedClient":
         """Enter a context manager for self.client—you cannot enter twice (see httpx docs)"""
-        self.get_httpx_client().__enter__()
+        await self.get_httpx_client().__enter__()
         return self
 
     async def __exit__(self, *args: Any, **kwargs: Any) -> None:
         """Exit a context manager for internal httpx.Client (see httpx docs)"""
-        self.get_httpx_client().__exit__(*args, **kwargs)
+        await self.get_httpx_client().__exit__(*args, **kwargs)
 
     async def set_async_httpx_client(self, async_client: httpx.AsyncClient) -> "AuthenticatedClient":
         """Manually the underlying httpx.AsyncClient

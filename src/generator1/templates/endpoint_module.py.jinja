@@ -99,7 +99,7 @@ async def _build_response_{{ endpoint.name }}(self, response: httpx.Response) ->
         status_code=HTTPStatus(response.status_code),
         content=response.content,
         headers=response.headers,
-        parsed=self._parse_response_{{ endpoint.name }}(response=response),
+        parsed= await self._parse_response_{{ endpoint.name }}(response=response),
     )
 
 
@@ -109,14 +109,14 @@ async def {{ endpoint.name }}(self,
     {{ docstring(endpoint, return_string, is_detailed=false) | indent(4) }}
     self.logger.info("Начинаем создание ответа на запрос.")
 
-    kwargs = self._get_kwargs_{{ endpoint.name }}(
+    kwargs = await self._get_kwargs_{{ endpoint.name }}(
         {{ kwargs(endpoint, include_client=False) }}
     )
 
-    response = await self.client.get_async_httpx_client().request(
-        **kwargs
-    )
+    response = await (
+        await self.client.get_async_httpx_client()
+    ).request(**kwargs)
 
-    return self._build_response_{{ endpoint.name }}(
-        response=response).parsed
+    return (await self._build_response_{{ endpoint.name }}(
+        response=response)).parsed
 
