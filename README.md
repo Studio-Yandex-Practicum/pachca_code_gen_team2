@@ -117,21 +117,13 @@ _src/generator1/_
         .\venv\scripts\activate  
         pip install -r requirements.txt  
         ```  
-3. **Запустите генерацию клиента**:  
+3. **Запустите генерацию клиента:**:  
     ```bash
-    openapi-python-client generate --path openapi.yaml --custom-template-path=./templates --overwrite  
+    python generator.py generate
     ```
-4. **Запустите скрипт-генератор**:  
+4. **Запустите пример запроса**:  
     ```bash
-    python script.py
-    ```
-5. **Установить pachca-api-open-api-3-0-client в venv командой**:  
-    ```bash
-    pip install ./pachca-api-open-api-3-0-client
-    ```
-6. **Запустите пример запроса**:  
-    ```bash
-    python pachca.py  
+    python generator.py test
     ```  
 
 ## 💡 Команда генератора  
