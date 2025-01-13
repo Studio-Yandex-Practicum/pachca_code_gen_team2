@@ -200,15 +200,15 @@ if __name__ == '__main__':
         logger.debug(f'del_status: {response_del_status}')
 
         # Получения подписи и ключа для загрузки файла
-        response_get_uploads = pachca.get_uploads()
+        response_get_uploads = await pachca.get_uploads()
         logger.debug(f'del_status: {response_get_uploads}')
 
-        response_get_tags_employees = pachca.get_tags_employees(
+        response_get_tags_employees = await pachca.get_tags_employees(
             id=1234
         )
         logger.debug(f'get_tags_employees: {response_get_tags_employees}')
 
-        response_get_tag = pachca.get_tag(
+        response_get_tag = await pachca.get_tag(
             id=1234
         )
         logger.debug(f'get_tag: {response_get_tag}')
