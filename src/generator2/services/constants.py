@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 import sys
 
@@ -38,6 +39,7 @@ PREFIX_REQUEST = 'models_reqBod_'
 DEFAULT_VALUE_SORT_FIELD = 'id'
 TYPE_SORT_FIELD = 'str'
 
-LOG_FILE_NAME = 'client_generator.log'
+BASE_DIR = Path(os.path.dirname(os.path.abspath(__file__))).parent
+LOG_FILE_NAME = os.path.join(BASE_DIR, "client_generator.log")
 
 GENERATED_CLIENT_FOLDER = 'generator2_full'
