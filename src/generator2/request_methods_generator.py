@@ -14,7 +14,8 @@ from .services.constants import (DEFAULT_VALUE_SORT_FIELD,
                                  PARAM_NAME_SORT, PARAM_NAME_SORT_FIELD,
                                  PARAM_TYPE_KEY, PREFIX_REQUEST,
                                  PREFIX_RESPONSE, SCHEMA_SORT_ID,
-                                 SPECIFICATION_FILE_NAME, TYPE_SORT_FIELD)
+                                 SPECIFICATION_FILE_NAME, TYPE_SORT_FIELD,
+                                 TEMPLATE_CLASS_REQUEST_METHODS)
 
 
 def format_path_params(param_path: dict[str, Union[str, dict]]) -> str:
@@ -99,13 +100,17 @@ def generate_response_handling(
     """Генерирует логику обработки ответа от сервера."""
     response_handling = ""
     if name_response_scheme:
-        response_handling += f"""
-        if response.is_success:
-            return {name_response_scheme}.model_validate_json(response.text)"""
+        response_handling += (
+            '\n            if response.is_success:\n'
+            f'              return {name_response_scheme}'
+            '.model_validate_json(response.text)'
+        )
     if name_error_scheme:
-        response_handling += f"""
-        if response.is_client_error:
-            return {name_error_scheme}.model_validate_json(response.text)"""
+        response_handling += (
+            '\n            if response.is_client_error:\n'
+            f'              return {name_error_scheme}'
+            '.model_validate_json(response.text)'
+        )
     return response_handling
 
 
@@ -136,20 +141,20 @@ def get_template_methods(
         f" -> {name_response_scheme}" if name_response_scheme else ""
     )
     filter_params_code = (
-        f"\n        query_params = await self.filter_query_params"
+        f"\n            query_params = await self.filter_query_params"
         f"({filter_params})"
         if filter_params else ""
     )
 
     return f"""
 
-async def {name_func}({function_params}){response_annotation}:
-    {docstring}
-    client = await self.get_client()
-    async with client:
-        {format_url}{filter_params_code}
-        {request_handling}{response_handling}
-        return None
+    async def {name_func}({function_params}){response_annotation}:
+        {docstring}
+        client = await self.get_client()
+        async with client:
+            {format_url}{filter_params_code}
+            {request_handling}{response_handling}
+            return None
 """
 
 
@@ -368,7 +373,7 @@ def get_obj_openapi_spec(
     return parse(spec_string=spec_openapi)
 
 
-def generation_methods_request(
+def generation_class_bot(
     templates: list,
     import_templates: list,
     file=f'./{__package__}/{GENERATED_CLIENT_FOLDER}/request_methods.py',
@@ -378,6 +383,7 @@ def generation_methods_request(
     ) as file:
         for module_name in import_templates:
             file.write(f'{module_name}\n')
+        file.write(f'{TEMPLATE_CLASS_REQUEST_METHODS}')
         for template in templates:
             file.write(template)
 
@@ -388,7 +394,7 @@ def generate():
 
     templates, import_templates = template_generation(paths)
 
-    generation_methods_request(
+    generation_class_bot(
         templates=templates, import_templates=import_templates
     )
 

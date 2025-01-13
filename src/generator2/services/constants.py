@@ -43,3 +43,16 @@ BASE_DIR = Path(os.path.dirname(os.path.abspath(__file__))).parent
 LOG_FILE_NAME = os.path.join(BASE_DIR, "client_generator.log")
 
 GENERATED_CLIENT_FOLDER = 'generator2_full'
+
+TEMPLATE_CLASS_REQUEST_METHODS = """
+class RequestMethods:
+
+    async def get_client(self):
+        pass
+
+    async def format_url(self):
+        pass
+
+    async def filter_query_params(self):
+        pass
+"""

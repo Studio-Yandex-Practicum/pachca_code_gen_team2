@@ -1,44 +1,10 @@
-import importlib
-import inspect
-from typing import Callable
-
 import httpx
 
 from .constants import PARAM_NAME_SORT, PARAM_NAME_SORT_FIELD, TOKEN_TYPE, URL
+from .request_methods import RequestMethods
 
 
-class RequestMethodsCollector(type):
-
-    def __new__(cls, name, bases, dct):
-        req_methods = importlib.import_module('.request_methods', __package__)
-        request_methods = cls.collect_methods(req_methods)
-
-        for name_method, method in request_methods.items():
-            dct[name_method] = method
-
-        return super(
-            RequestMethodsCollector, cls,
-        ).__new__(cls, name, bases, dct)
-
-    @staticmethod
-    def collect_methods(module) -> dict[str, Callable]:
-        """Собирает сгенерированные функции из модуля request_methods.py"""
-        dict_func = {}
-
-        for name, obj in inspect.getmembers(module):
-            if inspect.isfunction(obj):
-                dict_func[name] = obj
-
-        if not dict_func:
-            raise ValueError(
-                f"В модуле {module.__name__} "
-                "отсутствуют сгенерированные функции",
-            )
-
-        return dict_func
-
-
-class Bot(metaclass=RequestMethodsCollector):
+class Bot(RequestMethods):
     base_url = URL
     token_type = TOKEN_TYPE
 
