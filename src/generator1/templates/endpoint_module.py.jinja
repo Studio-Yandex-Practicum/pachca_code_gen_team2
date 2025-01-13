@@ -19,7 +19,7 @@ from .logger_setup import setup_logging
 {% set return_string = endpoint.response_type() %}
 {% set parsed_responses = (endpoint.responses | length > 0) and return_string != "Any" %}
 
-def _get_kwargs_{{ endpoint.name }}(self,
+async def _get_kwargs_{{ endpoint.name }}(self,
     {{ arguments(endpoint, include_client=False) | indent(4) }}
 ) -> dict[str, Any]:
     {{ header_params(endpoint) | indent(4) }}
@@ -71,7 +71,7 @@ def _get_kwargs_{{ endpoint.name }}(self,
     return _kwargs
 
 
-def _parse_response_{{ endpoint.name }}(self, response: httpx.Response) -> Optional[{{ return_string }}]:
+async def _parse_response_{{ endpoint.name }}(self, response: httpx.Response) -> Optional[{{ return_string }}]:
     {% for response in endpoint.responses %}
     self.logger.info(f"Получен ответ с кодом: {response.status_code} для {{ endpoint.name }}")
     if response.status_code == {{ response.status_code.value }}:
@@ -93,7 +93,7 @@ def _parse_response_{{ endpoint.name }}(self, response: httpx.Response) -> Optio
         return response_error
 
 
-def _build_response_{{ endpoint.name }}(self, response: httpx.Response) -> Response[{{ return_string }}]:
+async def _build_response_{{ endpoint.name }}(self, response: httpx.Response) -> Response[{{ return_string }}]:
     self.logger.debug("Преобразование JSON в Python для {{ endpoint.name }}.")
     return Response(
         status_code=HTTPStatus(response.status_code),

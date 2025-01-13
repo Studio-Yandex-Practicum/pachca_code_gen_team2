@@ -7,16 +7,8 @@ pip install openapi-python-client
 
 2. Сгенерировать клиент командой
 
-openapi-python-client generate --path openapi.yaml --custom-template-path=./templates --overwrite
+python generator.py generate
 
-3. Запустить скрипт-генератор
+3. Запустить скрипт-пример запроса 
 
-python script.py
-
-4. Установить pachca-api-open-api-3-0-client в venv командой
-
-pip install ./pachca-api-open-api-3-0-client
-
-5. Запустить скрипт-пример запроса 
-
-python pachca.py
+python generator.py test
