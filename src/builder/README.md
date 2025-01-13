@@ -19,15 +19,21 @@
     ```bash
         pipenv install requirements.txt  
     ```
-4. **Запуск создания и загрузки библиотеки на PyPi при помощи команды:**
+
+4. **В папке проекта pachca_code_gen_team2 в файле .env указать:**
+    - PACKAGE_VERSION=<Версия пакета>
+    - TWINE_USERNAME=<Имя пользвателя сервиса TestPyPI>
+    - TWINE_API_TOKEN=<Токен пользвателя сервиса TestPyPI>
+
+4. **Запуск создания и загрузки библиотеки на серис TestPyPI при помощи команды:**
 
     ```bash
         make upload
     ```
-5. **Установка бибилотеки с тестового PyPi (копирование ссылки):**
+5. **Установка бибилотеки с сериса TestPyPI:**
 
-    - pip install -i https://test.pypi.org/simple/ pachca-generator1
-    - pip install -i https://test.pypi.org/simple/ pachca-generator2
+    - pip install -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ pachca-generator1
+    - pip install -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ pachca-generator2
 
 ## 📂 Структура генератора
 
