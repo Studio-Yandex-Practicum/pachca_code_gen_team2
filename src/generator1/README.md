@@ -3,7 +3,7 @@
 Инструкция (работать в папке generator1):
 1. В venv прописать
 
-pip install openapi-python-client
+pip install -r requirements.txt
 
 2. Сгенерировать клиент командой
 
