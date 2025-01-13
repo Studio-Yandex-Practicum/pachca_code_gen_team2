@@ -20,7 +20,7 @@ build: clean
 	python setup_generator2.py bdist_wheel --dist-dir=../repository/
 
 clean: 
-	@rm -rf .pytest_cache/ .mypy_cache/ junit/ build/
+	@rm -rf .pytest_cache/ .mypy_cache/ junit/ build/ ../repository/
 
 .PHONY: upload
 upload: build
