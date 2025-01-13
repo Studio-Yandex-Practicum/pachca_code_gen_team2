@@ -41,3 +41,16 @@ TYPE_SORT_FIELD = 'str'
 LOG_FILE_NAME = 'client_generator.log'
 
 GENERATED_CLIENT_FOLDER = 'generator2_full'
+
+TEMPLATE_CLASS_REQUEST_METHODS = """
+class RequestMethods:
+
+    async def get_client(self):
+        pass
+
+    async def format_url(self):
+        pass
+
+    async def filter_query_params(self):
+        pass
+"""
