@@ -5,7 +5,19 @@ import os
 from dotenv import load_dotenv
 from logger_setup import setup_logging
 from pachca_api_open_api_3_0_client.client import Pachca
+from pachca_api_open_api_3_0_client.models import (
+    CreateTaskBodyTask,
+    EditMessageBody,
+    EditMessages,
+    GroupTag,
+    MembersChat,
+    QueryStatusStatus,
+)
+from pachca_api_open_api_3_0_client.models.base_chat import BaseChat
 from pachca_api_open_api_3_0_client.models.chat import Chat
+from pachca_api_open_api_3_0_client.models.code_reaction import (
+    CodeReaction,
+)
 from pachca_api_open_api_3_0_client.models.create_chat_body import (
     CreateChatBody,
 )
@@ -17,14 +29,6 @@ from pachca_api_open_api_3_0_client.models.create_messages import (
 )
 from pachca_api_open_api_3_0_client.models.create_task_body import (
     CreateTaskBody,
-)
-from pachca_api_open_api_3_0_client.models import (
-    CreateTaskBodyTask, QueryStatusStatus, EditMessages, EditMessageBody,
-    GroupTag, MembersChat
-)
-from pachca_api_open_api_3_0_client.models.base_chat import BaseChat
-from pachca_api_open_api_3_0_client.models.code_reaction import (
-    CodeReaction,
 )
 from pachca_api_open_api_3_0_client.models.put_status_body import (
     PutStatusBody,
@@ -223,7 +227,7 @@ async def main() -> None:
         result = task
         logger.debug(
             f"{task}: data={result} \n"
-            "**",
+            "***",
         )
     logger.debug('Tests ended '+'*'*100)
 
