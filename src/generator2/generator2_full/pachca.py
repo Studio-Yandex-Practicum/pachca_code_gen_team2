@@ -168,7 +168,7 @@ if __name__ == '__main__':
         response_leave_chat = await pachca.leave_chat(
             id=created_chat.data.id
         )
-        logger.debug(f'leave_chat: {response_leave_chat.data[0].id}')
+        logger.debug(f'leave_chat: {response_leave_chat}')
 
         response_get_users = await pachca.get_employees()
         logger.debug(f'One user from list: {response_get_users.data[0].id}')
