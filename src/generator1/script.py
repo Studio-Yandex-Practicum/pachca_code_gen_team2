@@ -151,6 +151,7 @@ try:
             "79",
         ],
         check=True,
+        shell=True,
     )
     subprocess.run(
         [
