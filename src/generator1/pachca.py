@@ -131,20 +131,20 @@ async def main() -> None:
     )
 
     # запрос на получения списка пользователей
-    users_response = await asyncio.create_task(pachca.getEmployees())
+    # users_response = await asyncio.create_task(pachca.getEmployees())
 
     # запрос на получение информации о пользователе
-    getEmployee = await asyncio.create_task(
-        pachca.getEmployee(id=users_response.data[0].id),
-    )
+    # getEmployee = await asyncio.create_task(
+    #     pachca.getEmployee(id=users_response.data[0].id)
+    # )
 
     # подготовка запроса на добавление участника -->
-    chats_body = MembersChat(member_ids=[users_response.data[0].id])
+    # chats_body = MembersChat(member_ids=[users_response.data[0].id])
     # <--
     # запрос на добавление участника в беседу
-    postMembersToChats = await asyncio.create_task(
-        pachca.postMembersToChats(id=chat_response.data.id, body=chats_body),
-    )
+    # postMembersToChats = await asyncio.create_task(pachca.postMembersToChats(
+    #     id=chat_response.data.id, body=chats_body)
+    # )
 
     # подготовка запроса на добавление статуса -->
     query_status = QueryStatusStatus(
@@ -214,9 +214,9 @@ async def main() -> None:
         getMessageReactions,
         deleteMessageReactions,
         createtaskbody,
-        users_response,
-        getEmployee,
-        postMembersToChats,
+        # users_response,
+        # getEmployee,
+        # postMembersToChats,
         putStatus,
         getStatus,
         delStatus,

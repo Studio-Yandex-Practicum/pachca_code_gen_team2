@@ -52,6 +52,7 @@ def generate_client(yaml_url):
         f"openapi-python-client generate --path {OPENAPI_FILE_PATH} "
         f"--custom-template-path=./templates --overwrite"
     )
+    run_command("python pydantic_script.py")
     run_command("python script.py")
 
 
