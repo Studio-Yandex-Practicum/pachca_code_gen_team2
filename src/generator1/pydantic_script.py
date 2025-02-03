@@ -1,9 +1,10 @@
 import os
 
+
 def correcting_imports_in_model_files(file_path):
     with open(file_path, 'r', encoding='utf-8') as file:
         content = file.readlines()
-    
+
     new_content = []
     skip_next_lines = False
 
@@ -28,13 +29,15 @@ def correcting_imports_in_model_files(file_path):
     with open(file_path, 'w', encoding='utf-8') as file:
         file.writelines(new_content)
 
+
 def changes_all_model_files(directory):
     for filename in os.listdir(directory):
         if filename.endswith('.py'):
-            correcting_imports_in_model_files(os.path.join(directory, filename))
+            correcting_imports_in_model_files(
+                os.path.join(directory, filename)
+            )
+
 
 changes_all_model_files(
-    "./pachca-api-open-api-3-0-client/"
-    "pachca_api_open_api_3_0_client/"
-    "models/"
+    './pachca-api-open-api-3-0-client/pachca_api_open_api_3_0_client/models/',
 )
