@@ -11,3 +11,5 @@ ruamel.yaml.clib==0.2.12
 typing_extensions==4.12.2
 black==24.10.0
 isort==5.13.2
+requests
+python-dotenv
