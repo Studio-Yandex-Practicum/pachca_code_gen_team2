@@ -13,5 +13,5 @@ black==24.10.0
 isort==5.13.2
 pydantic==2.10.4
 pydantic_core==2.27.2
-requests
-python-dotenv
+requests==2.32.3
+python-dotenv==1.0.1
