@@ -6,9 +6,11 @@ import subprocess
 import yaml
 from jinja2 import Environment, FileSystemLoader
 
+from generator1.generator import INSTALL_PATH
+
 
 def extract_functions_and_imports_from_file(file_path) -> None:
-    with open(file_path, 'r', encoding='utf-8') as file:
+    with open(file_path, encoding="utf-8") as file:
         tree = ast.parse(file.read())
 
     functions = []
@@ -21,18 +23,18 @@ def extract_functions_and_imports_from_file(file_path) -> None:
         ):
             functions.append(ast.unparse(node))
         elif isinstance(node, ast.ImportFrom):
-            module = node.module if node.module else '.'
+            module = node.module if node.module else "."
             for alias in node.names:
-                if module == 'typing':
-                    imports.append(f'from typing import {alias.name}')
-                elif module.startswith('models'):
-                    imports.append(f'from .models import {alias.name}')
-                elif module == 'types':
-                    imports.append(f'from .types import {alias.name}')
-                elif module == 'client_serv':
-                    imports.append(f'from .client_serv import {alias.name}')
+                if module == "typing":
+                    imports.append(f"from typing import {alias.name}")
+                elif module.startswith("models"):
+                    imports.append(f"from .models import {alias.name}")
+                elif module == "types":
+                    imports.append(f"from .types import {alias.name}")
+                elif module == "client_serv":
+                    imports.append(f"from .client_serv import {alias.name}")
                 else:
-                    imports.append(f'from {module} import {alias.name}')
+                    imports.append(f"from {module} import {alias.name}")
 
     return functions, imports
 
@@ -42,7 +44,7 @@ def get_all_api_functions_and_imports(api_dir):
     all_imports = []
     for root, _, files in os.walk(api_dir):
         for file in files:
-            if file.endswith('.py'):
+            if file.endswith(".py"):
                 file_path = os.path.join(root, file)
                 functions, imports = extract_functions_and_imports_from_file(
                     file_path,
@@ -53,34 +55,31 @@ def get_all_api_functions_and_imports(api_dir):
 
 
 def get_base_url_from_yaml(openapi_yaml):
-    with open(openapi_yaml, 'r', encoding='utf-8') as file:
+    with open(os.path.join(INSTALL_PATH, openapi_yaml), encoding="utf-8") as file:
         data = yaml.safe_load(file)
-    return data['servers'][0]['url']
+    return data["servers"][0]["url"]
 
 
-api_dir = './pachca-api-open-api-3-0-client/pachca_api_open_api_3_0_client/api'
-openapi_yaml = 'openapi.yaml'
+api_dir = os.path.join(INSTALL_PATH, r"pachca_api_open_api_3_0_client\api")
+openapi_yaml = "openapi.yaml"
 endpoints, imports = get_all_api_functions_and_imports(api_dir)
 base_url = get_base_url_from_yaml(openapi_yaml)
-
 env = Environment(
-    loader=FileSystemLoader('templates'),
+    loader=FileSystemLoader(os.path.join(INSTALL_PATH, "templates")),
 )
 
-client_template = env.get_template('client.py.jinja')
+client_template = env.get_template("client.py.jinja")
 
-client_path = (
-    './pachca-api-open-api-3-0-client/pachca_api_open_api_3_0_client/client.py'
-)
+client_path = os.path.join(INSTALL_PATH, "pachca_api_open_api_3_0_client\client.py")
 
-with open(client_path, mode='w', encoding='utf-8') as file:
+with open(client_path, mode="w", encoding="utf-8") as file:
     unique_imports = list(set(imports))
     models_imports = sorted(
         [
             model
             for model in unique_imports
             if model.startswith(
-                'from .models',
+                "from .models",
             )
         ],
     )
@@ -89,7 +88,7 @@ with open(client_path, mode='w', encoding='utf-8') as file:
             model
             for model in unique_imports
             if model.startswith(
-                'from typing import',
+                "from typing import",
             )
         ],
     )
@@ -98,103 +97,81 @@ with open(client_path, mode='w', encoding='utf-8') as file:
             model
             for model in unique_imports
             if model.startswith(
-                'from .types import',
+                "from .types import",
             )
         ],
     )
     other_imports = sorted(
         list(
-            set(unique_imports)
-            - set(typing_imports)
-            - set(types_imports)
-            - set(models_imports),
+            set(unique_imports) - set(typing_imports) - set(types_imports) - set(models_imports),
         ),
     )
     if models_imports:
         models_imports_str = (
-            'from .models import (\n    '
-            + ',\n    '.join(
-                [
-                    model.split('from .models import ')[-1]
-                    for model in models_imports
-                ],
+            "from .models import (\n    "
+            + ",\n    ".join(
+                [model.split("from .models import ")[-1] for model in models_imports],
             )
-            + '\n)'
+            + "\n)"
         )
-        file.write(models_imports_str + '\n\n')
+        file.write(models_imports_str + "\n\n")
     if typing_imports:
         typing_imports_str = (
-            'from typing import (\n    '
-            + ',\n    '.join(
-                [
-                    model.split('from typing import ')[-1]
-                    for model in typing_imports
-                ],
+            "from typing import (\n    "
+            + ",\n    ".join(
+                [model.split("from typing import ")[-1] for model in typing_imports],
             )
-            + '\n)'
+            + "\n)"
         )
-        file.write(typing_imports_str + '\n\n')
+        file.write(typing_imports_str + "\n\n")
     if types_imports:
         types_imports_str = (
-            'from .types import (\n    '
-            + ',\n    '.join(
-                [
-                    model.split('from .types import ')[-1]
-                    for model in types_imports
-                ],
+            "from .types import (\n    "
+            + ",\n    ".join(
+                [model.split("from .types import ")[-1] for model in types_imports],
             )
-            + '\n)'
+            + "\n)"
         )
-        file.write(types_imports_str + '\n\n')
+        file.write(types_imports_str + "\n\n")
     if other_imports:
-        file.write('\n'.join(other_imports) + '\n\n')
+        file.write("\n".join(other_imports) + "\n\n")
     file.write(client_template.render(endpoints=endpoints, base_url=base_url))
 
-cli_servis_path = (
-    './pachca-api-open-api-3-0-client/'
-    'pachca_api_open_api_3_0_client/'
-    'client_serv.py'
-)
+cli_servis_path = os.path.join(INSTALL_PATH, "pachca_api_open_api_3_0_client\client_serv.py")
 
-logger_setup_path = (
-    './pachca-api-open-api-3-0-client/'
-    'pachca_api_open_api_3_0_client/'
-    'logger_setup.py'
-)
+logger_setup_path = os.path.join(INSTALL_PATH, "pachca_api_open_api_3_0_client\logger_setup.py")
 
 source_file_serv = os.path.join(
     os.path.dirname(__file__),
-    '..',
-    'generator1',
-    'client_servis.py',
+    "..",
+    "generator1",
+    "client_servis.py",
 )
 shutil.copy(source_file_serv, cli_servis_path)
 
 source_file_log = os.path.join(
     os.path.dirname(__file__),
-    '..',
-    'generator1',
-    'logger_setup.py',
+    "..",
+    "generator1",
+    "logger_setup.py",
 )
 shutil.copy(source_file_log, logger_setup_path)
 
 try:
     subprocess.run(
         [
-            'black',
-            './pachca-api-open-api-3-0-client/pachca_api_open_api_3_0_client/'
-            'client.py',
-            '--line-length',
-            '79',
+            "black",
+            os.path.join(INSTALL_PATH, "pachca_api_open_api_3_0_client\client.py"),
+            "--line-length",
+            "79",
         ],
         check=True,
     )
     subprocess.run(
         [
-            'isort',
-            './pachca-api-open-api-3-0-client/pachca_api_open_api_3_0_client/'
-            'client.py',
+            "isort",
+            os.path.join(INSTALL_PATH, "pachca_api_open_api_3_0_client\client.py"),
         ],
     )
 except subprocess.CalledProcessError as e:
-    print('Автолинтер не сработал!', e)
+    print("Автолинтер не сработал!", e)

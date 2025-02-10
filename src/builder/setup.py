@@ -1,10 +1,9 @@
-from setuptools import setup, find_packages
-
 import json
 import os
-from dotenv import load_dotenv
 from pathlib import Path
 
+from dotenv import load_dotenv
+from setuptools import find_packages, setup
 
 PACKAGE_VERSION = 'Версия из YAML'
 
@@ -26,18 +25,23 @@ def read_pipenv_dependencies(fname):
 
 if __name__ == '__main__':
     setup(
-        name='pachca_generator1',
+        name='PachcaAPI',
         long_description=long_description,
         long_description_content_type='text/markdown',
         version=os.getenv('PACKAGE_VERSION', PACKAGE_VERSION),
-        package_dir={'': '../generator1/pachca-api-open-api-3-0-client'},
-        packages=find_packages(
-            '../generator1/pachca-api-open-api-3-0-client', include=[
-                'pachca_api_open_api_3_0_client*']
-        ),
+        package_dir={'': '..'},
+        packages=find_packages('..', include=[
+                'generator1*']),
+        include_package_data=True,
         description='A pachca_api package generator1.',
         install_requires=[
-              *read_pipenv_dependencies('Pipfile.lock'),
+            *read_pipenv_dependencies('Pipfile.lock'),
         ],
-        python_version='>=3.11'
+        entry_points={
+            'console_scripts': [
+                'run_generate_and_test=generator1.api_generator:gen_and_test',
+                'run_generator=generator1.api_generator:ganerate',
+                'run_test=generator1.api_generator:test',
+            ],
+        },
     )

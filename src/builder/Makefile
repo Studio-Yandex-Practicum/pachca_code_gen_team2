@@ -16,11 +16,10 @@ test:
 
 build: clean
 
-	python setup_generator1.py bdist_wheel --dist-dir=../repository/
-	python setup_generator2.py bdist_wheel --dist-dir=../repository/
+	python setup.py bdist_wheel --dist-dir=../repository/
 
 clean: 
-	@rm -rf .pytest_cache/ .mypy_cache/ junit/ build/ ../repository/
+	@rm -rf .pytest_cache/ .mypy_cache/ junit/ build/ ../repository/ ../*.egg-info/
 
 .PHONY: upload
 upload: build

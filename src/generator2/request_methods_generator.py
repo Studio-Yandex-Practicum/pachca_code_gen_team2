@@ -14,8 +14,9 @@ from .services.constants import (DEFAULT_VALUE_SORT_FIELD,
                                  PARAM_NAME_SORT, PARAM_NAME_SORT_FIELD,
                                  PARAM_TYPE_KEY, PREFIX_REQUEST,
                                  PREFIX_RESPONSE, SCHEMA_SORT_ID,
-                                 SPECIFICATION_FILE_NAME, TYPE_SORT_FIELD,
-                                 TEMPLATE_CLASS_REQUEST_METHODS)
+                                 SPECIFICATION_FILE_NAME,
+                                 TEMPLATE_CLASS_REQUEST_METHODS,
+                                 TYPE_SORT_FIELD)
 
 
 def format_path_params(param_path: dict[str, Union[str, dict]]) -> str:
