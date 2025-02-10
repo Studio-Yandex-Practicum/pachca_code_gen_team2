@@ -314,8 +314,13 @@ _src/generator2/_
     ```
 5. **Установка бибилотеки с сериса TestPyPI:**
 
-    - pip install -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ pachca-generator1
-    - pip install -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ pachca-generator2
+    - pip install -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ PachcaAPI
+
+5. **Запуск генератора и тестов:**
+
+    - run_generate_and_test     - запуск генератора и тестов
+    - run_generator             - запуск генератора
+    - run_test                  - запуск тестов
 
 ## 📂 Структура генератора
 
@@ -336,8 +341,11 @@ _src/builder/_
 #### 🛠️ Makefile 
 - файл с инструкциями для утилиты make, которая нужна для автоматической сборки проекта.
 
-#### 📦 setup_generator1.py, setup_generator2.py
+#### 📦 setup.py
 - файл с описанием, каким именно образом будет упакован код для медотов генерации
+
+#### 📦 MANIFEST.in
+- файл с указанием, какие файлы следует включить в сборку пакета 
 
 ---
 
