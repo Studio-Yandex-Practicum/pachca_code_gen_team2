@@ -6,8 +6,6 @@ import sys
 
 import requests
 
-INSTALL_PATH = os.path.join(site.getsitepackages()[1], "generator1")
-# INSTALL_PATH = ".generator1"
 MIN_ARGS = 2
 COMMAND_INDEX = 1
 GENERATE_COMMAND = "generate"
@@ -15,6 +13,12 @@ INSTALL_TEST_COMMAND = "test"
 DEFAULT_YAML_URL = "https://raw.githubusercontent.com/pachca/openapi/main/openapi.yaml"
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 OPENAPI_FILE_PATH = os.path.join(BASE_DIR, "openapi.yaml")
+
+# Закомментировать строку ниже при запуске генератора локально
+INSTALL_PATH = os.path.join(site.getsitepackages()[1], "generator1")
+
+# Закомментироать строку ниже при запуске генератора после установки
+# INSTALL_PATH = BASE_DIR
 
 
 def run_command(command):
@@ -47,8 +51,8 @@ def generate_client(yaml_url):
     print("Генерация клиента...")
     openapi_python_client = (
         f"openapi-python-client generate --path {OPENAPI_FILE_PATH} "
-        f"--custom-template-path={INSTALL_PATH}/templates --overwrite "
-        f"--output-path {INSTALL_PATH}"
+        f"--custom-template-path={INSTALL_PATH}\\templates --overwrite "
+        f"--output-path {INSTALL_PATH}\\PachcaAPI"
     )
     run_command(openapi_python_client)
 
@@ -62,7 +66,7 @@ def install_and_run_tests():
     """Установка пакета и запуск тест-запросов."""
     pachca_path = os.path.join(INSTALL_PATH, "pachca.py")
     print("Установка пакета и запуск тест-запросов...")
-    run_command(f"pip install {INSTALL_PATH}")
+    run_command(f"pip install {INSTALL_PATH}\PachcaAPI")
     run_command([sys.executable, pachca_path])
 
 

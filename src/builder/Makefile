@@ -7,12 +7,9 @@ endif
 help:
 	@echo "Команды:"
 	@echo "	help	- Список всех команд"
-	@echo "	test	- Запуск тестов"
 	@echo "	build	- Создание библиотеки"
-	@echo "	clean	- Очистка ременных файлов"
-	@echo "	upload	- Загрузка библиотеки на PyPi"
-
-test:
+	@echo "	clean	- Очистка временных файлов"
+	@echo "	upload	- Загрузка библиотеки на testPyPi"
 
 build: clean
 
