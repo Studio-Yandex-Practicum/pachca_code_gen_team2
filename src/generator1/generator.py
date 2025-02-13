@@ -1,6 +1,5 @@
 import os
 import os.path
-import site
 import subprocess
 import sys
 
@@ -13,12 +12,6 @@ INSTALL_TEST_COMMAND = "test"
 DEFAULT_YAML_URL = "https://raw.githubusercontent.com/pachca/openapi/main/openapi.yaml"
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 OPENAPI_FILE_PATH = os.path.join(BASE_DIR, "openapi.yaml")
-
-# Закомментировать строку ниже при запуске генератора локально
-INSTALL_PATH = os.path.join(site.getsitepackages()[1], "generator1")
-
-# Закомментироать строку ниже при запуске генератора после установки
-# INSTALL_PATH = BASE_DIR
 
 
 def run_command(command):
@@ -51,22 +44,22 @@ def generate_client(yaml_url):
     print("Генерация клиента...")
     openapi_python_client = (
         f"openapi-python-client generate --path {OPENAPI_FILE_PATH} "
-        f"--custom-template-path={INSTALL_PATH}\\templates --overwrite "
-        f"--output-path {INSTALL_PATH}\\PachcaAPI"
+        f"--custom-template-path={BASE_DIR}\\templates --overwrite "
+        f"--output-path {BASE_DIR}\\PachcaAPI"
     )
     run_command(openapi_python_client)
 
-    pydantic_script_path = os.path.join(INSTALL_PATH, "pydantic_script.py")
-    script_path = os.path.join(INSTALL_PATH, "script.py")
+    pydantic_script_path = os.path.join(BASE_DIR, "pydantic_script.py")
+    script_path = os.path.join(BASE_DIR, "script.py")
     run_command([sys.executable, pydantic_script_path])
     run_command([sys.executable, script_path])
 
 
 def install_and_run_tests():
     """Установка пакета и запуск тест-запросов."""
-    pachca_path = os.path.join(INSTALL_PATH, "pachca.py")
+    pachca_path = os.path.join(BASE_DIR, "pachca.py")
     print("Установка пакета и запуск тест-запросов...")
-    run_command(f"pip install {INSTALL_PATH}\PachcaAPI")
+    run_command(f"pip install {BASE_DIR}\\PachcaAPI")
     run_command([sys.executable, pachca_path])
 
 

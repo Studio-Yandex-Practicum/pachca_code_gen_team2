@@ -2,9 +2,9 @@ import os
 import subprocess
 import sys
 
-from generator1.generator import INSTALL_PATH
+from generator1.generator import BASE_DIR
 
-generator_script_path = os.path.join(INSTALL_PATH, "generator.py")
+generator_script_path = os.path.join(BASE_DIR, "generator.py")
 
 
 def generate():

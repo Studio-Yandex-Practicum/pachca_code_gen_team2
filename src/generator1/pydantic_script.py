@@ -1,10 +1,6 @@
 import os
 
-# Закомментировать строку ниже при запуске генератора локально
-from generator1.generator import INSTALL_PATH
-
-# Закомментироать строку ниже при запуске генератора после установки
-# from generator import INSTALL_PATH
+from generator import BASE_DIR
 
 
 def correcting_imports_in_model_files(file_path):
@@ -42,4 +38,4 @@ def changes_all_model_files(directory):
             correcting_imports_in_model_files(os.path.join(directory, filename))
 
 
-changes_all_model_files(os.path.join(INSTALL_PATH, "PachcaAPI\pachca_api_open_api_3_0_client\models"))
+changes_all_model_files(os.path.join(BASE_DIR, r"PachcaAPI\pachca_api_open_api_3_0_client\models"))

@@ -5,9 +5,7 @@
 
 pip install -r requirements.txt
 
-2. Изменить константу INSTALL_PATH в generator.py и ее импорты в pydantic_script.py и script.py в зависимости от запуска генеротора и тестов локально или для создания библиотеки (описание в комментариях)
-
-3. Сгенерировать клиент командой
+2. Сгенерировать клиент командой
 
 python generator.py generate
 

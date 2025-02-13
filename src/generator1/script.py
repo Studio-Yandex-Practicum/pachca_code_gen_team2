@@ -4,13 +4,8 @@ import shutil
 import subprocess
 
 import yaml
+from generator import BASE_DIR
 from jinja2 import Environment, FileSystemLoader
-
-# Закомментировать строку ниже при запуске генератора локально
-from generator1.generator import INSTALL_PATH
-
-# Закомментироать строку ниже при запуске генератора после установки
-# from generator import INSTALL_PATH
 
 
 def extract_functions_and_imports_from_file(file_path) -> None:
@@ -59,22 +54,22 @@ def get_all_api_functions_and_imports(api_dir):
 
 
 def get_base_url_from_yaml(openapi_yaml):
-    with open(os.path.join(INSTALL_PATH, openapi_yaml), encoding="utf-8") as file:
+    with open(os.path.join(BASE_DIR, openapi_yaml), encoding="utf-8") as file:
         data = yaml.safe_load(file)
     return data["servers"][0]["url"]
 
 
-api_dir = os.path.join(INSTALL_PATH, r"PachcaAPI\pachca_api_open_api_3_0_client\api")
+api_dir = os.path.join(BASE_DIR, r"PachcaAPI\pachca_api_open_api_3_0_client\api")
 openapi_yaml = "openapi.yaml"
 endpoints, imports = get_all_api_functions_and_imports(api_dir)
 base_url = get_base_url_from_yaml(openapi_yaml)
 env = Environment(
-    loader=FileSystemLoader(os.path.join(INSTALL_PATH, "templates")),
+    loader=FileSystemLoader(os.path.join(BASE_DIR, "templates")),
 )
 
 client_template = env.get_template("client.py.jinja")
 
-client_path = os.path.join(INSTALL_PATH, "PachcaAPI\pachca_api_open_api_3_0_client\client.py")
+client_path = os.path.join(BASE_DIR, r"PachcaAPI\pachca_api_open_api_3_0_client\client.py")
 
 with open(client_path, mode="w", encoding="utf-8") as file:
     unique_imports = list(set(imports))
@@ -141,9 +136,9 @@ with open(client_path, mode="w", encoding="utf-8") as file:
         file.write("\n".join(other_imports) + "\n\n")
     file.write(client_template.render(endpoints=endpoints, base_url=base_url))
 
-cli_servis_path = os.path.join(INSTALL_PATH, "PachcaAPI\pachca_api_open_api_3_0_client\client_serv.py")
+cli_servis_path = os.path.join(BASE_DIR, r"PachcaAPI\pachca_api_open_api_3_0_client\client_serv.py")
 
-logger_setup_path = os.path.join(INSTALL_PATH, "PachcaAPI\pachca_api_open_api_3_0_client\logger_setup.py")
+logger_setup_path = os.path.join(BASE_DIR, r"PachcaAPI\pachca_api_open_api_3_0_client\logger_setup.py")
 
 source_file_serv = os.path.join(
     os.path.dirname(__file__),
@@ -165,7 +160,7 @@ try:
     subprocess.run(
         [
             "black",
-            os.path.join(INSTALL_PATH, "PachcaAPI\pachca_api_open_api_3_0_client\client.py"),
+            os.path.join(BASE_DIR, r"PachcaAPI\pachca_api_open_api_3_0_client\client.py"),
             "--line-length",
             "79",
         ],
@@ -174,7 +169,7 @@ try:
     subprocess.run(
         [
             "isort",
-            os.path.join(INSTALL_PATH, "PachcaAPI\pachca_api_open_api_3_0_client\client.py"),
+            os.path.join(BASE_DIR, r"PachcaAPI\pachca_api_open_api_3_0_client\client.py"),
         ],
     )
 except subprocess.CalledProcessError as e:

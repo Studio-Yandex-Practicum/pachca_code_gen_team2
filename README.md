@@ -312,7 +312,7 @@ _src/generator2/_
     ```bash
         make upload
     ```
-6. **Установка бибилотеки с сериса TestPyPI:**
+6. **Установка библиотеки с сериса TestPyPI:**
 
     ```bash
         pip install --no-cache-dir -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ PachcaAPI==0.1.1
