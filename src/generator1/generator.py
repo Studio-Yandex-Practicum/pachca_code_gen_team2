@@ -1,17 +1,17 @@
+import os
 import os.path
 import subprocess
 import sys
-import os
+
 import requests
 
-
+PROJECT_NAME = 'PachcaAPIClient'
+PACKAGE_NAME = 'pachca_api'
 MIN_ARGS = 2
 COMMAND_INDEX = 1
 GENERATE_COMMAND = "generate"
 INSTALL_TEST_COMMAND = "test"
-DEFAULT_YAML_URL = (
-    "https://raw.githubusercontent.com/pachca/openapi/main/openapi.yaml"
-)
+DEFAULT_YAML_URL = "https://raw.githubusercontent.com/pachca/openapi/main/openapi.yaml"  # noqa
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 OPENAPI_FILE_PATH = os.path.join(BASE_DIR, "openapi.yaml")
 
@@ -22,11 +22,8 @@ def run_command(command):
         subprocess.run(command, check=True, shell=True, text=True)
         print(f"Команда выполнена: {command}")
     except subprocess.CalledProcessError as e:
-        print(
-            f"Ошибка при выполнении команды: {command}\n"
-            f"Код ошибки: {e.returncode}\n"
-            f"Вывод:\n{e.stderr}"
-        )
+        print(f"Ошибка при выполнении команды: {command}\nКод ошибки: "
+              f"{e.returncode}\nВывод:\n{e.stderr}")
 
 
 def download_yaml(url):
@@ -35,7 +32,7 @@ def download_yaml(url):
     try:
         response = requests.get(url, timeout=10)
         response.raise_for_status()
-        os.makedirs(os.path.dirname(OPENAPI_FILE_PATH), exist_ok=True)
+        os.makedirs(BASE_DIR, exist_ok=True)
         with open(OPENAPI_FILE_PATH, "wb") as file:
             file.write(response.content)
         print(f"Файл сохранён тут: {OPENAPI_FILE_PATH}")
@@ -48,27 +45,32 @@ def generate_client(yaml_url):
     """Генерация клиента и запуск скрипта-генератора."""
     download_yaml(yaml_url)
     print("Генерация клиента...")
-    run_command(
+    openapi_python_client = (
         f"openapi-python-client generate --path {OPENAPI_FILE_PATH} "
-        f"--custom-template-path=./templates --overwrite"
+        f"--custom-template-path={os.path.join(BASE_DIR, 'templates')} "
+        f"--overwrite --output-path {os.path.join(BASE_DIR, PROJECT_NAME)} "
+        f"--config {os.path.join(BASE_DIR, 'config_pachca_api.py')}"
     )
-    run_command("python pydantic_script.py")
-    run_command("python script.py")
+    run_command(openapi_python_client)
+
+    pydantic_script_path = os.path.join(BASE_DIR, "pydantic_script.py")
+    script_path = os.path.join(BASE_DIR, "script.py")
+    run_command(f"{sys.executable} {pydantic_script_path}")
+    run_command(f"{sys.executable} {script_path}")
 
 
 def install_and_run_tests():
     """Установка пакета и запуск тест-запросов."""
+    pachca_path = os.path.join(BASE_DIR, "pachca.py")
     print("Установка пакета и запуск тест-запросов...")
-    run_command("pip install ./pachca-api-open-api-3-0-client")
-    run_command("python pachca.py")
+    run_command(f"pip install {os.path.join(BASE_DIR, PROJECT_NAME)}")
+    run_command(f"{sys.executable} {pachca_path}")
 
 
 if __name__ == "__main__":
     if len(sys.argv) < MIN_ARGS:
-        print(
-            "Пример команды: python generator.py [generate|test] "
-            "[--url <ссылка на .yaml>]"
-        )
+        print("Пример команды: python generator.py [generate|test] "
+              "[--url <ссылка на .yaml>]")
         sys.exit(COMMAND_INDEX)
 
     command = sys.argv[COMMAND_INDEX]
@@ -87,8 +89,6 @@ if __name__ == "__main__":
     if command in commands:
         commands[command]()
     else:
-        print(
-            "Некорректный аргумент. Введите 'generate' для генерации клиента "
-            "или 'test' для запуска тестов."
-        )
+        print("Некорректный аргумент. Введите 'generate' для генерации "
+              "клиента или 'test' для запуска тестов.")
         sys.exit(COMMAND_INDEX)

@@ -16,6 +16,6 @@ https://raw.githubusercontent.com/pachca/openapi/main/openapi.yaml
 
 python generator.py generate --url *ссылка на YAML спецификацию*
 
-3. Запустить скрипт-пример запроса 
+4. Запустить скрипт-пример запроса 
 
 python generator.py test

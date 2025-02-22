@@ -1,6 +1,6 @@
 import os
-from pathlib import Path
 import sys
+from pathlib import Path
 
 # PATH_TO_YAML = './openapi_test.yaml'
 PATH_TO_YAML = (
