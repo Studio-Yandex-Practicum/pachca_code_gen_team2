@@ -2,10 +2,16 @@ import ast
 import os
 import shutil
 import subprocess
+import sys
+from pathlib import Path
 
 import yaml
-from generator import BASE_DIR, PACKAGE_NAME, PROJECT_NAME
-from jinja2 import Environment, FileSystemLoader
+
+sys.path.append(str(Path(__file__).parent.parent))
+
+from jinja2 import Environment, FileSystemLoader  # noqa
+
+from generator1 import BASE_DIR, PACKAGE_NAME, PROJECT_NAME  # noqa
 
 
 def extract_functions_and_imports_from_file(file_path) -> None:

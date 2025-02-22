@@ -1,6 +1,10 @@
 import os
+import sys
+from pathlib import Path
 
-from generator import BASE_DIR, PACKAGE_NAME, PROJECT_NAME
+sys.path.append(str(Path(__file__).parent.parent))
+
+from generator1 import BASE_DIR, PACKAGE_NAME, PROJECT_NAME  # noqa
 
 
 def correcting_imports_in_model_files(file_path):

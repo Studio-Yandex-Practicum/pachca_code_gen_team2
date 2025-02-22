@@ -10,14 +10,10 @@ from pachca_api.models import (CreateTaskBodyTask, EditMessageBody,
                                QueryStatusStatus)
 from pachca_api.models.base_chat import BaseChat
 from pachca_api.models.code_reaction import CodeReaction
-from pachca_api.models.create_chat_body import \
-    CreateChatBody
-from pachca_api.models.create_message_body import \
-    CreateMessageBody
-from pachca_api.models.create_messages import \
-    CreateMessages
-from pachca_api.models.create_task_body import \
-    CreateTaskBody
+from pachca_api.models.create_chat_body import CreateChatBody
+from pachca_api.models.create_message_body import CreateMessageBody
+from pachca_api.models.create_messages import CreateMessages
+from pachca_api.models.create_task_body import CreateTaskBody
 
 load_dotenv()
 pachca = Pachca(os.getenv('TOKEN'))
