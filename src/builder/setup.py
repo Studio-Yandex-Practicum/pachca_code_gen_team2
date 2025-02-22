@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 from setuptools import find_packages, setup
 
 PACKAGE_VERSION = 'Версия из YAML'
+GENERATOR_NAME = 'generator1'
 
 load_dotenv()
 
@@ -31,17 +32,17 @@ if __name__ == '__main__':
         version=os.getenv('PACKAGE_VERSION', PACKAGE_VERSION),
         package_dir={'': '..'},
         packages=find_packages('..', include=[
-                'generator1*']),
+                f'{GENERATOR_NAME}*']),
         include_package_data=True,
-        description='A pachca_api package generator1.',
+        description=f'A pachca_api package {GENERATOR_NAME}.',
         install_requires=[
             *read_pipenv_dependencies('Pipfile.lock'),
         ],
         entry_points={
             'console_scripts': [
-                'run_generate_and_test=generator1.api_generator:gen_and_test',
-                'run_generator=generator1.api_generator:ganerate',
-                'run_test=generator1.api_generator:test',
+                f'run_generate_and_test={GENERATOR_NAME}.api_generator:gen_and_test',  # noqa
+                f'run_generator={GENERATOR_NAME}.api_generator:generate',
+                f'run_test={GENERATOR_NAME}.api_generator:test',
             ],
         },
     )

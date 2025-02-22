@@ -9,7 +9,7 @@ generator_script_path = os.path.join(BASE_DIR, "generator.py")
 
 def generate():
     command = [sys.executable, generator_script_path, "generate"]
-    result = subprocess.run(command, check=True, shell=True, text=True)
+    result = subprocess.run(command, check=True, shell=False, text=True)
 
     if result.returncode == 0:
         print("Команда выполнена успешно.")
@@ -19,7 +19,7 @@ def generate():
 
 def test():
     command = [sys.executable, generator_script_path, "test"]
-    result = subprocess.run(command, check=True, shell=True, text=True)
+    result = subprocess.run(command, check=True, shell=False, text=True)
 
     if result.returncode == 0:
         print("Команда выполнена успешно.")

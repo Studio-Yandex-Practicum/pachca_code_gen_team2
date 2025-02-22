@@ -1,6 +1,6 @@
 import os
 
-from generator import BASE_DIR
+from generator import BASE_DIR, PACKAGE_NAME, PROJECT_NAME
 
 
 def correcting_imports_in_model_files(file_path):
@@ -35,7 +35,11 @@ def correcting_imports_in_model_files(file_path):
 def changes_all_model_files(directory):
     for filename in os.listdir(directory):
         if filename.endswith(".py"):
-            correcting_imports_in_model_files(os.path.join(directory, filename))
+            correcting_imports_in_model_files(
+                os.path.join(directory, filename)
+            )
 
 
-changes_all_model_files(os.path.join(BASE_DIR, r"PachcaAPI\pachca_api_open_api_3_0_client\models"))
+changes_all_model_files(os.path.join(
+    BASE_DIR, PROJECT_NAME, PACKAGE_NAME, 'models'
+))
