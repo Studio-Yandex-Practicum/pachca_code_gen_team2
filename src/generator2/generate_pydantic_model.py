@@ -1,9 +1,6 @@
+from .schema_link_processor import load_schema, new_replace_ref_with_schema
 from .services.constants import ENUM_TYPES, PYTHON_TYPES
 from .services.file_writer import write_to_file
-from .schema_link_processor import (
-    load_schema,
-    new_replace_ref_with_schema,
-)
 
 
 def check_error_field(model_name: str, field_name: str, field_type: str):

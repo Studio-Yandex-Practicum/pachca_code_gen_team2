@@ -1,9 +1,10 @@
 import logging
-from logging.handlers import RotatingFileHandler
 import os
+from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
 from .constants import BACKUP_COUNT, LOG_FILE_NAME, MAX_FILE_SIZE
+
 
 def setup_logging(logger_name: str) -> logging.Logger:
     logger = logging.getLogger(logger_name)
